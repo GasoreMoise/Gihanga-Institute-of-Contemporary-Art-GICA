@@ -1,0 +1,31 @@
+{
+  "landing": {
+    "hero": {
+      "title": "Ikigo cya Gihanga cy'Ubugeni bugezweho",
+      "subtitle": "Ahantu ho kubyara ibitekerezo, ubushakashatsi, n'imyidagaduro y'ubugeni."
+    },
+    "about": { "title": "Ibyerekeye" },
+    "welcome": { "title": "Murakaza neza" },
+    "exhibitions": { "title": "Imurikabikorwa" },
+    "programme": { "title": "Porogaramu" },
+    "visit": { "title": "Dusuye" },
+    "contact": { "title": "Twandikire" }
+  },
+  "exhibitions": {
+    "title": "Imurikabikorwa"
+  },
+  "programme": {
+    "title": "Porogaramu"
+  },
+  "visit": {
+    "title": "Dusuye"
+  },
+  "contributors": {
+    "title": "Abagize uruganda"
+  },
+  "notFound": {
+    "title": "Urupapuro rutabonetse"
+  }
+}
+
+

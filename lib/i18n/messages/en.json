@@ -1,0 +1,31 @@
+{
+  "landing": {
+    "hero": {
+      "title": "Gihanga Institute of Contemporary Art",
+      "subtitle": "A living space for art, research, and collective imagination."
+    },
+    "about": { "title": "About" },
+    "welcome": { "title": "Welcome" },
+    "exhibitions": { "title": "Exhibitions" },
+    "programme": { "title": "Programme" },
+    "visit": { "title": "Visit Us" },
+    "contact": { "title": "Contact" }
+  },
+  "exhibitions": {
+    "title": "Exhibitions"
+  },
+  "programme": {
+    "title": "Programme"
+  },
+  "visit": {
+    "title": "Visit Us"
+  },
+  "contributors": {
+    "title": "Contributors"
+  },
+  "notFound": {
+    "title": "Page Not Found"
+  }
+}
+
+
