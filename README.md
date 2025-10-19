@@ -1,0 +1,4 @@
+echo "# Gihanga Institute of Contemporary Art (GICA)" > README.md
+git add README.md
+git commit -m "Initial commit"
+git push -u origin main
