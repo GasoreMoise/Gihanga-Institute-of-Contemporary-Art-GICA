@@ -6,12 +6,24 @@ import Footer from '@/components/Footer';
 import ContactForm from '@/components/ContactForm';
 import AboutSection from '@/components/AboutSection';
 import WelcomeSection from '@/components/WelcomeSection';
+import ExhibitionSection from '@/components/ExhibitionSection';
+import ProgrammeSection from '@/components/ProgrammeSection';
+import VisitSection from '@/components/VisitSection';
+import ContactStayInTouch from '@/components/ContactStayInTouch';
+import { getCurrentExhibition } from '@/lib/data/exhibitions';
+import { getCurrentProgramme } from '@/lib/data/programme';
+import { getVisitData } from '@/lib/data/visit';
+import { getContactContent } from '@/lib/data/contact';
 // import { getLandingContent } from '@/lib/queries';
 // import { createClient } from '@/lib/sanity';
 import { getTranslations } from 'next-intl/server';
 
 export default async function Page() {
   const t = await getTranslations('landing');
+  const currentExhibition = await getCurrentExhibition();
+  const currentProgramme = await getCurrentProgramme();
+  const visit = await getVisitData();
+  const contact = await getContactContent();
   // const client = createClient();
   // const data = await getLandingContent(client);
 
@@ -29,40 +41,35 @@ export default async function Page() {
       />
       <AboutSection />
       <WelcomeSection />
-      <Section title={t('exhibitions.title')}>
-        <Prose>
-          <p>Current and upcoming exhibitions will be displayed here. Check back soon for our inaugural programming.</p>
-        </Prose>
-      </Section>
-      <Section title={t('programme.title')}>
-        <Prose>
-          <p>Our programme includes contemporary theatre, performance, screenings, and educational events. Details coming soon.</p>
-        </Prose>
-      </Section>
-      <Section title={t('visit.title')}>
-        <Prose>
-          <h3>Location</h3>
-          <p>Kigali, Rwanda</p>
-          <h3>Hours</h3>
-          <p>Tuesday - Sunday: 10:00 AM - 6:00 PM</p>
-          <p>Monday: Closed</p>
-          <h3>Admission</h3>
-          <p>Free admission for all visitors</p>
-        </Prose>
-      </Section>
-      <Section title={t('contact.title')}>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          <div>
-            <Prose>
-              <p>For inquiries, please contact us at info@gica.rw</p>
-              <p>Or use the contact form to send us a message directly.</p>
-            </Prose>
-          </div>
-          <div>
-            <ContactForm />
-          </div>
-        </div>
-      </Section>
+      <ExhibitionSection
+        title={currentExhibition.title}
+        artists={currentExhibition.artists}
+        dates={currentExhibition.dates}
+        image={currentExhibition.image}
+      />
+      <ProgrammeSection
+        title={currentProgramme.title}
+        description={currentProgramme.description}
+        menuItems={currentProgramme.menuItems}
+        backgroundImage={currentProgramme.backgroundImage}
+      />
+      <VisitSection
+        title={visit.title}
+        openingTitle={visit.openingTitle}
+        openingNote={visit.openingNote}
+        emailLabel={visit.emailLabel}
+        email={visit.email}
+        socialLabel={visit.socialLabel}
+        social={visit.social}
+        address={visit.address}
+        image={visit.image}
+      />
+
+      <ContactStayInTouch
+        title={contact.title}
+        subtitle={contact.subtitle}
+        backgroundImage={contact.backgroundImage}
+      />
       <Footer />
     </>
   );

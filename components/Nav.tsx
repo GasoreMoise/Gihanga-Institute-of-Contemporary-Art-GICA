@@ -10,12 +10,11 @@ export default function Nav() {
   const locale = useLocale();
 
   const navItems = [
-    // Temporarily disabled for landing page only
-    // { href: `/${locale}#about`, label: 'About' },
-    // { href: `/${locale}#exhibitions`, label: 'Exhibitions' },
-    // { href: `/${locale}#programme`, label: 'Programme' },
-    // { href: `/${locale}#visit`, label: 'Visit' },
-    // { href: `/${locale}#contact`, label: 'Contact' }
+    { href: `/${locale}#about` as const, label: 'About' },
+    { href: `/${locale}#exhibitions` as const, label: 'Exhibitions' },
+    { href: `/${locale}/programme` as const, label: 'Programme' },
+    { href: `/${locale}/visit` as const, label: 'Visit' },
+    { href: `/${locale}#contact` as const, label: 'Contact' }
   ];
 
   return (

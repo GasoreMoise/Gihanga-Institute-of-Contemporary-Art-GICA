@@ -18,9 +18,10 @@ export default function WelcomeSection() {
           src="/images/welcome-background.jpg" // You'll upload this
           alt="GICA Welcome - Interior space with modern architecture"
           fill
-          priority
+          priority={false}
+          loading="lazy"
           className="object-cover"
-          quality={90}
+          quality={75}
         />
       </div>
       
