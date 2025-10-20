@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { useLocale } from 'next-intl';
 
 export default function Hero({
   title,
@@ -14,9 +16,15 @@ export default function Hero({
   image?: { src: string; width: number; height: number; blurDataURL?: string };
 }) {
   const [isEnglish, setIsEnglish] = useState(true);
-  
-  const toggleLanguage = () => {
-    setIsEnglish(!isEnglish);
+  const router = useRouter();
+  const pathname = usePathname();
+  const locale = useLocale();
+
+  const switchLocale = (newLocale: string) => {
+    if (!pathname) return;
+    const segments = pathname.split('/');
+    segments[1] = newLocale;
+    router.push(segments.join('/'));
   };
   return (
     <section className="relative h-screen w-full overflow-hidden">
@@ -61,7 +69,7 @@ export default function Hero({
                 alt="GICA Logo"
                 width={64}
                 height={64}
-                className="w-24 h-24"
+                className="w-28 h-28"
                 initial={{ scale: 0.8 }}
                 animate={{ rotate: 0, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.4, type: "spring", stiffness: 100 }}
@@ -72,21 +80,25 @@ export default function Hero({
           
           {/* Navigation */}
           <motion.div 
-            className="flex items-center space-x-6 mt-5"
+            className="flex items-center space-x-20 mt-5"
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
             <motion.button 
-              className="text-white text-lg font-sabon font-normal cursor-pointer hover:text-gray-300 transition-colors"
+              className="text-white text-xl font-sabon font-normal cursor-pointer hover:text-gray-300 transition-colors"
               whileHover={{ scale: 1.1, color: "#f3f4f6" }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              onClick={toggleLanguage}
+              onClick={() => {
+                const next = locale === 'en' ? 'rw' : 'en';
+                setIsEnglish(next === 'en');
+                switchLocale(next);
+              }}
             >
-              <span className={isEnglish ? 'underline' : ''}>EN</span>
+              <span className={locale === 'en' ? 'underline' : ''}>EN</span>
               <span className="mx-1">/</span>
-              <span className={!isEnglish ? 'underline' : ''}>KIN</span>
+              <span className={locale === 'rw' ? 'underline' : ''}>KIN</span>
             </motion.button>
             <motion.button 
               className="text-white hover:text-gray-300 transition-colors"
@@ -97,7 +109,7 @@ export default function Hero({
               <img
                 src="/logos/navbar.svg"
                 alt="Navigation Menu"
-                className="w-10 h-10"
+                className="w-16 h-16"
               />
             </motion.button>
           </motion.div>
@@ -132,16 +144,17 @@ export default function Hero({
             
             {/* Tagline */}
             <motion.p 
-              className="text-white tracking-wider text-lg md:text-3xl font-sabon font-normal max-w-4xl leading-relaxed cursor-default"
+              className="text-white tracking-wider text-lg md:text-2xl lg:text-3xl font-sabon font-normal max-w-9xl leading-relaxed cursor-default"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.8, duration: 0.8 }}
               whileHover={{ scale: 1.02 }}
             >
-              {isEnglish 
-                ? (subtitle || "A living space for art, research and collective imagination")
-                : (subtitle || "Umunsi w'ubuzima bw'ubuhanzi, ubushakashatsi n'ibitekerezo by'umuryango")
-              }
+              {title 
+                || (locale === 'en'
+                      ? (subtitle || "A living space for art, research and collective imagination")
+                      : (subtitle || "Umunsi w'ubuzima bw'ubuhanzi, ubushakashatsi n'ibitekerezo by'umuryango")
+                   )}
             </motion.p>
           </motion.div>
         </div>

@@ -1,15 +1,21 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
+
 export default function Footer() {
+  const t = useTranslations('footer');
+  
   return (
     <footer className="bg-[#0f2430] text-white">
       <div className="mx-auto max-w-7xl px-8 py-16 grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
         {/* Left column */}
         <nav className="space-y-4 ml-16">
-          <h3 className="font-sabon text-lg">Home</h3>
+          <h3 className="font-sabon text-lg">{t('home')}</h3>
           <ul className="space-y-3 text-white/80 text-sm font-sabon">
-            <li><a href="#about" className="hover:opacity-80">About</a></li>
-            <li><a href="#programme" className="hover:opacity-80">Programme</a></li>
-            <li><a href="#visit" className="hover:opacity-80">Visit Us</a></li>
-            <li><a href="#contact" className="hover:opacity-80">Contact</a></li>
+            <li><a href="#about" className="hover:opacity-80">{t('about')}</a></li>
+            <li><a href="#programme" className="hover:opacity-80">{t('programme')}</a></li>
+            <li><a href="#visit" className="hover:opacity-80">{t('visit')}</a></li>
+            <li><a href="#contact" className="hover:opacity-80">{t('contact')}</a></li>
           </ul>
         </nav>
 
@@ -36,15 +42,15 @@ export default function Footer() {
 
         {/* Right column */}
         <nav className="space-y-4 md:text-right md:ml-auto mr-16">
-          <h3 className="font-sabon text-lg">Programme</h3>
+          <h3 className="font-sabon text-lg">{t('programme')}</h3>
           <ul className="space-y-3 text-white/80 text-sm font-sabon">
             <li><a href="#" className="hover:opacity-80">Library</a></li>
-            <li><a href="#exhibitions" className="hover:opacity-80">Exhibitions</a></li>
-            <li><a href="#" className="hover:opacity-80">Screenings</a></li>
-            <li><a href="#" className="hover:opacity-80">Performances</a></li>
-            <li><a href="#" className="hover:opacity-80">Events</a></li>
-            <li><a href="#" className="hover:opacity-80">Talks</a></li>
-            <li><a href="#" className="hover:opacity-80">Workshops</a></li>
+            <li><a href="#exhibitions" className="hover:opacity-80">{t('exhibitions')}</a></li>
+            <li><a href="#" className="hover:opacity-80">{t('screenings')}</a></li>
+            <li><a href="#" className="hover:opacity-80">{t('performances')}</a></li>
+            <li><a href="#" className="hover:opacity-80">{t('events')}</a></li>
+            <li><a href="#" className="hover:opacity-80">{t('talks')}</a></li>
+            <li><a href="#" className="hover:opacity-80">{t('workshops')}</a></li>
           </ul>
         </nav>
       </div>

@@ -15,7 +15,20 @@ export const visitData = {
   }
 };
 
-export async function getVisitData() {
+export async function getVisitData(locale: string = 'en') {
+  if (locale === 'rw') {
+    return {
+      title: 'Dusure',
+      openingTitle: 'Amasaha yo gufungura',
+      openingNote: 'Turafungura vuba',
+      emailLabel: 'Imeli',
+      email: visitData.email, // same
+      socialLabel: 'Imbuga nkoranyambaga',
+      social: visitData.social, // same
+      address: 'KN 14 ST 28, Kimihurura, Kigali, Rwanda',
+      image: visitData.image
+    };
+  }
   return visitData;
 }
 

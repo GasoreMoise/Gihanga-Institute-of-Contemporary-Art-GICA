@@ -73,7 +73,7 @@ export default function VisitSection({
                 <div>
                   <p className="mb-1">{emailLabel}</p>
                   <p className="opacity-80">
-                    <a href={`mailto:${email}`} className="underline hover:opacity-80">
+                    <a href={`mailto:${email}`} className="hover:opacity-80 cursor-pointer">
                       {email}
                     </a>
                   </p>
@@ -85,7 +85,7 @@ export default function VisitSection({
                       href={`https://instagram.com/${instagramHandle}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="underline hover:opacity-80"
+                      className="hover:opacity-80 cursor-pointer"
                     >
                       {social}
                     </a>

@@ -12,6 +12,14 @@ export const currentExhibition = {
 };
 
 // In a real app, this would come from your CMS
-export async function getCurrentExhibition() {
+export async function getCurrentExhibition(locale: string = 'en') {
+  if (locale === 'rw') {
+    return {
+      title: "A bird shall carry the voice", // Same title in both languages
+      artists: "Saana Gateja, Francis Offman, Kaneza Schaal, Cedric Mizero, Christian Nyampeta, Innocent Nkurunziza, Feline Ntabagena",
+      dates: "19 Ukuboza - 19 Werurwe 2025",
+      image: currentExhibition.image
+    };
+  }
   return currentExhibition;
 }

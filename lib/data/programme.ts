@@ -19,6 +19,20 @@ export const currentProgramme = {
 };
 
 // In a real app, this would come from your CMS
-export async function getCurrentProgramme() {
+export async function getCurrentProgramme(locale: string = 'en') {
+  if (locale === 'rw') {
+    return {
+      title: 'Gahunda',
+      description: currentProgramme.description, // not specified differently
+      menuItems: [
+        { label: 'Isomero' },
+        { label: 'Imurika' },
+        { label: 'Imikino ya Gihanga' },
+        { label: 'Iyerekana Mashusho' },
+        { label: 'Imurikabikorwa' }
+      ],
+      backgroundImage: currentProgramme.backgroundImage
+    };
+  }
   return currentProgramme;
 }

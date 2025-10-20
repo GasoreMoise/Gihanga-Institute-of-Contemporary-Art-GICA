@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 interface ExhibitionSectionProps {
   title: string;
@@ -21,6 +22,7 @@ export default function ExhibitionSection({
   dates,
   image
 }: ExhibitionSectionProps) {
+  const t = useTranslations('landing');
 
   return (
     <motion.section 
@@ -53,7 +55,7 @@ export default function ExhibitionSection({
             transition={{ duration: 0.8, delay: 0.4 }}
             viewport={{ once: true }}
           >
-            Selected artists: {artists}
+            {t('exhibitions.selectedArtists')}: {artists}
           </motion.p>
           
           {/* Exhibition Dates */}
@@ -78,7 +80,7 @@ export default function ExhibitionSection({
             whileTap={{ scale: 0.95 }}
             onClick={() => console.log('Learn more clicked')}
           >
-            Learn More
+            {t('exhibitions.learnMore')}
           </motion.button>
         </motion.div>
       </div>

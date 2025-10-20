@@ -8,7 +8,14 @@ export const contactContent = {
   }
 };
 
-export async function getContactContent() {
+export async function getContactContent(locale: string = 'en') {
+  if (locale === 'rw') {
+    return {
+      title: 'Twandikire',
+      subtitle: 'Ku kibazo cyangwa icyifuzo icyo ari cyo cyose, watwandikira',
+      backgroundImage: contactContent.backgroundImage
+    };
+  }
   return contactContent;
 }
 

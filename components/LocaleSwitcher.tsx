@@ -34,7 +34,7 @@ export default function LocaleSwitcher() {
             : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
         }`}
       >
-        RW
+        KIN
       </button>
     </div>
   );

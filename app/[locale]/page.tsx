@@ -1,9 +1,5 @@
 import Hero from '@/components/Hero';
-import Section from '@/components/Section';
-import Prose from '@/components/Prose';
-import ImageSmart from '@/components/ImageSmart';
 import Footer from '@/components/Footer';
-import ContactForm from '@/components/ContactForm';
 import AboutSection from '@/components/AboutSection';
 import WelcomeSection from '@/components/WelcomeSection';
 import ExhibitionSection from '@/components/ExhibitionSection';
@@ -14,18 +10,17 @@ import { getCurrentExhibition } from '@/lib/data/exhibitions';
 import { getCurrentProgramme } from '@/lib/data/programme';
 import { getVisitData } from '@/lib/data/visit';
 import { getContactContent } from '@/lib/data/contact';
-// import { getLandingContent } from '@/lib/queries';
-// import { createClient } from '@/lib/sanity';
 import { getTranslations } from 'next-intl/server';
+import { headers } from 'next/headers';
 
 export default async function Page() {
   const t = await getTranslations('landing');
-  const currentExhibition = await getCurrentExhibition();
-  const currentProgramme = await getCurrentProgramme();
-  const visit = await getVisitData();
-  const contact = await getContactContent();
-  // const client = createClient();
-  // const data = await getLandingContent(client);
+  const h = headers();
+  const locale = h.get('x-next-intl-locale') || 'en';
+  const currentExhibition = await getCurrentExhibition(locale);
+  const currentProgramme = await getCurrentProgramme(locale);
+  const visit = await getVisitData(locale);
+  const contact = await getContactContent(locale);
 
   return (
     <>

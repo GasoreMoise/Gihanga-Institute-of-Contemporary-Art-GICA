@@ -2,8 +2,11 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 export default function WelcomeSection() {
+  const t = useTranslations('landing');
+  
   return (
     <motion.section 
       className="relative h-screen w-full overflow-hidden"
@@ -32,7 +35,7 @@ export default function WelcomeSection() {
       <div className="relative z-10 h-full flex flex-col items-center justify-center">
         {/* Logo - Centered at top */}
         <motion.div 
-          className="absolute top-8 left-100 transform -translate-x-1/2"
+          className="absolute top-20 left-100 transform -translate-x-1/2"
           initial={{ opacity: 0, y: -30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1 }}
@@ -53,7 +56,7 @@ export default function WelcomeSection() {
           transition={{ duration: 1, delay: 0.3 }}
           viewport={{ once: true }}
         >
-          Welcome
+          {t('welcome.title')}
         </motion.h2>
         
         {/* Opening Date - Positioned lower */}
@@ -64,9 +67,9 @@ export default function WelcomeSection() {
           transition={{ duration: 0.8, delay: 0.6 }}
           viewport={{ once: true }}
         >
-          <div className="border border-white/60 px-8 py-4">
+          <div className="border border-white/60 px-6 py-3">
             <p className="text-white text-lg md:text-xl font-sabon font-normal text-center">
-              Opening Winter 2025
+              {t('welcome.subtitle')}
             </p>
           </div>
         </motion.div>

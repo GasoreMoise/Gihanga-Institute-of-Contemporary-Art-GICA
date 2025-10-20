@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import ContactForm from './ContactForm';
+import { useTranslations } from 'next-intl';
 
 interface ContactStayInTouchProps {
   title: string;
@@ -15,6 +15,8 @@ export default function ContactStayInTouch({
   subtitle,
   backgroundImage
 }: ContactStayInTouchProps) {
+  const t = useTranslations('landing');
+  
   return (
     <section id="contact" className="relative w-full min-h-screen overflow-hidden">
       {/* Background */}
@@ -55,19 +57,19 @@ export default function ContactStayInTouch({
         <div className="backdrop-blur-[1px]">
           <form className="space-y-10 w-[620px] max-w-full mx-auto">
             <div>
-              <label className="block text-white font-sabon text-sm mb-2">Name</label>
+              <label className="block text-white font-sabon text-sm mb-2">{t('contact.name')}</label>
               <input className="w-[620px] max-w-full bg-transparent text-white border-0 border-b border-white/70 rounded-none focus:outline-none focus:ring-0 focus:border-white/90 py-2" />
             </div>
             <div>
-              <label className="block text-white font-sabon text-sm mb-2">Email</label>
+              <label className="block text-white font-sabon text-sm mb-2">{t('contact.email')}</label>
               <input className="w-[620px] max-w-full bg-transparent text-white border-0 border-b border-white/70 rounded-none focus:outline-none focus:ring-0 focus:border-white/90 py-2" />
             </div>
             <div>
-              <label className="block text-white font-sabon text-sm mb-2">Message</label>
+              <label className="block text-white font-sabon text-sm mb-2">{t('contact.message')}</label>
               <textarea rows={4} className="w-[620px] max-w-full bg-transparent text-white border-0 border-b border-white/70 rounded-none focus:outline-none focus:ring-0 focus:border-white/90 py-2 resize-none" />
             </div>
             <div className="flex justify-center pt-2">
-              <button type="button" className="border border-white text-white px-10 py-2 font-sabon hover:bg-white hover:text-black transition">Send</button>
+              <button type="button" className="border border-white text-white px-10 py-2 font-sabon hover:bg-white hover:text-black transition">{t('contact.send')}</button>
             </div>
           </form>
         </div>
