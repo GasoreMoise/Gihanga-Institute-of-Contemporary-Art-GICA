@@ -47,11 +47,11 @@ export default function ProgrammeSection({
       <div className="absolute inset-0 bg-black/40" />
       
       {/* Content Container - 2 columns: left title, right vertical menu */}
-      <div className="relative z-10 min-h-screen grid grid-cols-1 md:grid-cols-2 gap-8 px-8 md:px-12 lg:px-16 py-12 md:py-16">
+      <div className="relative z-10 min-h-screen grid grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-8 lg:px-16 py-12 md:py-16">
         {/* Left: Title */}
-        <div className="flex items-center">
+        <div className="flex items-center justify-center md:justify-start">
           <motion.h2 
-            className="text-white text-3xl md:text-4xl lg:text-5xl font-sabon font-normal"
+            className="text-white text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-sabon font-normal text-center md:text-left"
             initial={{ opacity: 0, y: -20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -61,9 +61,9 @@ export default function ProgrammeSection({
           </motion.h2>
         </div>
         {/* Right: Vertical Menu */}
-        <div className="flex items-center md:justify-start">
+        <div className="flex items-center justify-center md:justify-start">
           <motion.ul 
-            className="space-y-20 md:ml-40"
+            className="space-y-8 md:space-y-12 lg:space-y-20 text-center md:text-left md:ml-40"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
@@ -71,7 +71,7 @@ export default function ProgrammeSection({
           >
             {menuItems.map((item, idx) => (
               <li key={idx}>
-                <button className="text-white text-xl md:text-lg lg:text-xl font-sabon hover:opacity-80 transition-opacity">
+                <button className="text-white text-lg md:text-xl lg:text-xl font-sabon hover:opacity-80 transition-opacity">
                   {item.label}
                 </button>
               </li>

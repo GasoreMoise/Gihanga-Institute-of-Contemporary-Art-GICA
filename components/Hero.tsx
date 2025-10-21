@@ -24,7 +24,7 @@ export default function Hero({
     if (!pathname) return;
     const segments = pathname.split('/');
     segments[1] = newLocale;
-    router.push(segments.join('/'));
+    router.push(segments.join('/') as any);
   };
   return (
     <section className="relative h-screen w-full overflow-hidden">
@@ -51,7 +51,7 @@ export default function Hero({
       <div className="relative z-10 h-full flex flex-col">
         
         {/* Header with Logo and Navigation */}
-        <header className="flex justify-between items-start px-10 md:px-12 py-5 md:py-7">
+        <header className="flex justify-between items-start px-6 md:px-10 lg:px-12 py-4 md:py-5 lg:py-7">
           {/* Logo Section */}
           <motion.div 
             className="flex flex-col"
@@ -69,7 +69,7 @@ export default function Hero({
                 alt="GICA Logo"
                 width={64}
                 height={64}
-                className="w-28 h-28"
+                className="w-16 h-16 md:w-20 md:h-20 lg:w-28 lg:h-28"
                 initial={{ scale: 0.8 }}
                 animate={{ rotate: 0, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.4, type: "spring", stiffness: 100 }}
@@ -80,13 +80,13 @@ export default function Hero({
           
           {/* Navigation */}
           <motion.div 
-            className="flex items-center space-x-20 mt-5"
+            className="flex items-center space-x-8 md:space-x-12 lg:space-x-20 mt-2 md:mt-3 lg:mt-5"
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
             <motion.button 
-              className="text-white text-xl font-sabon font-normal cursor-pointer hover:text-gray-300 transition-colors"
+              className="text-white text-lg md:text-xl font-sabon font-normal cursor-pointer hover:text-gray-300 transition-colors"
               whileHover={{ scale: 1.1, color: "#f3f4f6" }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
@@ -109,30 +109,30 @@ export default function Hero({
               <img
                 src="/logos/navbar.svg"
                 alt="Navigation Menu"
-                className="w-16 h-16"
+                className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16"
               />
             </motion.button>
           </motion.div>
         </header>
         
         {/* Bottom Section with Tagline */}
-        <div className="flex-1 flex items-end pb-10 px-6 md:px-8">
+        <div className="flex-1 flex items-end pb-6 md:pb-8 lg:pb-10 px-4 md:px-6 lg:px-8">
           <motion.div 
-            className="flex items-center space-x-4"
+            className="flex flex-col md:flex-row items-center md:items-end space-y-4 md:space-y-0 md:space-x-4 w-full"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
             {/* Scroll indicator arrow */}
             <motion.div
-              className="flex-shrink-0 cursor-pointer"
+              className="flex-shrink-0 cursor-pointer order-2 md:order-1"
               animate={{ y: [0, 4, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
               whileHover={{ scale: 1.2, y: 0 }}
               whileTap={{ scale: 0.9 }}
             >
               <motion.svg 
-                className="w-5 h-5 text-white" 
+                className="w-4 h-4 md:w-5 md:h-5 text-white" 
                 fill="currentColor" 
                 viewBox="0 0 20 20"
                 whileHover={{ rotate: 180 }}
@@ -144,7 +144,7 @@ export default function Hero({
             
             {/* Tagline */}
             <motion.p 
-              className="text-white tracking-wider text-lg md:text-2xl lg:text-3xl font-sabon font-normal max-w-9xl leading-relaxed cursor-default"
+              className="text-white tracking-wider text-base md:text-lg lg:text-2xl xl:text-3xl font-sabon font-normal max-w-full md:max-w-4xl lg:max-w-6xl xl:max-w-9xl leading-relaxed cursor-default text-center md:text-left order-1 md:order-2"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.8, duration: 0.8 }}

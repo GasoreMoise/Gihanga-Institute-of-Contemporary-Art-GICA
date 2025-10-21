@@ -9,7 +9,7 @@ export default function WelcomeSection() {
   
   return (
     <motion.section 
-      className="relative h-screen w-full overflow-hidden"
+      className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center p-6"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
@@ -31,11 +31,11 @@ export default function WelcomeSection() {
       {/* Dark overlay for better text readability */}
       <div className="absolute inset-0 bg-black/30" />
       
-      {/* Content Container */}
-      <div className="relative z-10 h-full flex flex-col items-center justify-center">
+      {/* Content Container - Now a flex column for vertical stacking */}
+      <div className="relative z-10 flex flex-col items-center justify-center text-center space-y-28 md:space-y-40">
         {/* Logo - Centered at top */}
         <motion.div 
-          className="absolute top-20 left-100 transform -translate-x-1/2"
+          className="flex flex-col items-center"
           initial={{ opacity: 0, y: -30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1 }}
@@ -50,7 +50,7 @@ export default function WelcomeSection() {
         
         {/* Welcome Text - Perfectly centered */}
         <motion.h2 
-          className="text-white text-5xl md:text-7xl font-sabon font-normal text-center"
+          className="text-white text-4xl md:text-6xl lg:text-7xl font-sabon font-normal"
           initial={{ opacity: 0, y: -50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.3 }}
@@ -61,14 +61,14 @@ export default function WelcomeSection() {
         
         {/* Opening Date - Positioned lower */}
         <motion.div 
-          className="absolute bottom-20 transform -translate-x-1/2"
+          className="flex flex-col items-center"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
           viewport={{ once: true }}
         >
-          <div className="border border-white/60 px-6 py-3">
-            <p className="text-white text-lg md:text-xl font-sabon font-normal text-center">
+          <div className="border border-white/60 px-4 py-2 md:px-6 md:py-3">
+            <p className="text-white text-lg md:text-xl font-sabon font-normal">
               {t('welcome.subtitle')}
             </p>
           </div>
