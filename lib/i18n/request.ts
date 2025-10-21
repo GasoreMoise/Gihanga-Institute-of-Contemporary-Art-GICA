@@ -1,12 +1,20 @@
-import { createTranslator } from 'next-intl';
-import { headers } from 'next/headers';
-import { defaultLocale } from './config';
+import { notFound } from 'next/navigation';
+import { getRequestConfig } from 'next-intl/server';
 
-export async function getTranslations(namespace?: string) {
-  const h = headers();
-  const locale = h.get('x-next-intl-locale') || defaultLocale;
-  const messages = (await import(`./messages/${locale}.json`)).default;
-  return createTranslator({ locale, messages, namespace });
-}
+// Can be imported from a shared config
+const locales = ['en', 'rw'];
 
+export default getRequestConfig(async ({ requestLocale }) => {
+  // This typically corresponds to the `[locale]` segment
+  let locale = await requestLocale;
 
+  // Ensure that a valid locale is used
+  if (!locale || !locales.includes(locale as any)) {
+    locale = 'en';
+  }
+
+  return {
+    locale,
+    messages: (await import(`./messages/${locale}.json`)).default
+  };
+});
