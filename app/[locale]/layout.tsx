@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.gica.art'),
   title: {
     default: 'GICA',
-    template: '%s | GICA'
+    template: '%s | GICA',
   },
   description:
     'A living space for art, research, and collective imagination in Kigali, Rwanda.',
@@ -47,6 +47,8 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
+        {/* Favicon */}
+        <link rel="icon" href="/logos/logo1.svg" type="image/svg+xml" />
         {/* Preload hero image for fastest first paint */}
         <link
           rel="preload"
