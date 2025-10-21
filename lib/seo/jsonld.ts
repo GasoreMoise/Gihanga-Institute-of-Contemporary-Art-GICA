@@ -3,9 +3,9 @@ export function orgJsonLd() {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'Gihanga Institute of Contemporary Art',
-    url: 'https://www.gica.rw',
-    logo: 'https://www.gica.rw/og/og-default.jpg',
-    sameAs: ['https://instagram.com/gica.rw']
+    url: 'https://www.gica.art',
+    logo: 'https://www.gica.art/og/og-default.jpg',
+    sameAs: ['https://instagram.com/gica.kigali']
   };
 }
 

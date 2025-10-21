@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useState } from 'react';
 
 interface ProgrammeSectionProps {
   title: string;
@@ -21,6 +22,7 @@ export default function ProgrammeSection({
   menuItems,
   backgroundImage
 }: ProgrammeSectionProps) {
+  const [bgLoaded, setBgLoaded] = useState(false);
   return (
     <motion.section 
       id="programme"
@@ -36,15 +38,14 @@ export default function ProgrammeSection({
           src={backgroundImage.src}
           alt={backgroundImage.alt}
           fill
-          priority={false}
-          loading="lazy"
-          className="object-cover"
-          quality={75}
+          placeholder="blur"
+          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+          onLoad={() => setBgLoaded(true)}
         />
       </div>
       
       {/* Dark overlay for better text readability */}
-      <div className="absolute inset-0 bg-black/40" />
+      <div className={`absolute inset-0 ${bgLoaded ? 'bg-black/40' : 'bg-black/0'}`} />
       
       {/* Content Container - 2 columns: left title, right vertical menu */}
       <div className="relative z-10 min-h-screen grid grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-8 lg:px-16 py-12 md:py-16">

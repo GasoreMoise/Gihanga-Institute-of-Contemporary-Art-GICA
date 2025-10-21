@@ -10,11 +10,11 @@ export default function Nav() {
   const locale = useLocale();
 
   const navItems = [
-    { href: `/${locale}#about` as const, label: 'About' },
-    { href: `/${locale}#exhibitions` as const, label: 'Exhibitions' },
-    { href: `/${locale}/programme` as const, label: 'Programme' },
-    { href: `/${locale}/visit` as const, label: 'Visit' },
-    { href: `/${locale}#contact` as const, label: 'Contact' }
+    { href: `/${locale}#about` as any, label: 'About' },
+    { href: `/${locale}#exhibitions` as any, label: 'Exhibitions' },
+    { href: `/${locale}/programme` as any, label: 'Programme' },
+    { href: `/${locale}/visit` as any, label: 'Visit' },
+    { href: `/${locale}#contact` as any, label: 'Contact' }
   ];
 
   return (

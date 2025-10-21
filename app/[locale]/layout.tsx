@@ -46,6 +46,17 @@ export default async function RootLayout({
   const messages = await getMessages();
   return (
     <html lang={locale} suppressHydrationWarning>
+      <head>
+        {/* Preload hero image for fastest first paint */}
+        <link
+          rel="preload"
+          as="image"
+          href="/images/hero-background.webp"
+          imageSrcSet="/images/hero-background.JPG 1920w"
+          imageSizes="100vw"
+          type="image/jpeg"
+        />
+      </head>
       <body className="min-h-screen bg-white text-neutral-900 antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           {/* <Nav /> */}

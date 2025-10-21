@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useState } from 'react';
 
 interface VisitSectionProps {
   title: string;
@@ -26,6 +27,7 @@ export default function VisitSection({
   address,
   image
 }: VisitSectionProps) {
+  const [bgLoaded, setBgLoaded] = useState(false);
   const instagramHandle = social?.trim().replace(/^@/, '');
   return (
     <section id="visit" className="w-full bg-white">
@@ -46,7 +48,10 @@ export default function VisitSection({
               sizes="(max-width: 768px) 100vw, 52vw"
               className="object-cover"
               loading="lazy"
-              quality={80}
+              quality={60}
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+              onLoad={() => setBgLoaded(true)}
             />
           </motion.div>
 

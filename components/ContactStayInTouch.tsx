@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
 interface ContactStayInTouchProps {
@@ -16,6 +17,7 @@ export default function ContactStayInTouch({
   backgroundImage
 }: ContactStayInTouchProps) {
   const t = useTranslations('landing');
+  const [bgLoaded, setBgLoaded] = useState(false);
   
   return (
     <section id="contact" className="relative w-full min-h-screen overflow-hidden">
@@ -27,9 +29,13 @@ export default function ContactStayInTouch({
           fill
           sizes="100vw"
           className="object-cover"
-          priority={false}
+          loading="lazy"
+          quality={60}
+          placeholder="blur"
+          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+          onLoad={() => setBgLoaded(true)}
         />
-        <div className="absolute inset-0 bg-black/50" />
+        <div className={`absolute inset-0 ${bgLoaded ? 'bg-black/50' : 'bg-black/0'}`} />
       </div>
 
       {/* Content */}

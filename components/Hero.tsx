@@ -19,6 +19,7 @@ export default function Hero({
   const router = useRouter();
   const pathname = usePathname();
   const locale = useLocale();
+  const [bgLoaded, setBgLoaded] = useState(false);
 
   const switchLocale = (newLocale: string) => {
     if (!pathname) return;
@@ -36,16 +37,18 @@ export default function Hero({
           width={image.width}
           height={image.height}
           priority
+          fetchPriority="high"
           placeholder={image.blurDataURL ? 'blur' : 'empty'}
           blurDataURL={image.blurDataURL}
           sizes="100vw"
-          quality={85}
+          quality={75}
           className="absolute inset-0 w-full h-full object-cover"
+          onLoad={() => setBgLoaded(true)}
         />
       )}
       
       {/* Dark overlay for better text readability */}
-      <div className="absolute inset-0 bg-black/40" />
+      <div className={`absolute inset-0 ${bgLoaded ? 'bg-black/40' : 'bg-black/0'}`} />
       
       {/* Content Container */}
       <div className="relative z-10 h-full flex flex-col">

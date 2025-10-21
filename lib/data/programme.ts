@@ -11,7 +11,7 @@ export const currentProgramme = {
     { label: "Events & Workshops" }
   ],
   backgroundImage: {
-    src: "/images/programme-background.jpg", // You'll upload this
+    src: "/images/programme-background.webp", // You'll upload this
     alt: "GICA Programme - Contemporary arts and cultural events",
     width: 1920,
     height: 1080

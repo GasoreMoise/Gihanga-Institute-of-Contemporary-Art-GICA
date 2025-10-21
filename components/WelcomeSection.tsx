@@ -18,7 +18,7 @@ export default function WelcomeSection() {
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
-          src="/images/welcome-background.jpg" // You'll upload this
+          src="/images/welcome-background.webp" // You'll upload this
           alt="GICA Welcome - Interior space with modern architecture"
           fill
           priority={false}
