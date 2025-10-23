@@ -54,9 +54,9 @@ export default async function RootLayout({
           rel="preload"
           as="image"
           href="/images/hero-background.webp"
-          imageSrcSet="/images/hero-background.JPG 1920w"
+          imageSrcSet="/images/hero-background.webp 1920w"
           imageSizes="100vw"
-          type="image/jpeg"
+          type="image/webp"
         />
       </head>
       <body className="min-h-screen bg-white text-neutral-900 antialiased">
