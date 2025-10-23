@@ -50,7 +50,7 @@ export default function ProgrammeSection({
       <div className={`absolute inset-0 ${bgLoaded ? 'bg-black/40' : 'bg-black/0'}`} />
       
       {/* Content Container - 2 columns: left title, right vertical menu */}
-      <div className="relative z-10 min-h-screen grid grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-8 lg:px-16 py-12 md:py-16">
+      <div className="relative z-10 min-h-screen grid grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-8 lg:px-16 py-4 md:py-16">
         {/* Left: Title */}
         <div className="flex items-center justify-center md:justify-start">
           <motion.h2 
