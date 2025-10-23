@@ -48,7 +48,7 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning>
       <head>
         {/* Favicon */}
-        <link rel="icon" href="/logos/logo1.svg" type="image/svg+xml" />
+        <link rel="icon" href="/logos/logo3.svg" type="image/svg+xml" />
         {/* Preload hero image for fastest first paint */}
         <link
           rel="preload"

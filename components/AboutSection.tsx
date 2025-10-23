@@ -15,7 +15,7 @@ export default function AboutSection() {
     >
       <div className="max-w-4xl mx-auto px-4 md:px-6 lg:px-8">
         <motion.h2 
-          className="text-white text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-sabon font-normal text-center mb-8 md:mb-12 lg:mb-16 xl:mb-28"
+          className="text-white text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-sabon font-normal text-center mb-8 md:mb-12 lg:mb-16 xl:mb-24"
           initial={{ opacity: 0, y: -30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
@@ -31,7 +31,7 @@ export default function AboutSection() {
           viewport={{ once: true }}
         >
           <motion.p 
-            className="text-white text-sm md:text-base lg:text-lg xl:text-xl font-sabon font-normal leading-relaxed text-center md:text-left"
+            className="text-white text-base md:text-lg lg:text-xl xl:text-2xl font-sabon font-normal leading-relaxed text-center md:text-left"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.6 }}

@@ -9,23 +9,45 @@ import { useLocale } from 'next-intl';
 export default function Hero({
   title,
   subtitle,
-  image
+  image,
+  programmeData
 }: {
   title: string;
   subtitle?: string;
   image?: { src: string; width: number; height: number; blurDataURL?: string };
+  programmeData?: {
+    title: string;
+    description: string;
+    menuItems: { label: string }[];
+    backgroundImage: {
+      src: string;
+      alt: string;
+      width: number;
+      height: number;
+    };
+  };
 }) {
   const [isEnglish, setIsEnglish] = useState(true);
+  const [isProgrammeOpen, setIsProgrammeOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const locale = useLocale();
   const [bgLoaded, setBgLoaded] = useState(false);
+
 
   const switchLocale = (newLocale: string) => {
     if (!pathname) return;
     const segments = pathname.split('/');
     segments[1] = newLocale;
     router.push(segments.join('/') as any);
+  };
+
+  const openProgramme = () => {
+    setIsProgrammeOpen(true);
+  };
+
+  const closeProgramme = () => {
+    setIsProgrammeOpen(false);
   };
   return (
     <section className="relative h-screen w-full overflow-hidden">
@@ -83,7 +105,7 @@ export default function Hero({
           
           {/* Navigation */}
           <motion.div 
-            className="flex items-center space-x-8 md:space-x-12 lg:space-x-20 mt-2 md:mt-3 lg:mt-5"
+            className="flex items-center space-x-8 md:space-x-12 lg:space-x-20 mt-2 md:mt-3 lg:mt-5 relative"
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
@@ -103,11 +125,14 @@ export default function Hero({
               <span className="mx-1">/</span>
               <span className={locale === 'rw' ? 'underline' : ''}>KIN</span>
             </motion.button>
+            
+            {/* Programme Navigation Button */}
             <motion.button 
               className="text-white hover:text-gray-300 transition-colors"
               whileHover={{ scale: 1.1, rotate: 5 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
+              onClick={openProgramme}
             >
               <img
                 src="/logos/navbar.svg"
@@ -162,6 +187,84 @@ export default function Hero({
           </motion.div>
         </div>
       </div>
+
+      {/* Programme Overlay - Full ProgrammeSection Layout */}
+      {programmeData && isProgrammeOpen && (
+        <div
+          className="fixed inset-0 z-50"
+          onClick={closeProgramme}
+        >
+          {/* Background Image */}
+          <div className="absolute inset-0">
+            <Image
+              src={programmeData.backgroundImage.src}
+              alt={programmeData.backgroundImage.alt}
+              fill
+              className="object-cover"
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+              quality={75}
+            />
+          </div>
+          
+          {/* Dark overlay for better text readability */}
+          <div className="absolute inset-0 bg-black/40" />
+          
+          {/* Content Container - Exact same as ProgrammeSection */}
+          <div 
+            className="relative z-5 min-h-screen grid grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-8 lg:px-16 py-12 md:py-16"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Left: Title */}
+            <div className="flex items-center justify-center md:justify-start">
+              <motion.h2 
+                className="text-white text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-sabon font-normal text-center md:text-left"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                {programmeData.title}
+              </motion.h2>
+            </div>
+            {/* Right: Vertical Menu */}
+            <div className="flex items-center justify-center md:justify-start">
+              <motion.ul 
+                className="space-y-8 md:space-y-12 lg:space-y-20 text-center md:text-left md:ml-40"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
+                {programmeData.menuItems.map((item, idx) => (
+                  <li key={idx}>
+                    <button 
+                      className="text-white text-lg md:text-xl lg:text-xl font-sabon hover:opacity-80 transition-opacity"
+                      onClick={closeProgramme}
+                    >
+                      {item.label}
+                    </button>
+                  </li>
+                ))}
+              </motion.ul>
+            </div>
+          </div>
+          
+          
+          {/* Close Button */}
+          <button
+            className="absolute top-6 right-6 z-50 text-white hover:text-gray-300 transition-colors p-2"
+            onClick={closeProgramme}
+          >
+            <svg 
+              className="w-8 h-8 md:w-10 md:h-10" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      )}
     </section>
   );
 }
