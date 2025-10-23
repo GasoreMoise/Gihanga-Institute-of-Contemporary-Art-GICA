@@ -27,12 +27,11 @@ export default function ContactStayInTouch({
           src={backgroundImage.src}
           alt={backgroundImage.alt}
           fill
-          sizes="100vw"
-          className="object-cover"
+          priority={false}
           loading="lazy"
-          quality={60}
-          placeholder="blur"
-          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+          className="object-cover"
+          quality={75}
+          sizes="100vw"
           onLoad={() => setBgLoaded(true)}
         />
         <div className={`absolute inset-0 ${bgLoaded ? 'bg-black/50' : 'bg-black/0'}`} />

@@ -3,7 +3,6 @@ import Footer from '@/components/Footer';
 import AboutSection from '@/components/AboutSection';
 import WelcomeSection from '@/components/WelcomeSection';
 import ExhibitionSection from '@/components/ExhibitionSection';
-import ProgrammeSection from '@/components/ProgrammeSection';
 import VisitSection from '@/components/VisitSection';
 import ContactStayInTouch from '@/components/ContactStayInTouch';
 import { getCurrentExhibition } from '@/lib/data/exhibitions';
@@ -33,6 +32,12 @@ export default async function Page() {
           height: 1080,
           blurDataURL: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k='
         }}
+        programmeData={{
+          title: currentProgramme.title,
+          description: currentProgramme.description,
+          menuItems: currentProgramme.menuItems,
+          backgroundImage: currentProgramme.backgroundImage
+        }}
       />
       <AboutSection />
       <WelcomeSection />
@@ -41,12 +46,6 @@ export default async function Page() {
         artists={currentExhibition.artists}
         dates={currentExhibition.dates}
         image={currentExhibition.image}
-      />
-      <ProgrammeSection
-        title={currentProgramme.title}
-        description={currentProgramme.description}
-        menuItems={currentProgramme.menuItems}
-        backgroundImage={currentProgramme.backgroundImage}
       />
       <VisitSection
         title={visit.title}

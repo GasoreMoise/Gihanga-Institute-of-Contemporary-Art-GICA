@@ -35,7 +35,7 @@ export default function VisitSection({
         <div className="flex flex-col md:flex-row items-start gap-16">
           {/* Left: Tall image */}
           <motion.div
-            className="relative w-full md:basis-[52%] md:flex-none h-[78vh] md:h-[82vh] lg:h-[85vh]"
+            className="relative w-full md:basis-[52%] md:flex-none h-[55vh] md:h-[82vh] lg:h-[85vh]"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -45,12 +45,11 @@ export default function VisitSection({
               src={image.src}
               alt={image.alt}
               fill
-              sizes="(max-width: 768px) 100vw, 52vw"
-              className="object-cover"
+              priority={false}
               loading="lazy"
-              quality={60}
-              placeholder="blur"
-              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+              className="object-cover"
+              quality={75}
+              sizes="(max-width: 768px) 100vw, 52vw"
               onLoad={() => setBgLoaded(true)}
             />
           </motion.div>
