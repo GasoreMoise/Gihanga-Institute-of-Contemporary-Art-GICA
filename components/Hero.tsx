@@ -139,11 +139,11 @@ export default function Hero({
               transition={{ duration: 0.3 }}
             >
               <motion.img
-                src="/logos/logo1.svg"
+                src="/logos/logo4.svg"
                 alt="GICA Logo"
                 width={64}
                 height={64}
-                className="w-16 h-16 md:w-20 md:h-20 lg:w-28 lg:h-28"
+                className="w-20 h-20 md:w-24 md:h-24 lg:w-32 lg:h-32"
                 initial={{ scale: 0.8 }}
                 animate={{ rotate: 0, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.4, type: "spring", stiffness: 100 }}
