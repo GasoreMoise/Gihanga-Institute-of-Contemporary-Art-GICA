@@ -6,7 +6,7 @@ export const visitData = {
   email: 'contact@gica.art',
   socialLabel: 'Social Media',
   social: '@gica.kigali',
-  address: 'KN 14 St 28, Kimihurura , Kigali , Rwanda',
+  address: 'KN 14 St 28, Kimihurura, Kigali, Rwanda',
   image: {
     src: '/images/visit-background.webp', // You will upload this
     alt: 'Exterior view of the institute',

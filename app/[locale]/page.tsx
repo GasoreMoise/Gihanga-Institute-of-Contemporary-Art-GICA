@@ -46,6 +46,7 @@ export default async function Page() {
         artists={currentExhibition.artists}
         dates={currentExhibition.dates}
         image={currentExhibition.image}
+        artworkCaption={currentExhibition.artworkCaption}
       />
       <VisitSection
         title={visit.title}

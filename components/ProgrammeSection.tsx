@@ -50,7 +50,7 @@ export default function ProgrammeSection({
       <div className={`absolute inset-0 ${bgLoaded ? 'bg-black/40' : 'bg-black/0'}`} />
       
       {/* Content Container - 2 columns: left title, right vertical menu */}
-      <div className="relative z-10 min-h-screen grid grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-8 lg:px-16 py-4 md:py-16">
+      <div className="relative z-10 min-h-screen grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 px-4 md:px-8 lg:px-16 py-2 md:py-16">
         {/* Left: Title */}
         <div className="flex items-center justify-center md:justify-start">
           <motion.h2 
@@ -66,7 +66,7 @@ export default function ProgrammeSection({
         {/* Right: Vertical Menu */}
         <div className="flex items-center justify-center md:justify-start">
           <motion.ul 
-            className="space-y-8 md:space-y-12 lg:space-y-20 text-center md:text-left md:ml-40"
+            className="space-y-4 md:space-y-12 lg:space-y-20 text-center md:text-left md:ml-40"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
