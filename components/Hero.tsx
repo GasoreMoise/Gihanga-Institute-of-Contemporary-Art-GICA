@@ -246,7 +246,7 @@ export default function Hero({
               
               {/* Main text */}
               <motion.div
-                className="relative z-10 text-white tracking-wider text-lg md:text-xl lg:text-2xl xl:text-3xl font-sabon font-normal max-w-full md:max-w-4xl lg:max-w-6xl xl:max-w-9xl leading-relaxed text-left md:text-left"
+                className="relative z-10 text-white tracking-wider text-xl md:text-xl lg:text-2xl xl:text-3xl font-sabon font-normal max-w-full md:max-w-4xl lg:max-w-6xl xl:max-w-9xl leading-relaxed text-left md:text-left"
                 animate={{
                   textShadow: isHovered 
                     ? "0 0 15px rgba(255, 255, 255, 0.4)"
