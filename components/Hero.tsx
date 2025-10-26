@@ -1,8 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useLocale } from 'next-intl';
 
@@ -33,7 +33,56 @@ export default function Hero({
   const pathname = usePathname();
   const locale = useLocale();
   const [bgLoaded, setBgLoaded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [displayText, setDisplayText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  
+  // Motion values for magnetic effect
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springX = useSpring(mouseX, { stiffness: 150, damping: 15 });
+  const springY = useSpring(mouseY, { stiffness: 150, damping: 15 });
+  
+  const taglineRef = useRef<HTMLDivElement>(null);
 
+  // Get the full tagline text
+  const fullText = title || (locale === 'en'
+    ? (subtitle || "A living space for art, research and collective imagination")
+    : (subtitle || "Umunsi w'ubuzima bw'ubuhanzi, ubushakashatsi n'ibitekerezo by'umuryango"));
+
+  // Typewriter effect
+  useEffect(() => {
+    if (currentIndex < fullText.length) {
+      const timeout = setTimeout(() => {
+        setDisplayText(prev => prev + fullText[currentIndex]);
+        setCurrentIndex(prev => prev + 1);
+      }, 50); // Adjust speed here
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, fullText]);
+
+  // Reset typewriter when locale changes
+  useEffect(() => {
+    setDisplayText('');
+    setCurrentIndex(0);
+  }, [locale]);
+
+  // Magnetic effect handler
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!taglineRef.current) return;
+    const rect = taglineRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    mouseX.set((e.clientX - centerX) * 0.1);
+    mouseY.set((e.clientY - centerY) * 0.1);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+    setIsHovered(false);
+  };
 
   const switchLocale = (newLocale: string) => {
     if (!pathname) return;
@@ -144,7 +193,7 @@ export default function Hero({
         </header>
         
         {/* Bottom Section with Tagline */}
-        <div className="flex-1 flex items-end pb-6 md:pb-8 lg:pb-10 px-4 md:px-6 lg:px-8">
+        <div className="flex-1 flex items-end pb-20 md:pb-10 lg:pb-14 px-4 md:px-6 lg:px-8">
           <motion.div 
             className="flex flex-col md:flex-row items-center md:items-end space-y-4 md:space-y-0 md:space-x-4 w-full"
             initial={{ opacity: 0, y: 30 }}
@@ -153,7 +202,7 @@ export default function Hero({
           >
             {/* Scroll indicator arrow */}
             <motion.div
-              className="flex-shrink-0 cursor-pointer order-2 md:order-1"
+              className="flex-shrink-0 cursor-pointer order-2 md:order-1 mt-4 md:mt-0"
               animate={{ y: [0, 4, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
               whileHover={{ scale: 1.2, y: 0 }}
@@ -170,20 +219,85 @@ export default function Hero({
               </motion.svg>
             </motion.div>
             
-            {/* Tagline */}
-            <motion.p 
-              className="text-white tracking-wider text-base md:text-lg lg:text-2xl xl:text-3xl font-sabon font-normal max-w-full md:max-w-4xl lg:max-w-6xl xl:max-w-9xl leading-relaxed cursor-default text-center md:text-left order-1 md:order-2"
+            {/* Interactive Tagline */}
+            <motion.div
+              ref={taglineRef}
+              className="relative cursor-pointer order-1 md:order-2"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.8, duration: 0.8 }}
-              whileHover={{ scale: 1.02 }}
+              onMouseMove={handleMouseMove}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={handleMouseLeave}
+              style={{
+                x: springX,
+                y: springY,
+              }}
             >
-              {title 
-                || (locale === 'en'
-                      ? (subtitle || "A living space for art, research and collective imagination")
-                      : (subtitle || "Umunsi w'ubuzima bw'ubuhanzi, ubushakashatsi n'ibitekerezo by'umuryango")
-                   )}
-            </motion.p>
+              {/* Subtle background glow effect */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-white/5 via-white/2 to-white/5 rounded-lg blur-lg"
+                animate={{
+                  opacity: isHovered ? 0.6 : 0,
+                  scale: isHovered ? 1.05 : 1,
+                }}
+                transition={{ duration: 0.4 }}
+              />
+              
+              {/* Main text */}
+              <motion.div
+                className="relative z-10 text-white tracking-wider text-lg md:text-xl lg:text-2xl xl:text-3xl font-sabon font-normal max-w-full md:max-w-4xl lg:max-w-6xl xl:max-w-9xl leading-relaxed text-left md:text-left"
+                animate={{
+                  textShadow: isHovered 
+                    ? "0 0 15px rgba(255, 255, 255, 0.4)"
+                    : "0 0 0px rgba(255, 255, 255, 0)",
+                  filter: isHovered ? "brightness(1.1)" : "brightness(1)",
+                }}
+                transition={{ duration: 0.3 }}
+              >
+                {/* Typewriter text with cursor */}
+                <span className="relative">
+                  {displayText}
+                  {currentIndex < fullText.length && (
+                    <motion.span
+                      className="inline-block w-0.5 h-6 md:h-8 bg-white ml-1"
+                      animate={{ opacity: [0, 1, 0] }}
+                      transition={{ duration: 1, repeat: Infinity }}
+                    />
+                  )}
+                </span>
+                
+                {/* Particle effects on hover */}
+                {isHovered && (
+                  <>
+                    {[...Array(6)].map((_, i) => (
+                      <motion.div
+                        key={i}
+                        className="absolute w-1 h-1 bg-white rounded-full"
+                        initial={{ 
+                          x: Math.random() * 200 - 100, 
+                          y: Math.random() * 100 - 50,
+                          opacity: 0,
+                          scale: 0
+                        }}
+                        animate={{ 
+                          x: Math.random() * 400 - 200,
+                          y: Math.random() * 200 - 100,
+                          opacity: [0, 1, 0],
+                          scale: [0, 1, 0]
+                        }}
+                        transition={{ 
+                          duration: 2,
+                          delay: i * 0.1,
+                          repeat: Infinity,
+                          repeatDelay: 1
+                        }}
+                      />
+                    ))}
+                  </>
+                )}
+              </motion.div>
+            </motion.div>
           </motion.div>
         </div>
       </div>
@@ -212,13 +326,13 @@ export default function Hero({
           
           {/* Content Container - Exact same as ProgrammeSection */}
           <div 
-            className="relative z-5 min-h-screen grid grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-8 lg:px-16 py-12 md:py-16"
+            className="relative z-5 min-h-screen grid grid-cols-1 md:grid-cols-2 gap-2 px-4 md:px-8 lg:px-16 py-24 md:py-16"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Left: Title */}
             <div className="flex items-center justify-center md:justify-start">
               <motion.h2 
-                className="text-white text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-sabon font-normal text-center md:text-left"
+                className="text-white text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-sabon font-normal text-center md:text-left -mt-40 md:mt-0"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -229,7 +343,7 @@ export default function Hero({
             {/* Right: Vertical Menu */}
             <div className="flex items-center justify-center md:justify-start">
               <motion.ul 
-                className="space-y-8 md:space-y-12 lg:space-y-20 text-center md:text-left md:ml-40"
+                className="space-y-8 md:space-y-12 lg:space-y-20 text-center md:text-left md:ml-40 -mt-72 md:mt-0"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}

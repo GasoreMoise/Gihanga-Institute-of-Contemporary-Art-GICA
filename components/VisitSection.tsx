@@ -35,7 +35,7 @@ export default function VisitSection({
         <div className="flex flex-col md:flex-row items-start gap-16">
           {/* Left: Tall image */}
           <motion.div
-            className="relative w-full md:basis-[52%] md:flex-none h-[55vh] md:h-[82vh] lg:h-[85vh]"
+            className="relative w-full md:basis-[52%] md:flex-none h-[45vh] md:h-[75vh] lg:h-[85vh]"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
