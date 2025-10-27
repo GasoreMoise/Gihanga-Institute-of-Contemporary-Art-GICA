@@ -63,8 +63,8 @@ export async function POST(request: NextRequest) {
     if (type === 'contact') {
       // Contact form submission
       const { data, error } = await resend.emails.send({
-        from: 'GICA Contact <onboarding@resend.dev>',
-        to: 'gasorenshuti34@gmail.com',
+        from: 'GICA Contact <contact@gica.art>',
+        to: 'contact@gica.art',
         subject: `Contact Form: ${name || 'Anonymous'}`,
         html: `
           <h2>New Contact Form Submission</h2>
@@ -88,8 +88,8 @@ export async function POST(request: NextRequest) {
     } else if (type === 'newsletter') {
       // Newsletter subscription
       const { data, error } = await resend.emails.send({
-        from: 'GICA Newsletter <onboarding@resend.dev>',
-        to: 'gasorenshuti34@gmail.com',
+        from: 'GICA Newsletter <contact@gica.art>',
+        to: 'contact@gica.art',
         subject: 'Newsletter Subscription',
         html: `
           <h2>New Newsletter Subscription</h2>
