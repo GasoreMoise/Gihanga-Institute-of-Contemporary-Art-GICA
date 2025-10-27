@@ -24,7 +24,9 @@
       "name": "Izina",
       "email": "Imeli", 
       "message": "Ubutumwa",
-      "send": "Ohereza"
+      "send": "Ohereza",
+      "newsletter": "Kwiyandikisha mu makuru yacu",
+      "newsletterSubscribe": "Kwiyandikisha"
     }
   },
   "exhibitions": {

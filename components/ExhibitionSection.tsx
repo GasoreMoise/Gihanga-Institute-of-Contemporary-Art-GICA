@@ -55,6 +55,17 @@ export default function ExhibitionSection({
           <h2 className="text-[#1A2B40] font-sabon text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-medium leading-tight text-center lg:text-left">
             {title}
           </h2>
+
+          {/* Exhibition Dates */}
+          <motion.p 
+            className="text-[#1A2B40] text-sm md:text-base font-sabon leading-relaxed text-center lg:text-left lg:ml-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            viewport={{ once: true }}
+          >
+            {dates}
+          </motion.p>
           
           {/* Selected Artists */}
           <motion.p 
@@ -67,23 +78,14 @@ export default function ExhibitionSection({
             {t('exhibitions.selectedArtists')}: {artists}
           </motion.p>
           
-          {/* Exhibition Dates */}
-          <motion.p 
-            className="text-[#1A2B40] text-sm md:text-base font-sabon leading-relaxed text-center lg:text-left lg:ml-20"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            viewport={{ once: true }}
-          >
-            {dates}
-          </motion.p>
+
           
 
         </motion.div>
       </div>
       
       {/* Right Section - Artwork */}
-      <div className="flex-1 md:max-w-[70%] lg:max-w-[55%] mr-0 md:ml-36 lg:mr-10 flex flex-col mt-12 md:mt-8 lg:mt-36">
+      <div className="flex-1 md:max-w-[70%] lg:max-w-[55%] mr-0 md:ml-36 lg:mr-10 flex flex-col -mt-10 md:mt-8 lg:mt-36">
         <motion.div
           className="w-full flex flex-col"
           initial={{ opacity: 0, x: 30 }}
@@ -107,7 +109,7 @@ export default function ExhibitionSection({
           {/* Artwork Caption - Below the image with #FAF6ED background */}
           {artworkCaption && (
             <motion.div
-              className="px-8 -py-2"
+              className="px-8 py-2"
               style={{ backgroundColor: '#FAF6ED' }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -116,7 +118,7 @@ export default function ExhibitionSection({
             >
               <p className="text-gray-500 text-sm md:text-sm font-sabon leading-relaxed">
                 <span className="text-gray-700 font-medium">
-                  {artworkCaption.artist}, {artworkCaption.title} {artworkCaption.year}.
+                  {artworkCaption.artist}, {artworkCaption.title}, {artworkCaption.year}.
                 </span>
                 <br />
                 {' '}Courtesy the artist and {artworkCaption.gallery}.

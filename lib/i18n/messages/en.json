@@ -24,7 +24,9 @@
       "name": "Name",
       "email": "Email",
       "message": "Message",
-      "send": "Send"
+      "send": "Send",
+      "newsletter": "Subscribe to our newsletter",
+      "newsletterSubscribe": "Subscribe"
     }
   },
   "exhibitions": {

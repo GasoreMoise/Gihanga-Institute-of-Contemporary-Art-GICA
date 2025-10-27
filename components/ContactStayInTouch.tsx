@@ -18,6 +18,7 @@ export default function ContactStayInTouch({
 }: ContactStayInTouchProps) {
   const t = useTranslations('landing');
   const [bgLoaded, setBgLoaded] = useState(false);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
   
   return (
     <section id="contact" className="relative w-full min-h-screen overflow-hidden">
@@ -77,6 +78,47 @@ export default function ContactStayInTouch({
               <button type="button" className="border border-white text-white px-10 py-2 font-sabon hover:bg-white hover:text-black transition">{t('contact.send')}</button>
             </div>
           </form>
+
+          {/* Newsletter Subscription */}
+          <div className="mt-20 flex flex-col items-center">
+            <motion.p
+              className="text-white font-sabon text-center text-xl md:text-2xl lg:text-3xl mb-12"
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true }}
+            >
+              {t('contact.newsletter')}
+            </motion.p>
+            <motion.div 
+              className="flex flex-row items-center gap-4 w-[620px] max-w-full"
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
+              <input 
+                type="email"
+                placeholder={t('contact.email')}
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
+                className="flex-1 bg-transparent text-white border-0 border-b-2 border-white rounded-none focus:outline-none focus:ring-0 focus:border-white py-2.5 font-sabon placeholder-white/50 text-base"
+              />
+              <button 
+                type="button" 
+                className="bg-white text-black px-10 py-2.5 font-sabon hover:bg-gray-100 transition-all duration-300 whitespace-nowrap flex-shrink-0"
+                onClick={() => {
+                  if (newsletterEmail) {
+                    // Handle newsletter subscription logic here
+                    console.log('Subscribing:', newsletterEmail);
+                    setNewsletterEmail('');
+                  }
+                }}
+              >
+                {t('contact.newsletterSubscribe')}
+              </button>
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>
