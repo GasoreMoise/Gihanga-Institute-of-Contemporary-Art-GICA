@@ -1,6 +1,10 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import { NextIntlClientProvider } from 'next-intl';
 import './fonts.css';
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import { Analytics } from '@vercel/analytics/react'
+
 
 export const viewport: Viewport = {
   themeColor: [
@@ -13,7 +17,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.gica.art'),
   title: 'GICA',
   description:
-    'A living space for art, research, and collective imagination in Kigali, Rwanda.'
+    'A living space for art, research, and collective imagination'
 };
 
 export default function RootLayout({
@@ -23,8 +27,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen bg-white text-neutral-900 antialiased">
+      <body className="min-h-screen bg-white text-neutral-900 antialiased" data-app="gica">
         {children}
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
