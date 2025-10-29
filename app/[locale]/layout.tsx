@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
-// import { SpeedInsights } from '@vercel/speed-insights/next';
-// import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/react';
 // import { ThemeProvider } from 'next-themes';
 import Nav from '@/components/Nav';
 import { orgJsonLd } from '@/lib/seo/jsonld';
@@ -59,6 +59,8 @@ export default async function RootLayout({
           type="image/webp"
         />
       </head>
+      <SpeedInsights />
+      <Analytics />
       <body className="min-h-screen bg-white text-neutral-900 antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           {/* <Nav /> */}
