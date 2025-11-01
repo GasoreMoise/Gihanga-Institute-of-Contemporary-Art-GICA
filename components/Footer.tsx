@@ -48,13 +48,13 @@ export default function Footer() {
           
           {/* Social media */}
           <div className="flex items-center gap-6 text-white/80">
-            <a href="#" aria-label="Facebook" className="hover:opacity-80">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M22 12a10 10 0 10-11.5 9.9v-7H8v-3h2.5V9.5A3.5 3.5 0 0114.3 6h2.7v3h-2c-.8 0-1.5.7-1.5 1.5V12H17l-.5 3h-3v7A10 10 0 0022 12z"/></svg>
+            <a href="https://www.linkedin.com/in/gihanga-institute-of-contemporary-art-gica-23704b391" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:opacity-80">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
             </a>
-            <a href="#" aria-label="Twitter" className="hover:opacity-80">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M22.46 6c-.77.34-1.6.57-2.46.67a4.26 4.26 0 001.87-2.35 8.5 8.5 0 01-2.7 1.03 4.24 4.24 0 00-7.22 3.87A12.04 12.04 0 013 5.15a4.24 4.24 0 001.31 5.66 4.2 4.2 0 01-1.92-.53v.05a4.24 4.24 0 003.4 4.16 4.26 4.26 0 01-1.9.07 4.24 4.24 0 003.96 2.94A8.5 8.5 0 012 19.54 12.02 12.02 0 008.29 21c7.55 0 11.68-6.26 11.68-11.68v-.53A8.36 8.36 0 0022.46 6z"/></svg>
+            <a href="https://x.com/GICA_Kigali" target="_blank" rel="noopener noreferrer" aria-label="X" className="hover:opacity-80">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
             </a>
-            <a href="#" aria-label="Instagram" className="hover:opacity-80">
+            <a href="https://www.instagram.com/gica.kigali/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:opacity-80">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm10 2H7a3 3 0 00-3 3v10a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3zm-5 3.5A5.5 5.5 0 1112 18.5 5.5 5.5 0 0112 7.5zm0 2A3.5 3.5 0 1015.5 13 3.5 3.5 0 0012 9.5zM17.5 6a1 1 0 110 2 1 1 0 010-2z"/></svg>
             </a>
           </div>
@@ -82,13 +82,13 @@ export default function Footer() {
               © {new Date().getFullYear()} GICA. All rights reserved.
             </div>
             <div className="flex items-center gap-4 text-white/80">
-              <a href="#" aria-label="Facebook" className="hover:opacity-80">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M22 12a10 10 0 10-11.5 9.9v-7H8v-3h2.5V9.5A3.5 3.5 0 0114.3 6h2.7v3h-2c-.8 0-1.5.7-1.5 1.5V12H17l-.5 3h-3v7A10 10 0 0022 12z"/></svg>
+              <a href="https://www.linkedin.com/in/gihanga-institute-of-contemporary-art-gica-23704b391" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:opacity-80">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
               </a>
-              <a href="#" aria-label="Twitter" className="hover:opacity-80">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M22.46 6c-.77.34-1.6.57-2.46.67a4.26 4.26 0 001.87-2.35 8.5 8.5 0 01-2.7 1.03 4.24 4.24 0 00-7.22 3.87A12.04 12.04 0 013 5.15a4.24 4.24 0 001.31 5.66 4.2 4.2 0 01-1.92-.53v.05a4.24 4.24 0 003.4 4.16 4.26 4.26 0 01-1.9.07 4.24 4.24 0 003.96 2.94A8.5 8.5 0 012 19.54 12.02 12.02 0 008.29 21c7.55 0 11.68-6.26 11.68-11.68v-.53A8.36 8.36 0 0022.46 6z"/></svg>
-              </a>
-              <a href="#" aria-label="Instagram" className="hover:opacity-80">
+               <a href="https://x.com/GICA_Kigali" target="_blank" rel="noopener noreferrer" aria-label="X" className="hover:opacity-80">
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+               </a>
+               <a href="https://www.instagram.com/gica.kigali/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:opacity-80">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm10 2H7a3 3 0 00-3 3v10a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3zm-5 3.5A5.5 5.5 0 1112 18.5 5.5 5.5 0 0112 7.5zm0 2A3.5 3.5 0 1015.5 13 3.5 3.5 0 0012 9.5zM17.5 6a1 1 0 110 2 1 1 0 010-2z"/></svg>
               </a>
             </div>

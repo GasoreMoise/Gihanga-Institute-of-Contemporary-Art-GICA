@@ -1,9 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
-import { NextIntlClientProvider } from 'next-intl';
 import './fonts.css';
-import { SpeedInsights } from '@vercel/speed-insights/next'
-import { Analytics } from '@vercel/analytics/react'
 
 
 export const viewport: Viewport = {
@@ -27,10 +24,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen bg-white text-neutral-900 antialiased" data-app="gica">
+      <body className="min-h-screen bg-white text-neutral-900 antialiased">
         {children}
-        <SpeedInsights />
-        <Analytics />
       </body>
     </html>
   );
