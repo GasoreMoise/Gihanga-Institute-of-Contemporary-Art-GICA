@@ -19,8 +19,8 @@ export const contributors: Contributor[] = [
     role: 'Lead Website Designer & Developer',
     links: {
       linkedin: 'https://www.linkedin.com/in/moise-nshuti-gasore',
-      portfolio: 'https://gasoremoise.vercel.app/',
-      email: 'mailto:gasorenshuti34@gmail.com'
+      portfolio: 'https://gnmoise.vercel.app/',
+      email: 'mailto:gasorenm44@gmail.com'
     }
   },
   { name: 'TEVIN MUKWENDE', role: 'Communications Officer' },
