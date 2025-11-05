@@ -2,6 +2,7 @@ import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
 import AboutSection from '@/components/AboutSection';
 import WelcomeSection from '@/components/WelcomeSection';
+import ContributorsSection from '@/components/ContributorsSection';
 import ExhibitionSection from '@/components/ExhibitionSection';
 import VisitSection from '@/components/VisitSection';
 import ContactStayInTouch from '@/components/ContactStayInTouch';
@@ -41,6 +42,7 @@ export default async function Page() {
       />
       <AboutSection />
       <WelcomeSection />
+      <ContributorsSection />
       <ExhibitionSection
         title={currentExhibition.title}
         artists={currentExhibition.artists}
