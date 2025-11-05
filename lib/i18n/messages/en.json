@@ -6,7 +6,7 @@
     },
     "about": {
       "title": "About",
-      "body": "Gihanga Institute of Contemporary Art is a forthcoming non-profit centre for the arts co-founded by Kaneza Schaal and Kami Gahiga that will be home to a library, exhibitions, platforms for performance, a screening room, studio, and art residency. Designed by Rwandan architect Amin Gafaranga, the 777 sqm structure is dedicated to supporting Rwandan and regional artists through thoughtful exhibitions, shared spaces for making, and commitment to intellectual and artistic exchange."
+      "body": "Gihanga Institute of Contemporary Art is a forthcoming non-profit centre for the arts that will be home to a library, exhibitions, platforms for performance, a screening room, studio, and art residency. The 777 sqm institute is dedicated to supporting Rwandan and regional artists through thoughtful exhibitions, shared spaces for making, and commitment to intellectual and artistic exchange."
     },
     "welcome": { 
       "title": "Welcome",
@@ -39,7 +39,12 @@
     "title": "Visit Us"
   },
   "contributors": {
-    "title": "Contributors"
+    "title": "Contributors",
+    "subtitle": "We would like to thank the following individuals and organizations who have supported us along the way, which has helped us build and provide a solid foundation for artistic experiment",
+    "benefactor": {
+      "heading": "FOUNDING BENEFACTOR",
+      "body": "We are grateful for the generous support extended to us by the Mellon Foundation, our Founding Benefactor."
+    }
   },
   "notFound": {
     "title": "Page Not Found"
