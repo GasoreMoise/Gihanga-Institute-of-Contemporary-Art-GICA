@@ -25,7 +25,7 @@ export async function getCurrentExhibition(locale: string = 'en') {
     return {
       title: "A bird shall carry the voice", // Same title in both languages
       artists: "Saana Gateja, Francis Offman, Kaneza Schaal, Cedric Mizero, Christian Nyampeta, Innocent Nkurunziza, Feline Ntabagena",
-      dates: "19 Ukuboza - 19 Werurwe 2025",
+      dates: "Ukuboza 2025 - 19 Werurwe 2026",
       image: currentExhibition.image,
       artworkCaption: currentExhibition.artworkCaption
     };
