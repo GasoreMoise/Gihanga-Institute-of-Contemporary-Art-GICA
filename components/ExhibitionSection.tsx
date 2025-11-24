@@ -121,7 +121,7 @@ export default function ExhibitionSection({
                   {artworkCaption.artist}, {artworkCaption.title}, {artworkCaption.year}.
                 </span>
                 <br />
-                {' '}Courtesy the artist and {artworkCaption.gallery}.
+                {' '}Courtesy of the artist and {artworkCaption.gallery}.
               </p>
 
             </motion.div>
