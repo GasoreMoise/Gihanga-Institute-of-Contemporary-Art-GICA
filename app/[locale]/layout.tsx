@@ -1,9 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
-import { SpeedInsights } from '@vercel/speed-insights/next'
-import { Analytics } from '@vercel/analytics/react'
-
 import { orgJsonLd } from '@/lib/seo/jsonld';
 import '../globals.css';
 import '../fonts.css';
@@ -19,7 +16,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.gica.art'),
   title: {
     default: 'GICA',
-    template: '%s | GICA',
+    template: '%s | GICA'
   },
   description:
     'A living space for art, research, and collective imagination in Kigali, Rwanda.',
@@ -36,43 +33,23 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.gica.art' }
 };
 
-export default async function RootLayout({
+export default async function LocaleLayout({
   children
 }: {
   children: React.ReactNode;
 }) {
   const locale = await getLocale();
   const messages = await getMessages();
-  return (
-    <html lang={locale} suppressHydrationWarning>
-      <head>
-        {/* Favicon */}
-        <link rel="icon" href="/logos/logo3.svg" type="image/svg+xml" />
-        {/* Preload hero image for fastest first paint */}
-        <link
-          rel="preload"
-          as="image"
-          href="/images/hero-background.webp"
-          imageSrcSet="/images/hero-background.webp 1920w"
-          imageSizes="100vw"
-          type="image/webp"
-        />
-      </head>
-      <body className="min-h-screen bg-white text-neutral-900 antialiased">
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          {/* <Nav /> */}
-          {children}
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd()) }}
-          />
-        </NextIntlClientProvider>
-        <SpeedInsights />
-        <Analytics />
-      </body>
 
-    </html>
+  return (
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      {/* <Nav /> */}
+      {children}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd()) }}
+      />
+    </NextIntlClientProvider>
   );
 }
-
 

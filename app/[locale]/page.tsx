@@ -15,7 +15,7 @@ import ContributorsSection from '@/components/ContributorsSection';
 
 export default async function Page() {
   const t = await getTranslations('landing');
-  const h = headers();
+  const h = await headers();
   const locale = h.get('x-next-intl-locale') || 'en';
   const currentExhibition = await getCurrentExhibition(locale);
   const currentProgramme = await getCurrentProgramme(locale);
