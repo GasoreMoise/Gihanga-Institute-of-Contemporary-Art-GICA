@@ -11,11 +11,10 @@ import { getVisitData } from '@/lib/data/visit';
 import { getContactContent } from '@/lib/data/contact';
 import { getTranslations } from 'next-intl/server';
 import { headers } from 'next/headers';
-import ContributorsSection from '@/components/ContributorsSection';
 
 export default async function Page() {
   const t = await getTranslations('landing');
-  const h = headers();
+  const h = await headers();
   const locale = h.get('x-next-intl-locale') || 'en';
   const currentExhibition = await getCurrentExhibition(locale);
   const currentProgramme = await getCurrentProgramme(locale);
@@ -42,7 +41,6 @@ export default async function Page() {
       />
       <AboutSection />
       <WelcomeSection />
-      <ContributorsSection />
       <ExhibitionSection
         title={currentExhibition.title}
         artists={currentExhibition.artists}
