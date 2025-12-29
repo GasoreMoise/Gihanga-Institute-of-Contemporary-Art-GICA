@@ -54,16 +54,16 @@ export default async function RootLayout({
   const locale = await getLocale();
   const messages = await getMessages();
   return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
-      {/* <Nav /> */}
-      {children}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd()) }}
-      />
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          {/* <Nav /> */}
+          {children}
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd()) }}
+          />
       <SpeedInsights />
       <Analytics />
-    </NextIntlClientProvider>
+        </NextIntlClientProvider>
   );
 }
 

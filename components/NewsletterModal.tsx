@@ -115,7 +115,7 @@ export default function NewsletterModal() {
                     {t('contact.newsletter')}
                   </h3>
                   <p className="text-neutral-600 text-sm md:text-base font-sabon leading-relaxed">
-                    Stay updated with our programmes, exhibitions, and opportunities.
+                    Stay updated with our programmes, exhibitions, and other news.
                   </p>
                 </div>
 
