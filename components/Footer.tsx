@@ -1,9 +1,15 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { useState, useEffect } from 'react';
 
 export default function Footer() {
   const t = useTranslations('footer');
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
   
   return (
     <footer className="bg-[#0f2430] text-white">
@@ -14,7 +20,7 @@ export default function Footer() {
           <div className="flex flex-col items-center gap-4">
             <img src="/logos/logo1.svg" alt="GICA" className="w-24 h-auto" />
             <div className="text-white/80 text-sm font-sabon">
-              © {new Date().getFullYear()} GICA. All rights reserved.
+              © {currentYear || new Date().getFullYear()} GICA. All rights reserved.
             </div>
           </div>
           
@@ -79,7 +85,7 @@ export default function Footer() {
               <img src="/logos/logo1.svg" alt="GICA" className="w-36 h-auto" />
             </div>
             <div className="text-white/80 text-sm font-sabon">
-              © {new Date().getFullYear()} GICA. All rights reserved.
+              © {currentYear || new Date().getFullYear()} GICA. All rights reserved.
             </div>
             <div className="flex items-center gap-4 text-white/80">
               <a href="https://www.linkedin.com/in/gihanga-institute-of-contemporary-art-gica-23704b391" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:opacity-80">

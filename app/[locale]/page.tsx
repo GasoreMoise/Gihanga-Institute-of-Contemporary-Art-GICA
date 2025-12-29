@@ -5,6 +5,7 @@ import WelcomeSection from '@/components/WelcomeSection';
 import ExhibitionSection from '@/components/ExhibitionSection';
 import VisitSection from '@/components/VisitSection';
 import ContactStayInTouch from '@/components/ContactStayInTouch';
+import NewsletterModal from '@/components/NewsletterModal';
 import { getCurrentExhibition } from '@/lib/data/exhibitions';
 import { getCurrentProgramme } from '@/lib/data/programme';
 import { getVisitData } from '@/lib/data/visit';
@@ -39,6 +40,7 @@ export default async function Page() {
           backgroundImage: currentProgramme.backgroundImage
         }}
       />
+      <NewsletterModal />
       <AboutSection />
       <WelcomeSection />
       <ExhibitionSection
@@ -52,6 +54,7 @@ export default async function Page() {
         title={visit.title}
         openingTitle={visit.openingTitle}
         openingNote={visit.openingNote}
+        openingHours={visit.openingHours}
         emailLabel={visit.emailLabel}
         email={visit.email}
         socialLabel={visit.socialLabel}

@@ -8,6 +8,7 @@ interface VisitSectionProps {
   title: string;
   openingTitle: string;
   openingNote: string;
+  openingHours?: { days: string; hours: string };
   emailLabel: string;
   email: string;
   socialLabel: string;
@@ -20,6 +21,7 @@ export default function VisitSection({
   title,
   openingTitle,
   openingNote,
+  openingHours,
   emailLabel,
   email,
   socialLabel,
@@ -69,7 +71,14 @@ export default function VisitSection({
               {/* Opening hours */}
               <div>
                 <p className="mb-1">{openingTitle}</p>
-                <p className="opacity-80">{openingNote}</p>
+                {openingHours && openingHours.days && openingHours.hours ? (
+                  <p className="opacity-80">
+                    {openingHours.days}<br />
+                    {openingHours.hours}
+                  </p>
+                ) : (
+                  <p className="opacity-80">{openingNote}</p>
+                )}
               </div>
 
               {/* Email + Social two columns */}

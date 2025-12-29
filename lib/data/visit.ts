@@ -2,6 +2,10 @@ export const visitData = {
   title: 'Visit Us',
   openingTitle: 'Opening Hours',
   openingNote: 'Forthcoming – Opening Winter 2025',
+  openingHours: {
+    days: 'Tuesday - Sunday', // Add your days range here
+    hours: '11am - 5pm' // Add your hours here
+  },
   emailLabel: 'Email',
   email: 'contact@gica.art',
   socialLabel: 'Social Media',
@@ -21,6 +25,10 @@ export async function getVisitData(locale: string = 'en') {
       title: 'Dusure',
       openingTitle: 'Amasaha yo gufungura',
       openingNote: 'Turafungura vuba',
+      openingHours: {
+        days: 'Kuwa kabiri - Ku cyumweru', // Add your days range here in Kinyarwanda
+        hours: '11am - 5pm' // Add your hours here
+      },
       emailLabel: 'Imeli',
       email: visitData.email, // same
       socialLabel: 'Imbuga nkoranyambaga',

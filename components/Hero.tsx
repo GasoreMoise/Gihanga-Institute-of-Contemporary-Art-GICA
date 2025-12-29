@@ -36,6 +36,7 @@ export default function Hero({
   const [isHovered, setIsHovered] = useState(false);
   const [displayText, setDisplayText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [particlePositions, setParticlePositions] = useState<Array<{ initialX: number; initialY: number; targetX: number; targetY: number }>>([]);
   
   // Motion values for magnetic effect
   const mouseX = useMotionValue(0);
@@ -66,6 +67,17 @@ export default function Hero({
     setDisplayText('');
     setCurrentIndex(0);
   }, [locale]);
+
+  // Generate particle positions only on client side to avoid hydration mismatch
+  useEffect(() => {
+    const positions = Array.from({ length: 6 }, () => ({
+      initialX: Math.random() * 200 - 100,
+      initialY: Math.random() * 100 - 50,
+      targetX: Math.random() * 400 - 200,
+      targetY: Math.random() * 200 - 100,
+    }));
+    setParticlePositions(positions);
+  }, []);
 
   // Magnetic effect handler
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -268,21 +280,21 @@ export default function Hero({
                 </span>
                 
                 {/* Particle effects on hover */}
-                {isHovered && (
+                {isHovered && particlePositions.length > 0 && (
                   <>
-                    {[...Array(6)].map((_, i) => (
+                    {particlePositions.map((pos, i) => (
                       <motion.div
                         key={i}
                         className="absolute w-1 h-1 bg-white rounded-full"
                         initial={{ 
-                          x: Math.random() * 200 - 100, 
-                          y: Math.random() * 100 - 50,
+                          x: pos.initialX, 
+                          y: pos.initialY,
                           opacity: 0,
                           scale: 0
                         }}
                         animate={{ 
-                          x: Math.random() * 400 - 200,
-                          y: Math.random() * 200 - 100,
+                          x: pos.targetX,
+                          y: pos.targetY,
                           opacity: [0, 1, 0],
                           scale: [0, 1, 0]
                         }}

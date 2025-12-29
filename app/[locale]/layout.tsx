@@ -23,6 +23,16 @@ export const metadata: Metadata = {
   },
   description:
     'A living space for art, research, and collective imagination in Kigali, Rwanda.',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
+      { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' }
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', type: 'image/png', sizes: '180x180' }
+    ]
+  },
   openGraph: {
     type: 'website',
     url: 'https://www.gica.art',
@@ -44,34 +54,16 @@ export default async function RootLayout({
   const locale = await getLocale();
   const messages = await getMessages();
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <head>
-        {/* Favicon */}
-        <link rel="icon" href="/logos/logo3.svg" type="image/svg+xml" />
-        {/* Preload hero image for fastest first paint */}
-        <link
-          rel="preload"
-          as="image"
-          href="/images/hero-background.webp"
-          imageSrcSet="/images/hero-background.webp 1920w"
-          imageSizes="100vw"
-          type="image/webp"
-        />
-      </head>
-      <body className="min-h-screen bg-white text-neutral-900 antialiased">
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          {/* <Nav /> */}
-          {children}
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd()) }}
-          />
-        </NextIntlClientProvider>
-        <SpeedInsights />
-        <Analytics />
-      </body>
-
-    </html>
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      {/* <Nav /> */}
+      {children}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd()) }}
+      />
+      <SpeedInsights />
+      <Analytics />
+    </NextIntlClientProvider>
   );
 }
 

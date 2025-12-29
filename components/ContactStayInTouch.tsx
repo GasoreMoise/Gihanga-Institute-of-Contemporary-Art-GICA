@@ -115,7 +115,11 @@ export default function ContactStayInTouch({
   };
   
   return (
-    <section id="contact" className="relative w-full min-h-screen overflow-hidden">
+    <section
+      id="contact"
+      className="relative w-full min-h-screen overflow-hidden"
+      suppressHydrationWarning
+    >
       {/* Background */}
       <div className="absolute inset-0">
         <Image
@@ -155,13 +159,20 @@ export default function ContactStayInTouch({
 
         {/* Form styled like reference */}
         <div className="backdrop-blur-[1px]">
-          <form onSubmit={handleContactSubmit} className="space-y-10 w-[620px] max-w-full mx-auto">
+          <form
+            onSubmit={handleContactSubmit}
+            className="space-y-10 w-[620px] max-w-full mx-auto"
+            autoComplete="off"
+            suppressHydrationWarning
+          >
             <div>
               <label className="block text-white font-sabon text-sm mb-2">{t('contact.name')}</label>
               <input 
                 type="text"
                 value={contactName}
                 onChange={(e) => setContactName(e.target.value)}
+                autoComplete="off"
+                suppressHydrationWarning
                 className="w-[620px] max-w-full bg-transparent text-white border-0 border-b border-white/70 rounded-none focus:outline-none focus:ring-0 focus:border-white/90 py-2" 
               />
             </div>
@@ -172,6 +183,8 @@ export default function ContactStayInTouch({
                 value={contactEmail}
                 onChange={(e) => setContactEmail(e.target.value)}
                 required
+                autoComplete="off"
+                suppressHydrationWarning
                 className="w-[620px] max-w-full bg-transparent text-white border-0 border-b border-white/70 rounded-none focus:outline-none focus:ring-0 focus:border-white/90 py-2" 
               />
             </div>
@@ -182,6 +195,8 @@ export default function ContactStayInTouch({
                 value={contactMessage}
                 onChange={(e) => setContactMessage(e.target.value)}
                 required
+                autoComplete="off"
+                suppressHydrationWarning
                 className="w-[620px] max-w-full bg-transparent text-white border-0 border-b border-white/70 rounded-none focus:outline-none focus:ring-0 focus:border-white/90 py-2 resize-none" 
               />
             </div>
@@ -240,6 +255,8 @@ export default function ContactStayInTouch({
                 placeholder={t('contact.email')}
                 value={newsletterEmail}
                 onChange={(e) => setNewsletterEmail(e.target.value)}
+                autoComplete="off"
+                suppressHydrationWarning
                 className="flex-1 bg-transparent text-white border-0 border-b-2 border-white rounded-none focus:outline-none focus:ring-0 focus:border-white py-2.5 font-sabon placeholder-white/50 text-base"
               />
               <button 
