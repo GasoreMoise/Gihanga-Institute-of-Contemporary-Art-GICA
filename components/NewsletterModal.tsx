@@ -23,7 +23,7 @@ export default function NewsletterModal() {
     // preventing it from opening on some mobile setups.
     const timer = setTimeout(() => {
       setOpen(true);
-    }, 2000);
+    }, 7500);
 
     return () => clearTimeout(timer);
   }, []);
