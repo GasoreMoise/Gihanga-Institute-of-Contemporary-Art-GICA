@@ -56,7 +56,7 @@ export default function ExhibitionSection({
             {title}
           </h2>
 
-          {/* Exhibition Dates */}
+          {/* Exhibition Dates 
           <motion.p 
             className="text-[#1A2B40] text-sm md:text-base font-sabon leading-relaxed text-center lg:text-left lg:ml-16"
             initial={{ opacity: 0, y: 20 }}
@@ -66,6 +66,8 @@ export default function ExhibitionSection({
           >
             {dates}
           </motion.p>
+
+          */}
           
           {/* Selected Artists */}
           <motion.p 
