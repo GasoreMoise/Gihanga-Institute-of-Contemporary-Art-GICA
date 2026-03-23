@@ -6,6 +6,7 @@ import ExhibitionSection from '@/components/ExhibitionSection';
 import VisitSection from '@/components/VisitSection';
 import ContactStayInTouch from '@/components/ContactStayInTouch';
 import NewsletterModal from '@/components/NewsletterModal';
+import VerticalSlider from '@/components/VerticalSlider';
 import { getCurrentExhibition } from '@/lib/data/exhibitions';
 import { getCurrentProgramme } from '@/lib/data/programme';
 import { getVisitData } from '@/lib/data/visit';
@@ -24,52 +25,54 @@ export default async function Page() {
 
   return (
     <>
-      <Hero 
-        tagline={t('hero.subtitle')}
-        slides={[
-          { title: '', image: { src: '/images/hero-background.webp', alt: 'GICA' } },
-          { title: t('hero.slides.exhibitions'), image: { src: '/images/hero-exhibitions.webp', alt: 'Exhibitions' } },
-          { title: t('hero.slides.screenings'), image: { src: '/images/hero-screenings.webp', alt: 'Screenings' } },
-          { title: t('hero.slides.talks'), image: { src: '/images/hero-talks.webp', alt: 'Talks' } },
-          { title: t('hero.slides.library'), image: { src: '/images/hero-library.webp', alt: 'The Koyo Kouoh Library' } },
-          { title: t('hero.slides.events'), image: { src: '/images/hero-events.webp', alt: 'Events' } }
-        ]}
-        programmeData={{
-          title: currentProgramme.title,
-          description: currentProgramme.description,
-          menuItems: currentProgramme.menuItems,
-          backgroundImage: currentProgramme.backgroundImage
-        }}
-      />
       <NewsletterModal />
-      <AboutSection />
-      <WelcomeSection />
-      <ExhibitionSection
-        title={currentExhibition.title}
-        artists={currentExhibition.artists}
-        dates={currentExhibition.dates}
-        image={currentExhibition.image}
-        artworkCaption={currentExhibition.artworkCaption}
-      />
-      <VisitSection
-        title={visit.title}
-        openingTitle={visit.openingTitle}
-        openingNote={visit.openingNote}
-        openingHours={visit.openingHours}
-        emailLabel={visit.emailLabel}
-        email={visit.email}
-        socialLabel={visit.socialLabel}
-        social={visit.social}
-        address={visit.address}
-        image={visit.image}
-      />
+      <VerticalSlider>
+        <Hero 
+          tagline={t('hero.subtitle')}
+          slides={[
+            { title: '', image: { src: '/images/hero-background.webp', alt: 'GICA' } },
+            { title: t('hero.slides.exhibitions'), image: { src: '/images/hero-exhibitions.webp', alt: 'Exhibitions' } },
+            { title: t('hero.slides.screenings'), image: { src: '/images/hero-screenings.webp', alt: 'Screenings' } },
+            { title: t('hero.slides.talks'), image: { src: '/images/hero-talks.webp', alt: 'Talks' } },
+            { title: t('hero.slides.library'), image: { src: '/images/hero-library.webp', alt: 'The Koyo Kouoh Library' } },
+            { title: t('hero.slides.events'), image: { src: '/images/hero-events.webp', alt: 'Events' } }
+          ]}
+          programmeData={{
+            title: currentProgramme.title,
+            description: currentProgramme.description,
+            menuItems: currentProgramme.menuItems,
+            backgroundImage: currentProgramme.backgroundImage
+          }}
+        />
+        <AboutSection />
+        <WelcomeSection />
+        <ExhibitionSection
+          title={currentExhibition.title}
+          artists={currentExhibition.artists}
+          dates={currentExhibition.dates}
+          image={currentExhibition.image}
+          artworkCaption={currentExhibition.artworkCaption}
+        />
+        <VisitSection
+          title={visit.title}
+          openingTitle={visit.openingTitle}
+          openingNote={visit.openingNote}
+          openingHours={visit.openingHours}
+          emailLabel={visit.emailLabel}
+          email={visit.email}
+          socialLabel={visit.socialLabel}
+          social={visit.social}
+          address={visit.address}
+          image={visit.image}
+        />
 
-      <ContactStayInTouch
-        title={contact.title}
-        subtitle={contact.subtitle}
-        backgroundImage={contact.backgroundImage}
-      />
-      <Footer />
+        <ContactStayInTouch
+          title={contact.title}
+          subtitle={contact.subtitle}
+          backgroundImage={contact.backgroundImage}
+        />
+        <Footer />
+      </VerticalSlider>
     </>
   );
 }

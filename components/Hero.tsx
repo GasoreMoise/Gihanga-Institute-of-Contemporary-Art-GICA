@@ -143,7 +143,8 @@ export default function Hero({
       wheelSpeed: -1,
       onLeft: () => !isAnimating.current && nextSlide(),
       onRight: () => !isAnimating.current && prevSlide(),
-      tolerance: 10
+      tolerance: 30, // Increase slightly so light taps don't trigger it
+      preventDefault: false // Let the browser handle vertical scrolling pan-y
     });
 
     // Cleanup navigation links for buttons
@@ -156,7 +157,10 @@ export default function Hero({
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} className="relative h-screen w-full overflow-hidden bg-[#0b0b0b]">
+    <section 
+      ref={containerRef} 
+      className="relative h-screen w-full overflow-hidden bg-[#0b0b0b] snap-start touch-pan-y select-none cursor-grab active:cursor-grabbing"
+    >
       {/* Slides */}
       {slides.map((slide, i) => (
         <div
@@ -224,7 +228,7 @@ export default function Hero({
         {/* Footer info (Tagline with Chevron) */}
         <div className="flex justify-between items-end pb-36 md:pb-12 px-6 md:px-10 lg:px-16 pointer-events-auto w-full">
           <div className="group flex items-center space-x-4 md:space-x-6 cursor-pointer opacity-90 hover:opacity-100 transition-opacity duration-500 max-w-full">
-            <div ref={chevronRef} className="flex-shrink-0">
+            <div ref={chevronRef} className="flex-shrink-0" id="about-chevron" title="Scroll to About">
               <svg className="w-6 h-6 md:w-8 md:h-8 text-white stroke-[2.5] group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
