@@ -1,20 +1,29 @@
 'use client';
 
 import Image from 'next/image';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useLocale } from 'next-intl';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { Observer, TextPlugin } from 'gsap/all';
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(useGSAP, Observer, TextPlugin);
+}
+
+type Slide = {
+  title: string;
+  image: { src: string; alt: string };
+};
 
 export default function Hero({
-  title,
-  subtitle,
-  image,
+  tagline,
+  slides,
   programmeData
 }: {
-  title: string;
-  subtitle?: string;
-  image?: { src: string; width: number; height: number; blurDataURL?: string };
+  tagline: string;
+  slides: Slide[];
   programmeData?: {
     title: string;
     description: string;
@@ -27,74 +36,20 @@ export default function Hero({
     };
   };
 }) {
-  const [isEnglish, setIsEnglish] = useState(true);
   const [isProgrammeOpen, setIsProgrammeOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const locale = useLocale();
-  const [bgLoaded, setBgLoaded] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const [displayText, setDisplayText] = useState('');
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const slidesRef = useRef<(HTMLDivElement | null)[]>([]);
+  const titlesRef = useRef<(HTMLHeadingElement | null)[]>([]);
+  const taglineRef = useRef<HTMLParagraphElement>(null);
+  const chevronRef = useRef<HTMLDivElement>(null);
+
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [particlePositions, setParticlePositions] = useState<Array<{ initialX: number; initialY: number; targetX: number; targetY: number }>>([]);
-  
-  // Motion values for magnetic effect
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const springX = useSpring(mouseX, { stiffness: 150, damping: 15 });
-  const springY = useSpring(mouseY, { stiffness: 150, damping: 15 });
-  
-  const taglineRef = useRef<HTMLDivElement>(null);
-
-  // Get the full tagline text
-  const fullText = title || (locale === 'en'
-    ? (subtitle || "A living space for art, research and collective imagination")
-    : (subtitle || "Umunsi w'ubuzima bw'ubuhanzi, ubushakashatsi n'ibitekerezo by'umuryango"));
-
-  // Typewriter effect
-  useEffect(() => {
-    if (currentIndex < fullText.length) {
-      const timeout = setTimeout(() => {
-        setDisplayText(prev => prev + fullText[currentIndex]);
-        setCurrentIndex(prev => prev + 1);
-      }, 50); // Adjust speed here
-      return () => clearTimeout(timeout);
-    }
-  }, [currentIndex, fullText]);
-
-  // Reset typewriter when locale changes
-  useEffect(() => {
-    setDisplayText('');
-    setCurrentIndex(0);
-  }, [locale]);
-
-  // Generate particle positions only on client side to avoid hydration mismatch
-  useEffect(() => {
-    const positions = Array.from({ length: 6 }, () => ({
-      initialX: Math.random() * 200 - 100,
-      initialY: Math.random() * 100 - 50,
-      targetX: Math.random() * 400 - 200,
-      targetY: Math.random() * 200 - 100,
-    }));
-    setParticlePositions(positions);
-  }, []);
-
-  // Magnetic effect handler
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!taglineRef.current) return;
-    const rect = taglineRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    
-    mouseX.set((e.clientX - centerX) * 0.1);
-    mouseY.set((e.clientY - centerY) * 0.1);
-  };
-
-  const handleMouseLeave = () => {
-    mouseX.set(0);
-    mouseY.set(0);
-    setIsHovered(false);
-  };
+  const activeIndexRef = useRef(0);
+  const isAnimating = useRef(false);
 
   const switchLocale = (newLocale: string) => {
     if (!pathname) return;
@@ -103,296 +58,251 @@ export default function Hero({
     router.push(segments.join('/') as any);
   };
 
-  const openProgramme = () => {
-    setIsProgrammeOpen(true);
-  };
+  useGSAP(() => {
+    // Typewriter effect for tagline on initial load
+    if (taglineRef.current) {
+      gsap.set(taglineRef.current, { text: "" });
+      gsap.to(taglineRef.current, {
+        text: tagline,
+        duration: Math.min(tagline.length * 0.05, 3),
+        ease: "none",
+        delay: 0.5
+      });
+    }
 
-  const closeProgramme = () => {
-    setIsProgrammeOpen(false);
-  };
+    // Gentle bounce animation for the chevron
+    if (chevronRef.current) {
+      gsap.to(chevronRef.current, {
+        y: 8,
+        repeat: -1,
+        yoyo: true,
+        ease: "power1.inOut",
+        duration: 1.2
+      });
+    }
+  }, { scope: containerRef });
+
+  useGSAP(() => {
+    if (slides.length === 0) return;
+
+    // Initial setup: position slides and titles
+    gsap.set(slidesRef.current, { 
+      autoAlpha: i => i === activeIndexRef.current ? 1 : 0,
+      zIndex: i => i === activeIndexRef.current ? 1 : 0,
+      xPercent: 0
+    });
+    gsap.set(titlesRef.current, {
+      autoAlpha: i => i === activeIndexRef.current ? 1 : 0,
+      x: i => i === activeIndexRef.current ? 0 : 50,
+      y: 0
+    });
+
+    const gotoSlide = (index: number, direction: number) => {
+      const nextIndex = gsap.utils.wrap(0, slides.length, index);
+      if (isAnimating.current || nextIndex === activeIndexRef.current) return;
+      isAnimating.current = true;
+      
+      const isNext = direction === 1;
+      const dX = isNext ? 100 : -100;
+      const parallaxX = isNext ? -15 : 15;
+      
+      const nextSlide = slidesRef.current[nextIndex];
+      const currentSlide = slidesRef.current[activeIndexRef.current];
+
+      const nextTitle = titlesRef.current[nextIndex];
+      const currentTitle = titlesRef.current[activeIndexRef.current];
+
+      activeIndexRef.current = nextIndex;
+      setCurrentIndex(nextIndex); // Update React state for UI (arrows, etc.)
+
+      // Prepare next slide position: stacked visually on top of current
+      gsap.set(currentSlide, { zIndex: 0 });
+      gsap.set(nextSlide, { autoAlpha: 1, zIndex: 1, xPercent: dX });
+      gsap.set(nextTitle, { autoAlpha: 0, x: isNext ? 100 : -100 });
+
+      const tl = gsap.timeline({
+        defaults: { duration: 1.25, ease: "power2.inOut" },
+        onComplete: () => {
+          gsap.set(currentSlide, { autoAlpha: 0 });
+          isAnimating.current = false;
+        }
+      });
+
+      tl.to(currentSlide, { xPercent: parallaxX }, 0)
+        .to(nextSlide, { xPercent: 0 }, 0)
+        .to(currentTitle, { autoAlpha: 0, x: isNext ? -50 : 50, duration: 0.6, ease: "power1.in" }, 0)
+        .to(nextTitle, { autoAlpha: 1, x: 0, duration: 1, ease: "power2.out" }, 0.25);
+    };
+
+    const nextSlide = () => gotoSlide(activeIndexRef.current + 1, 1);
+    const prevSlide = () => gotoSlide(activeIndexRef.current - 1, -1);
+
+    const observer = Observer.create({
+      target: containerRef.current,
+      type: "wheel,touch,pointer",
+      wheelSpeed: -1,
+      onLeft: () => !isAnimating.current && nextSlide(),
+      onRight: () => !isAnimating.current && prevSlide(),
+      tolerance: 10
+    });
+
+    // Cleanup navigation links for buttons
+    const nextBtn = document.getElementById('hero-next');
+    const prevBtn = document.getElementById('hero-prev');
+    if (nextBtn) nextBtn.onclick = nextSlide;
+    if (prevBtn) prevBtn.onclick = prevSlide;
+
+    return () => observer.kill();
+  }, { scope: containerRef });
+
   return (
-    <section className="relative h-screen w-full overflow-hidden">
-      {/* Background Image */}
-      {image?.src && (
-        <Image
-          src={image.src}
-          alt="GICA - A living space for art, research and collective imagination"
-          width={image.width}
-          height={image.height}
-          priority
-          fetchPriority="high"
-          placeholder={image.blurDataURL ? 'blur' : 'empty'}
-          blurDataURL={image.blurDataURL}
-          sizes="100vw"
-          quality={75}
-          className="absolute inset-0 w-full h-full object-cover"
-          onLoad={() => setBgLoaded(true)}
-        />
-      )}
-      
-      {/* Dark overlay for better text readability */}
-      <div className={`absolute inset-0 ${bgLoaded ? 'bg-black/40' : 'bg-black/0'}`} />
-      
-      {/* Content Container */}
-      <div className="relative z-10 h-full flex flex-col">
-        
+    <section ref={containerRef} className="relative h-screen w-full overflow-hidden bg-[#0b0b0b]">
+      {/* Slides */}
+      {slides.map((slide, i) => (
+        <div
+          key={`slide-${i}`}
+          ref={el => { slidesRef.current[i] = el; }}
+          className="absolute inset-0 w-full h-full will-change-transform"
+        >
+          <Image
+            src={slide.image.src}
+            alt={slide.image.alt}
+            fill
+            priority={i === 0}
+            className="object-cover"
+          />
+          {/* Subtle gradient to ensure white text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40" />
+        </div>
+      ))}
+
+      {/* Interface Overlay */}
+      <div className="absolute inset-0 z-10 flex flex-col pointer-events-none">
+
         {/* Header with Logo and Navigation */}
-        <header className="flex justify-between items-start px-6 md:px-10 lg:px-12 py-4 md:py-5 lg:py-7">
+        <header className="flex justify-between items-start px-6 md:px-10 lg:px-12 py-4 md:py-5 lg:py-7 pointer-events-auto">
           {/* Logo Section */}
-          <motion.div 
-            className="flex flex-col"
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <motion.div 
-              className="flex items-center space-x-3 mb-2"
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
-            >
-              <motion.img
-                src="/logos/logo4.svg"
-                alt="GICA Logo"
-                width={64}
-                height={64}
-                className="w-20 h-20 md:w-24 md:h-24 lg:w-32 lg:h-32"
-                initial={{ scale: 0.8 }}
-                animate={{ rotate: 0, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.4, type: "spring", stiffness: 100 }}
-                whileHover={{ scale: 1.1 }}
-              />
-            </motion.div>
-          </motion.div>
-          
+          <div className="flex items-center space-x-3 mb-2 cursor-pointer transition-transform hover:scale-105 duration-500">
+            <img src="/logos/logo4.svg" alt="GICA Logo" className="w-20 h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 drop-shadow-lg" />
+          </div>
+
           {/* Navigation */}
-          <motion.div 
-            className="flex items-center space-x-8 md:space-x-12 lg:space-x-20 mt-2 md:mt-3 lg:mt-5 relative"
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-          >
-            <motion.button 
-              className="text-white text-lg md:text-xl font-sabon font-normal cursor-pointer hover:text-gray-300 transition-colors"
-              whileHover={{ scale: 1.1, color: "#f3f4f6" }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
+          <div className="flex items-center space-x-8 md:space-x-12 lg:space-x-20 mt-2 md:mt-3 lg:mt-5">
+            <button
+              className="text-white text-lg md:text-xl font-sabon font-normal cursor-pointer hover:text-gray-300 transition-colors drop-shadow-md"
               onClick={() => {
                 const next = locale === 'en' ? 'rw' : 'en';
-                setIsEnglish(next === 'en');
                 switchLocale(next);
               }}
             >
-              <span className={locale === 'en' ? 'underline' : ''}>EN</span>
-              <span className="mx-1">/</span>
-              <span className={locale === 'rw' ? 'underline' : ''}>KIN</span>
-            </motion.button>
-            
-            {/* Programme Navigation Button */}
-            <motion.button 
-              className="text-white hover:text-gray-300 transition-colors"
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              onClick={openProgramme}
+              <span className={locale === 'en' ? 'opacity-100' : 'opacity-60'}>EN</span>
+              <span className="mx-1 opacity-60">/</span>
+              <span className={locale === 'rw' ? 'opacity-100' : 'opacity-60'}>KIN</span>
+            </button>
+            <button
+              className="text-white hover:text-gray-300 transition-transform hover:scale-105 duration-300 drop-shadow-md"
+              onClick={() => setIsProgrammeOpen(true)}
             >
-              <img
-                src="/logos/navbar.svg"
-                alt="Navigation Menu"
-                className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16"
-              />
-            </motion.button>
-          </motion.div>
+              <img src="/logos/navbar.svg" alt="Navigation Menu" className="w-12 h-12 md:w-14 lg:w-16" />
+            </button>
+          </div>
         </header>
-        
-        {/* Bottom Section with Tagline */}
-        <div className="flex-1 flex items-end pb-20 md:pb-10 lg:pb-14 px-4 md:px-6 lg:px-8">
-          <motion.div 
-            className="flex flex-col md:flex-row items-center md:items-end space-y-4 md:space-y-0 md:space-x-4 w-full"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-          >
-            {/* Scroll indicator arrow */}
-            <motion.div
-              className="flex-shrink-0 cursor-pointer order-2 md:order-1 mt-4 md:mt-0"
-              animate={{ y: [0, 4, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              whileHover={{ scale: 1.2, y: 0 }}
-              whileTap={{ scale: 0.9 }}
+
+        {/* Dynamic Slide Titles (Right-aligned, matching wireframe) */}
+        <div className="flex-1 relative w-full pointer-events-none">
+          {slides.map((slide, i) => (
+            <h1
+              key={`title-${i}`}
+              ref={el => { titlesRef.current[i] = el; }}
+              className="absolute right-6 md:right-16 lg:right-16 -top-4 md:-top-12 text-white text-lg md:text-2xl lg:text-2xl xl:text-2xl font-sabon font-normal tracking-wide text-right invisible drop-shadow-2xl"
             >
-              <motion.svg 
-                className="w-4 h-4 md:w-5 md:h-5 text-white" 
-                fill="currentColor" 
-                viewBox="0 0 20 20"
-                whileHover={{ rotate: 180 }}
-                transition={{ duration: 0.3 }}
-              >
-                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-              </motion.svg>
-            </motion.div>
-            
-            {/* Interactive Tagline */}
-            <motion.div
-              ref={taglineRef}
-              className="relative cursor-pointer order-1 md:order-2"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.8, duration: 0.8 }}
-              onMouseMove={handleMouseMove}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={handleMouseLeave}
-              style={{
-                x: springX,
-                y: springY,
-              }}
-            >
-              {/* Subtle background glow effect */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-white/5 via-white/2 to-white/5 rounded-lg blur-lg"
-                animate={{
-                  opacity: isHovered ? 0.6 : 0,
-                  scale: isHovered ? 1.05 : 1,
-                }}
-                transition={{ duration: 0.4 }}
-              />
-              
-              {/* Main text */}
-              <motion.div
-                className="relative z-10 text-white tracking-wider text-xl md:text-xl lg:text-2xl xl:text-3xl font-sabon font-normal max-w-full md:max-w-4xl lg:max-w-6xl xl:max-w-9xl leading-relaxed text-left md:text-left"
-                animate={{
-                  textShadow: isHovered 
-                    ? "0 0 15px rgba(255, 255, 255, 0.4)"
-                    : "0 0 0px rgba(255, 255, 255, 0)",
-                  filter: isHovered ? "brightness(1.1)" : "brightness(1)",
-                }}
-                transition={{ duration: 0.3 }}
-              >
-                {/* Typewriter text with cursor */}
-                <span className="relative">
-                  {displayText}
-                  {currentIndex < fullText.length && (
-                    <motion.span
-                      className="inline-block w-0.5 h-6 md:h-8 bg-white ml-1"
-                      animate={{ opacity: [0, 1, 0] }}
-                      transition={{ duration: 1, repeat: Infinity }}
-                    />
-                  )}
-                </span>
-                
-                {/* Particle effects on hover */}
-                {isHovered && particlePositions.length > 0 && (
-                  <>
-                    {particlePositions.map((pos, i) => (
-                      <motion.div
-                        key={i}
-                        className="absolute w-1 h-1 bg-white rounded-full"
-                        initial={{ 
-                          x: pos.initialX, 
-                          y: pos.initialY,
-                          opacity: 0,
-                          scale: 0
-                        }}
-                        animate={{ 
-                          x: pos.targetX,
-                          y: pos.targetY,
-                          opacity: [0, 1, 0],
-                          scale: [0, 1, 0]
-                        }}
-                        transition={{ 
-                          duration: 2,
-                          delay: i * 0.1,
-                          repeat: Infinity,
-                          repeatDelay: 1
-                        }}
-                      />
-                    ))}
-                  </>
-                )}
-              </motion.div>
-            </motion.div>
-          </motion.div>
+              {slide.title}
+            </h1>
+          ))}
         </div>
+
+        {/* Footer info (Tagline with Chevron) */}
+        <div className="flex justify-between items-end pb-36 md:pb-12 px-6 md:px-10 lg:px-16 pointer-events-auto w-full">
+          <div className="group flex items-center space-x-4 md:space-x-6 cursor-pointer opacity-90 hover:opacity-100 transition-opacity duration-500 max-w-full">
+            <div ref={chevronRef} className="flex-shrink-0">
+              <svg className="w-6 h-6 md:w-8 md:h-8 text-white stroke-[2.5] group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+            <p ref={taglineRef} className="text-white font-sabon text-xl md:text-2xl lg:text-3xl tracking-wide max-w-[85vw] md:max-w-none md:whitespace-nowrap overflow-hidden text-ellipsis drop-shadow-md leading-relaxed transition-all duration-700 ease-out group-hover:tracking-wider group-hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.6)]">
+              {tagline}
+            </p>
+          </div>
+        </div>
+
+        {/* Left/Right Arrows for Desktop/Tablet */}
+        <button
+          id="hero-prev"
+          className={`absolute left-4 top-1/2 -translate-y-1/2 text-white p-4 pointer-events-auto transition-all duration-300 opacity-70 hover:opacity-100 hover:scale-110`}
+          aria-label="Previous slide"
+        >
+          <svg className="w-8 h-8 md:w-10 md:h-10 stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          id="hero-next"
+          className={`absolute right-4 top-1/2 -translate-y-1/2 text-white p-4 pointer-events-auto transition-all duration-300 opacity-70 hover:opacity-100 hover:scale-110`}
+          aria-label="Next slide"
+        >
+          <svg className="w-8 h-8 md:w-10 md:h-10 stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
 
-      {/* Programme Overlay - Full ProgrammeSection Layout */}
+      {/* Programme Modal */}
       {programmeData && isProgrammeOpen && (
-        <div
-          className="fixed inset-0 z-50"
-          onClick={closeProgramme}
-        >
-          {/* Background Image */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md pointer-events-auto" onClick={() => setIsProgrammeOpen(false)}>
           <div className="absolute inset-0">
             <Image
               src={programmeData.backgroundImage.src}
               alt={programmeData.backgroundImage.alt}
               fill
-              className="object-cover"
-              placeholder="blur"
-              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+              className="object-cover opacity-50"
               quality={75}
             />
           </div>
-          
-          {/* Dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/40" />
-          
-          {/* Content Container - Exact same as ProgrammeSection */}
-          <div 
-            className="relative z-5 min-h-screen grid grid-cols-1 md:grid-cols-2 gap-2 px-4 md:px-8 lg:px-16 py-24 md:py-16"
+
+          <button
+            className="absolute top-6 right-6 z-50 text-white hover:text-gray-300 transition-transform hover:scale-110 p-2"
+            onClick={(e) => { e.stopPropagation(); setIsProgrammeOpen(false); }}
+          >
+            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          <div
+            className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-12 text-white px-8"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Left: Title */}
-            <div className="flex items-center justify-center md:justify-start">
-              <motion.h2 
-                className="text-white text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-sabon font-normal text-center md:text-left -mt-40 md:mt-0"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                {programmeData.title}
-              </motion.h2>
+            <div className="flex flex-col justify-center">
+              <h2 className="text-4xl md:text-5xl lg:text-7xl font-sabon mb-6">{programmeData.title}</h2>
+              <p className="text-lg md:text-xl text-gray-200 font-sabon max-w-md">{programmeData.description}</p>
             </div>
-            {/* Right: Vertical Menu */}
-            <div className="flex items-center justify-center md:justify-start">
-              <motion.ul 
-                className="space-y-8 md:space-y-12 lg:space-y-20 text-center md:text-left md:ml-40 -mt-72 md:mt-0"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
+            <div className="flex flex-col justify-center items-start md:items-end">
+              <ul className="space-y-6 md:space-y-10">
                 {programmeData.menuItems.map((item, idx) => (
                   <li key={idx}>
-                    <button 
-                      className="text-white text-lg md:text-xl lg:text-xl font-sabon hover:opacity-80 transition-opacity"
-                      onClick={closeProgramme}
+                    <button
+                      className="text-2xl md:text-3xl lg:text-4xl origin-right font-sabon hover:text-gray-300 hover:scale-105 transition-all duration-300"
+                      onClick={() => setIsProgrammeOpen(false)}
                     >
                       {item.label}
                     </button>
                   </li>
                 ))}
-              </motion.ul>
+              </ul>
             </div>
           </div>
-          
-          
-          {/* Close Button */}
-          <button
-            className="absolute top-6 right-6 z-50 text-white hover:text-gray-300 transition-colors p-2"
-            onClick={closeProgramme}
-          >
-            <svg 
-              className="w-8 h-8 md:w-10 md:h-10" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
         </div>
       )}
     </section>
   );
 }
-
-

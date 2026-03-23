@@ -25,14 +25,15 @@ export default async function Page() {
   return (
     <>
       <Hero 
-        title={t('hero.title')} 
-        subtitle={t('hero.subtitle')}
-        image={{
-          src: '/images/hero-background.webp', // You'll upload this
-          width: 1920,
-          height: 1080,
-          blurDataURL: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k='
-        }}
+        tagline={t('hero.subtitle')}
+        slides={[
+          { title: '', image: { src: '/images/hero-background.webp', alt: 'GICA' } },
+          { title: t('hero.slides.exhibitions'), image: { src: '/images/hero-exhibitions.webp', alt: 'Exhibitions' } },
+          { title: t('hero.slides.screenings'), image: { src: '/images/hero-screenings.webp', alt: 'Screenings' } },
+          { title: t('hero.slides.talks'), image: { src: '/images/hero-talks.webp', alt: 'Talks' } },
+          { title: t('hero.slides.library'), image: { src: '/images/hero-library.webp', alt: 'The Koyo Kouoh Library' } },
+          { title: t('hero.slides.events'), image: { src: '/images/hero-events.webp', alt: 'Events' } }
+        ]}
         programmeData={{
           title: currentProgramme.title,
           description: currentProgramme.description,

@@ -2,7 +2,14 @@
   "landing": {
     "hero": {
       "title": "Igicumbi cy'ubuhanzi, ubushakashatsi, hamwe n'ibitekerezo rusange.",
-      "subtitle": "Ahantu ho kubyara ibitekerezo, ubushakashatsi n'imyidagaduro y'ubugeni."
+      "subtitle": "Ahantu ho kubyara ibitekerezo, ubushakashatsi n'imyidagaduro y'ubugeni.",
+      "slides": {
+        "library": "The Koyo Kouoh Library",
+        "exhibitions": "Imurikabikorwa",
+        "screenings": "Iyerekana mashusho",
+        "events": "Ibikorwa",
+        "talks": "Ibiganiro"
+      }
     },
     "about": {
       "title": "Ibyerekeye",

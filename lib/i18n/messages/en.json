@@ -2,7 +2,14 @@
   "landing": {
     "hero": {
       "title": "A living space for art, research, and collective imagination.",
-      "subtitle": "A living space for art, research, and collective imagination."
+      "subtitle": "A living space for art, research, and collective imagination.",
+      "slides": {
+        "library": "The Koyo Kouoh Library",
+        "exhibitions": "Exhibitions",
+        "screenings": "Screenings",
+        "events": "Events",
+        "talks": "Talks"
+      }
     },
     "about": {
       "title": "About",
