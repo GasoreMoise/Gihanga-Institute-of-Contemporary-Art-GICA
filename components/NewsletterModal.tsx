@@ -80,6 +80,7 @@ export default function NewsletterModal() {
     <AnimatePresence>
       {open && (
         <motion.div
+          key="newsletter-modal-wrapper"
           className="fixed bottom-0 left-0 right-0 z-[9999] px-4 pb-4 md:pb-6 pointer-events-none"
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}

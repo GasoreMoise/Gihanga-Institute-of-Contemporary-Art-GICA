@@ -6,10 +6,10 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { Observer, TextPlugin } from 'gsap/all';
+import { Observer, TextPlugin, ScrollTrigger } from 'gsap/all';
 
 if (typeof window !== "undefined") {
-  gsap.registerPlugin(useGSAP, Observer, TextPlugin);
+  gsap.registerPlugin(useGSAP, Observer, TextPlugin, ScrollTrigger);
 }
 
 type Slide = {
@@ -80,7 +80,7 @@ export default function Hero({
         duration: 1.2
       });
     }
-  }, { scope: containerRef });
+  }, { scope: containerRef, dependencies: [] });
 
   useGSAP(() => {
     if (slides.length === 0) return;
@@ -153,8 +153,16 @@ export default function Hero({
     if (nextBtn) nextBtn.onclick = nextSlide;
     if (prevBtn) prevBtn.onclick = prevSlide;
 
-    return () => observer.kill();
-  }, { scope: containerRef });
+    // Pin the hero section during native vertical scrolling so the next section visually slides "over" it (Curtain Wipe effect)
+    const pinTrigger = ScrollTrigger.create({
+      trigger: containerRef.current,
+      start: "top top",
+      end: "+=100%", // Maintain pin for exactly one screen height so the slide over completes
+      pin: true,
+      pinSpacing: false, // Prevents pushing lower content down, allowing it to slide over perfectly
+    });
+
+  }, { scope: containerRef, dependencies: [] });
 
   return (
     <section 
@@ -228,7 +236,7 @@ export default function Hero({
         {/* Footer info (Tagline with Chevron) */}
         <div className="flex justify-between items-end pb-36 md:pb-12 px-6 md:px-10 lg:px-16 pointer-events-auto w-full">
           <div className="group flex items-center space-x-4 md:space-x-6 cursor-pointer opacity-90 hover:opacity-100 transition-opacity duration-500 max-w-full">
-            <div ref={chevronRef} className="flex-shrink-0" id="about-chevron" title="Scroll to About">
+            <div ref={chevronRef} className="flex-shrink-0" id="about-chevron" title="Scroll to About" onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}>
               <svg className="w-6 h-6 md:w-8 md:h-8 text-white stroke-[2.5] group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>

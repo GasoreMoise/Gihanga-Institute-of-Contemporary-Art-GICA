@@ -13,64 +13,83 @@ if (typeof window !== "undefined") {
 export default function AboutSection() {
   const t = useTranslations('landing');
   const containerRef = useRef<HTMLElement>(null);
+  
+  // Dedicated refs to fully isolate text nodes from React's Virtual DOM reconciliation engine
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const missionRef = useRef<HTMLDivElement>(null);
+  const gihangaRef = useRef<HTMLDivElement>(null);
+  const symbolRef = useRef<HTMLDivElement>(null);
+
+  // Capture translation strings safely as dependencies
+  const bodyText = t('about.body');
+  const missionText = t('about.mission');
+  const gihangaText = t('about.gihanga');
+  const symbolText = t('about.symbol');
 
   useGSAP(() => {
-    // Create a master timeline for the entire section
-    const masterTl = gsap.timeline({ paused: true });
+    // 1. Manually inject text outside of React's lifecycle.
+    // This physically prevents React from throwing 'insertBefore' NotFoundErrors,
+    // because React's Virtual DOM assumes these wrapper divs are eternally empty!
+    if (bodyRef.current) bodyRef.current.innerHTML = bodyText;
+    if (missionRef.current) missionRef.current.innerHTML = missionText;
+    if (gihangaRef.current) gihangaRef.current.innerHTML = gihangaText;
+    if (symbolRef.current) symbolRef.current.innerHTML = symbolText;
 
-    // Text masking animations for all split-mask texts
-    const textElements = gsap.utils.toArray('.split-mask') as HTMLElement[];
+    const textElements = [
+      bodyRef.current, 
+      missionRef.current, 
+      gihangaRef.current, 
+      symbolRef.current
+    ].filter(Boolean) as HTMLElement[];
+
+    const splits: SplitText[] = [];
     
     textElements.forEach((el) => {
-      // Use double SplitText layer for masking. 
-      // The outer lines act as overflow-hidden clipping masks.
-      // The inner lines are the targets that animate up from below.
-      const splitOuter = new SplitText(el, { type: "lines", linesClass: "mask-outer overflow-hidden w-full" });
-      const splitInner = new SplitText(splitOuter.lines, { type: "lines", linesClass: "mask-inner w-full" });
-
-      // GSAP SplitText breaks native text-justify because it isolates each line into its own block.
-      // To restore paragraph justification visually, we force 'text-align-last: justify' on every
-      // line except the absolute last line in the paragraph block.
-      splitInner.lines.forEach((lineElement, i) => {
-        const line = lineElement as HTMLElement;
-        if (i < splitInner.lines.length - 1) {
-          line.style.textAlign = "justify";
-          line.style.textAlignLast = "justify";
-        }
+      // Natively split without double-spooling
+      const split = new SplitText(el, { 
+        type: "lines, words", 
+        linesClass: "overflow-hidden w-full",
+        wordsClass: "inline-block" 
       });
 
-      // Animate the inner lines sliding into their outer masks at timeline start
-      masterTl.from(splitInner.lines, {
+      splits.push(split);
+
+      split.lines.forEach((lineElement) => {
+        const line = lineElement as HTMLElement;
+        line.style.textAlign = "justify";
+        line.style.textAlignLast = "justify";
+      });
+
+      gsap.from(split.words, {
         yPercent: 120,
         autoAlpha: 0,
         duration: 1.4,
         ease: "power4.out",
-        stagger: 0.05
-      }, 0);
+        stagger: 0.02,
+        scrollTrigger: {
+          trigger: el,
+          start: "top 85%",
+        }
+      });
     });
 
-    // Fade in the SVG icon and title concurrently
-    masterTl.from('.fade-in-element', {
+    gsap.from('.fade-in-element', {
       autoAlpha: 0,
       y: 30,
       duration: 1.5,
-      ease: "power3.out"
-    }, 0);
-
-    // Initial load: if this slider is the first active one, or reached natively before JS hijacks, we might want to play it!
-    // But VerticalSlider manages this by immediately dispatching slideEnter on load.
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top 75%",
+      }
+    });
     
-    // Hook into the vertical slider's custom events to trigger the animation perfectly
-    const elSection = containerRef.current;
-    if (!elSection) return;
-
-    const handleSlideEnter = () => masterTl.restart();
-    elSection.addEventListener('slideEnter', handleSlideEnter);
-
+    // Unspool GSAP directly cleanly during unmount
     return () => {
-      elSection.removeEventListener('slideEnter', handleSlideEnter);
+      splits.forEach(s => s.revert());
     };
-  }, { scope: containerRef });
+
+  }, { scope: containerRef, dependencies: [bodyText, missionText, gihangaText, symbolText] });
 
   return (
     <section
@@ -88,23 +107,26 @@ export default function AboutSection() {
         </div>
 
         {/* Main Body */}
-        <div className="w-full text-white text-opacity-90 font-sabon text-sm md:text-lg lg:text-xl xl:text-lg leading-relaxed lg:leading-[1.6] text-justify split-mask">
-          {t('about.body')}
-        </div>
+        <div 
+          ref={bodyRef}
+          className="w-full text-white text-opacity-90 font-sabon text-sm md:text-lg lg:text-xl xl:text-lg leading-relaxed lg:leading-[1.6] text-justify"
+        ></div>
 
         {/* Mission (Right aligned) */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full">
           <div className="col-span-1 md:col-span-6 hidden md:block"></div>
-          <div className="col-span-1 md:col-span-6 text-white text-opacity-80 font-sabon text-xs md:text-sm lg:text-base leading-relaxed lg:leading-loose tracking-wide text-justify split-mask md:pl-10">
-            {t('about.mission')}
-          </div>
+          <div 
+            ref={missionRef}
+            className="col-span-1 md:col-span-6 text-white text-opacity-80 font-sabon text-xs md:text-sm lg:text-base leading-relaxed lg:leading-loose tracking-wide text-justify md:pl-10"
+          ></div>
         </div>
 
         {/* Gihanga (Left aligned) */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full">
-          <div className="col-span-1 md:col-span-6 text-white text-opacity-80 font-sabon text-xs md:text-sm lg:text-base leading-relaxed lg:leading-loose tracking-wide text-justify split-mask md:pr-10">
-            {t('about.gihanga')}
-          </div>
+          <div 
+            ref={gihangaRef}
+            className="col-span-1 md:col-span-6 text-white text-opacity-80 font-sabon text-xs md:text-sm lg:text-base leading-relaxed lg:leading-loose tracking-wide text-justify md:pr-10"
+          ></div>
           <div className="col-span-1 md:col-span-6 hidden md:block"></div>
         </div>
 
@@ -116,9 +138,10 @@ export default function AboutSection() {
             <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 fade-in-element mix-blend-lighten">
               <img src="/images/about-logo.webp" alt="GICA Symbol" className="w-full h-full object-contain" />
             </div>
-            <div className="text-white text-opacity-80 font-sabon text-[0.65rem] md:text-xs lg:text-sm leading-relaxed tracking-wide text-justify split-mask pt-2 md:pt-0">
-              {t('about.symbol')}
-            </div>
+            <div 
+              ref={symbolRef}
+              className="text-white text-opacity-80 font-sabon text-[0.65rem] md:text-xs lg:text-sm leading-relaxed tracking-wide text-justify pt-2 md:pt-0"
+            ></div>
           </div>
         </div>
 

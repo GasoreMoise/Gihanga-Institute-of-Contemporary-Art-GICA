@@ -1,18 +1,17 @@
+import { getTranslations } from 'next-intl/server';
+import { headers } from 'next/headers';
 import Hero from '@/components/Hero';
-import Footer from '@/components/Footer';
 import AboutSection from '@/components/AboutSection';
 import WelcomeSection from '@/components/WelcomeSection';
 import ExhibitionSection from '@/components/ExhibitionSection';
 import VisitSection from '@/components/VisitSection';
 import ContactStayInTouch from '@/components/ContactStayInTouch';
 import NewsletterModal from '@/components/NewsletterModal';
-import VerticalSlider from '@/components/VerticalSlider';
+import Footer from '@/components/Footer';
 import { getCurrentExhibition } from '@/lib/data/exhibitions';
 import { getCurrentProgramme } from '@/lib/data/programme';
 import { getVisitData } from '@/lib/data/visit';
 import { getContactContent } from '@/lib/data/contact';
-import { getTranslations } from 'next-intl/server';
-import { headers } from 'next/headers';
 
 export default async function Page() {
   const t = await getTranslations('landing');
@@ -24,26 +23,28 @@ export default async function Page() {
   const contact = await getContactContent(locale);
 
   return (
-    <>
+    <main className="w-full relative overflow-x-hidden bg-[#0A1116]">
       <NewsletterModal />
-      <VerticalSlider>
-        <Hero 
-          tagline={t('hero.subtitle')}
-          slides={[
-            { title: '', image: { src: '/images/hero-background.webp', alt: 'GICA' } },
-            { title: t('hero.slides.exhibitions'), image: { src: '/images/hero-exhibitions.webp', alt: 'Exhibitions' } },
-            { title: t('hero.slides.screenings'), image: { src: '/images/hero-screenings.webp', alt: 'Screenings' } },
-            { title: t('hero.slides.talks'), image: { src: '/images/hero-talks.webp', alt: 'Talks' } },
-            { title: t('hero.slides.library'), image: { src: '/images/hero-library.webp', alt: 'The Koyo Kouoh Library' } },
-            { title: t('hero.slides.events'), image: { src: '/images/hero-events.webp', alt: 'Events' } }
-          ]}
-          programmeData={{
-            title: currentProgramme.title,
-            description: currentProgramme.description,
-            menuItems: currentProgramme.menuItems,
-            backgroundImage: currentProgramme.backgroundImage
-          }}
-        />
+      <Hero 
+        tagline={t('hero.subtitle')}
+        slides={[
+          { title: '', image: { src: '/images/hero-background.webp', alt: 'GICA' } },
+          { title: t('hero.slides.exhibitions'), image: { src: '/images/hero-exhibitions.webp', alt: 'Exhibitions' } },
+          { title: t('hero.slides.screenings'), image: { src: '/images/hero-screenings.webp', alt: 'Screenings' } },
+          { title: t('hero.slides.talks'), image: { src: '/images/hero-talks.webp', alt: 'Talks' } },
+          { title: t('hero.slides.library'), image: { src: '/images/hero-library.webp', alt: 'The Koyo Kouoh Library' } },
+          { title: t('hero.slides.events'), image: { src: '/images/hero-events.webp', alt: 'Events' } }
+        ]}
+        programmeData={{
+          title: currentProgramme.title,
+          description: currentProgramme.description,
+          menuItems: currentProgramme.menuItems,
+          backgroundImage: currentProgramme.backgroundImage
+        }}
+      />
+      
+      {/* The rest of the page content slides up over the Hero as a solid block */}
+      <div className="relative z-10 w-full bg-[#0a1116] shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
         <AboutSection />
         <WelcomeSection />
         <ExhibitionSection
@@ -72,9 +73,7 @@ export default async function Page() {
           backgroundImage={contact.backgroundImage}
         />
         <Footer />
-      </VerticalSlider>
-    </>
+      </div>
+    </main>
   );
 }
-
-
