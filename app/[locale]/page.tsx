@@ -2,8 +2,9 @@ import { getTranslations } from 'next-intl/server';
 import { headers } from 'next/headers';
 import Hero from '@/components/Hero';
 import AboutSection from '@/components/AboutSection';
-import WelcomeSection from '@/components/WelcomeSection';
-import ExhibitionSection from '@/components/ExhibitionSection';
+import QuotesSection from '@/components/QuotesSection';
+import PartnersSection from '@/components/PartnersSection';
+import PressSection from '@/components/PressSection';
 import VisitSection from '@/components/VisitSection';
 import ContactStayInTouch from '@/components/ContactStayInTouch';
 import NewsletterModal from '@/components/NewsletterModal';
@@ -25,7 +26,7 @@ export default async function Page() {
   return (
     <main className="w-full relative overflow-x-hidden bg-[#0A1116]">
       <NewsletterModal />
-      <Hero 
+      <Hero
         tagline={t('hero.subtitle')}
         slides={[
           { title: '', image: { src: '/images/hero-background.webp', alt: 'GICA' } },
@@ -42,18 +43,13 @@ export default async function Page() {
           backgroundImage: currentProgramme.backgroundImage
         }}
       />
-      
+
       {/* The rest of the page content slides up over the Hero as a solid block */}
       <div className="relative z-10 w-full bg-[#0a1116] shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
         <AboutSection />
-        <WelcomeSection />
-        <ExhibitionSection
-          title={currentExhibition.title}
-          artists={currentExhibition.artists}
-          dates={currentExhibition.dates}
-          image={currentExhibition.image}
-          artworkCaption={currentExhibition.artworkCaption}
-        />
+        <QuotesSection />
+        <PartnersSection />
+        <PressSection />
         <VisitSection
           title={visit.title}
           openingTitle={visit.openingTitle}

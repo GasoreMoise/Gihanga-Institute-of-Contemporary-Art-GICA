@@ -47,24 +47,24 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({
-  children
+  children,
+  params: { locale } // Standard way to get locale in App Router
 }: {
   children: React.ReactNode;
+  params: { locale: string };
 }) {
-  const locale = await getLocale();
   const messages = await getMessages();
+
   return (
+    <html lang={locale}>
+      <body className="antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
-          {/* <Nav /> */}
           {children}
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd()) }}
-          />
-      <SpeedInsights />
-      <Analytics />
+          <SpeedInsights />
+          <Analytics />
         </NextIntlClientProvider>
+      </body>
+    </html>
   );
 }
-
 

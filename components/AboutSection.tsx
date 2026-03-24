@@ -13,7 +13,7 @@ if (typeof window !== "undefined") {
 export default function AboutSection() {
   const t = useTranslations('landing');
   const containerRef = useRef<HTMLElement>(null);
-  
+
   // Dedicated refs to fully isolate text nodes from React's Virtual DOM reconciliation engine
   const bodyRef = useRef<HTMLDivElement>(null);
   const missionRef = useRef<HTMLDivElement>(null);
@@ -36,20 +36,20 @@ export default function AboutSection() {
     if (symbolRef.current) symbolRef.current.innerHTML = symbolText;
 
     const textElements = [
-      bodyRef.current, 
-      missionRef.current, 
-      gihangaRef.current, 
+      bodyRef.current,
+      missionRef.current,
+      gihangaRef.current,
       symbolRef.current
     ].filter(Boolean) as HTMLElement[];
 
     const splits: SplitText[] = [];
-    
+
     textElements.forEach((el) => {
       // Natively split without double-spooling
-      const split = new SplitText(el, { 
-        type: "lines, words", 
+      const split = new SplitText(el, {
+        type: "lines, words",
         linesClass: "overflow-hidden w-full",
-        wordsClass: "inline-block" 
+        wordsClass: "inline-block"
       });
 
       splits.push(split);
@@ -83,7 +83,7 @@ export default function AboutSection() {
         start: "top 75%",
       }
     });
-    
+
     // Unspool GSAP directly cleanly during unmount
     return () => {
       splits.forEach(s => s.revert());
@@ -107,7 +107,7 @@ export default function AboutSection() {
         </div>
 
         {/* Main Body */}
-        <div 
+        <div
           ref={bodyRef}
           className="w-full text-white text-opacity-90 font-sabon text-sm md:text-lg lg:text-xl xl:text-lg leading-relaxed lg:leading-[1.6] text-justify"
         ></div>
@@ -115,7 +115,7 @@ export default function AboutSection() {
         {/* Mission (Right aligned) */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full">
           <div className="col-span-1 md:col-span-6 hidden md:block"></div>
-          <div 
+          <div
             ref={missionRef}
             className="col-span-1 md:col-span-6 text-white text-opacity-80 font-sabon text-xs md:text-sm lg:text-base leading-relaxed lg:leading-loose tracking-wide text-justify md:pl-10"
           ></div>
@@ -123,7 +123,7 @@ export default function AboutSection() {
 
         {/* Gihanga (Left aligned) */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full">
-          <div 
+          <div
             ref={gihangaRef}
             className="col-span-1 md:col-span-6 text-white text-opacity-80 font-sabon text-xs md:text-sm lg:text-base leading-relaxed lg:leading-loose tracking-wide text-justify md:pr-10"
           ></div>
@@ -138,7 +138,7 @@ export default function AboutSection() {
             <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 fade-in-element mix-blend-lighten">
               <img src="/images/about-logo.webp" alt="GICA Symbol" className="w-full h-full object-contain" />
             </div>
-            <div 
+            <div
               ref={symbolRef}
               className="text-white text-opacity-80 font-sabon text-[0.65rem] md:text-xs lg:text-sm leading-relaxed tracking-wide text-justify pt-2 md:pt-0"
             ></div>

@@ -32,7 +32,7 @@ export default function VisitSection({
   const [bgLoaded, setBgLoaded] = useState(false);
   const instagramHandle = social?.trim().replace(/^@/, '');
   return (
-    <section id="visit" className="w-full bg-white">
+    <section id="visit" className="w-full bg-[#FAF6ED]">
       <div className="mx-auto max-w-7xl px-10 py-16">
         <div className="flex flex-col md:flex-row items-start gap-16">
           {/* Left: Tall image */}
