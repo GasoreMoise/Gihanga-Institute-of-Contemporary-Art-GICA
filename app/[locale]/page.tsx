@@ -41,12 +41,6 @@ export default async function Page() {
           { title: t('hero.slides.library'), image: { src: '/images/hero-library.webp', alt: 'The Koyo Kouoh Library' } },
           { title: t('hero.slides.events'), image: { src: '/images/hero-events.webp', alt: 'Events' } }
         ]}
-        programmeData={{
-          title: currentProgramme.title,
-          description: currentProgramme.description,
-          menuItems: currentProgramme.menuItems,
-          backgroundImage: currentProgramme.backgroundImage
-        }}
       />
 
       <div className="relative z-10 w-full bg-[#0a1116] shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
