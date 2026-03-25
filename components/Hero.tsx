@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
+import { useState, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import gsap from 'gsap';
@@ -9,6 +10,7 @@ import { useGSAP } from '@gsap/react';
 import { Observer, TextPlugin, ScrollTrigger } from 'gsap/all';
 
 if (typeof window !== "undefined") {
+  // Registering TextPlugin is vital for the typewriter effect
   gsap.registerPlugin(useGSAP, Observer, TextPlugin, ScrollTrigger);
 }
 
@@ -18,30 +20,14 @@ type Slide = {
 };
 
 export default function Hero({
+  id,
   tagline,
   slides,
-  programmeData
 }: {
   id?: string;
   tagline: string;
   slides: Slide[];
-  programmeData?: {
-    title: string;
-    description: string;
-    menuItems: { label: string }[];
-    backgroundImage: {
-      src: string;
-      alt: string;
-      width: number;
-      height: number;
-    };
-  };
 }) {
-  const [isProgrammeOpen, setIsProgrammeOpen] = useState(false);
-  const router = useRouter();
-  const pathname = usePathname();
-  const locale = useLocale();
-
   const containerRef = useRef<HTMLDivElement>(null);
   const slidesRef = useRef<(HTMLDivElement | null)[]>([]);
   const titlesRef = useRef<(HTMLHeadingElement | null)[]>([]);
@@ -51,27 +37,33 @@ export default function Hero({
   const [currentIndex, setCurrentIndex] = useState(0);
   const activeIndexRef = useRef(0);
   const isAnimating = useRef(false);
+  const locale = useLocale();
 
-  const switchLocale = (newLocale: string) => {
-    if (!pathname) return;
-    const segments = pathname.split('/');
-    segments[1] = newLocale;
-    router.push(segments.join('/') as any);
-  };
+  // Define the font stack as a constant to ensure consistency
+  const sabonFont = '"Sabon Next LT", Sabon, serif';
 
   useGSAP(() => {
-    // Typewriter effect for tagline on initial load
     if (taglineRef.current) {
-      gsap.set(taglineRef.current, { text: "" });
+      // Set the font BEFORE the animation starts
+      gsap.set(taglineRef.current, {
+        text: "",
+        fontFamily: sabonFont
+      });
+
       gsap.to(taglineRef.current, {
         text: tagline,
         duration: Math.min(tagline.length * 0.05, 3),
         ease: "none",
-        delay: 0.5
+        delay: 0.5,
+        // onComplete ensures that GSAP doesn't leave any messy inline styles 
+        // that might break the font family
+        onComplete: () => {
+          gsap.set(taglineRef.current, { clearProps: "all" });
+          if (taglineRef.current) taglineRef.current.style.fontFamily = sabonFont;
+        }
       });
     }
 
-    // Gentle bounce animation for the chevron
     if (chevronRef.current) {
       gsap.to(chevronRef.current, {
         y: 8,
@@ -81,21 +73,22 @@ export default function Hero({
         duration: 1.2
       });
     }
-  }, { scope: containerRef, dependencies: [] });
+  }, { scope: containerRef });
 
   useGSAP(() => {
     if (slides.length === 0) return;
 
-    // Initial setup: position slides and titles
     gsap.set(slidesRef.current, {
       autoAlpha: i => i === activeIndexRef.current ? 1 : 0,
       zIndex: i => i === activeIndexRef.current ? 1 : 0,
       xPercent: 0
     });
+
     gsap.set(titlesRef.current, {
       autoAlpha: i => i === activeIndexRef.current ? 1 : 0,
       x: i => i === activeIndexRef.current ? 0 : 50,
-      y: 0
+      y: 0,
+      fontFamily: sabonFont // Force it here too
     });
 
     const gotoSlide = (index: number, direction: number) => {
@@ -109,14 +102,12 @@ export default function Hero({
 
       const nextSlide = slidesRef.current[nextIndex];
       const currentSlide = slidesRef.current[activeIndexRef.current];
-
       const nextTitle = titlesRef.current[nextIndex];
       const currentTitle = titlesRef.current[activeIndexRef.current];
 
       activeIndexRef.current = nextIndex;
-      setCurrentIndex(nextIndex); // Update React state for UI (arrows, etc.)
+      setCurrentIndex(nextIndex);
 
-      // Prepare next slide position: stacked visually on top of current
       gsap.set(currentSlide, { zIndex: 0 });
       gsap.set(nextSlide, { autoAlpha: 1, zIndex: 1, xPercent: dX });
       gsap.set(nextTitle, { autoAlpha: 0, x: isNext ? 100 : -100 });
@@ -131,44 +122,43 @@ export default function Hero({
 
       tl.to(currentSlide, { xPercent: parallaxX }, 0)
         .to(nextSlide, { xPercent: 0 }, 0)
-        .to(currentTitle, { autoAlpha: 0, x: isNext ? -50 : 50, duration: 0.6, ease: "power1.in" }, 0)
-        .to(nextTitle, { autoAlpha: 1, x: 0, duration: 1, ease: "power2.out" }, 0.25);
+        .to(currentTitle, { autoAlpha: 0, x: isNext ? -50 : 50, duration: 0.6 }, 0)
+        .to(nextTitle, { autoAlpha: 1, x: 0, duration: 1 }, 0.25);
     };
 
     const nextSlide = () => gotoSlide(activeIndexRef.current + 1, 1);
     const prevSlide = () => gotoSlide(activeIndexRef.current - 1, -1);
 
-    const observer = Observer.create({
+    Observer.create({
       target: containerRef.current,
       type: "wheel,touch,pointer",
       wheelSpeed: -1,
       onLeft: () => !isAnimating.current && nextSlide(),
       onRight: () => !isAnimating.current && prevSlide(),
-      tolerance: 30, // Increase slightly so light taps don't trigger it
-      preventDefault: false // Let the browser handle vertical scrolling pan-y
+      tolerance: 30,
+      preventDefault: false
     });
 
-    // Cleanup navigation links for buttons
     const nextBtn = document.getElementById('hero-next');
     const prevBtn = document.getElementById('hero-prev');
     if (nextBtn) nextBtn.onclick = nextSlide;
     if (prevBtn) prevBtn.onclick = prevSlide;
 
-    // Pin the hero section during native vertical scrolling so the next section visually slides "over" it (Curtain Wipe effect)
-    const pinTrigger = ScrollTrigger.create({
+    ScrollTrigger.create({
       trigger: containerRef.current,
       start: "top top",
-      end: "+=100%", // Maintain pin for exactly one screen height so the slide over completes
+      end: "+=100%",
       pin: true,
-      pinSpacing: false, // Prevents pushing lower content down, allowing it to slide over perfectly
+      pinSpacing: false,
     });
 
-  }, { scope: containerRef, dependencies: [] });
+  }, { scope: containerRef });
 
   return (
     <section
+      id={id || "hero"}
       ref={containerRef}
-      className="relative h-screen w-full overflow-hidden bg-[#0b0b0b] snap-start touch-pan-y select-none cursor-grab active:cursor-grabbing"
+      className="font-sabon relative h-screen w-full overflow-hidden bg-[#0b0b0b] snap-start touch-pan-y select-none cursor-grab active:cursor-grabbing isolate"
     >
       {/* Slides */}
       {slides.map((slide, i) => (
@@ -184,7 +174,6 @@ export default function Hero({
             priority={i === 0}
             className="object-cover"
           />
-          {/* Subtle gradient to ensure white text readability */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40" />
         </div>
       ))}
@@ -192,130 +181,61 @@ export default function Hero({
       {/* Interface Overlay */}
       <div className="absolute inset-0 z-10 flex flex-col pointer-events-none">
 
-        {/* Header with Logo and Navigation */}
-        <header className="flex justify-between items-start px-6 md:px-10 lg:px-12 py-4 md:py-5 lg:py-7 pointer-events-auto">
-          {/* Logo Section */}
-          <div className="flex items-center space-x-3 mb-2 cursor-pointer transition-transform hover:scale-105 duration-500">
-            <img src="/logos/logo4.svg" alt="GICA Logo" className="w-20 h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 drop-shadow-lg" />
-          </div>
+        {/* Dynamic Slide Titles */}
+        <div className="flex-1 relative w-full pointer-events-none mt-32 md:mt-40 px-6 md:px-16">
+          {slides.map((slide, i) => {
+            // Check if this slide title refers to exhibitions
+            const isExhibitionSlide = slide.title.toLowerCase().includes('exhibition');
 
-          {/* Navigation */}
-          <div className="flex items-center space-x-8 md:space-x-12 lg:space-x-20 mt-2 md:mt-3 lg:mt-5">
-            <button
-              className="text-white text-lg md:text-xl font-sabon font-normal cursor-pointer hover:text-gray-300 transition-colors drop-shadow-md"
-              onClick={() => {
-                const next = locale === 'en' ? 'rw' : 'en';
-                switchLocale(next);
-              }}
-            >
-              <span className={locale === 'en' ? 'opacity-100' : 'opacity-60'}>EN</span>
-              <span className="mx-1 opacity-60">/</span>
-              <span className={locale === 'rw' ? 'opacity-100' : 'opacity-60'}>KIN</span>
-            </button>
-            <button
-              className="text-white hover:text-gray-300 transition-transform hover:scale-105 duration-300 drop-shadow-md"
-              onClick={() => setIsProgrammeOpen(true)}
-            >
-              <img src="/logos/navbar.svg" alt="Navigation Menu" className="w-12 h-12 md:w-14 lg:w-16" />
-            </button>
-          </div>
-        </header>
-
-        {/* Dynamic Slide Titles (Right-aligned, matching wireframe) */}
-        <div className="flex-1 relative w-full pointer-events-none">
-          {slides.map((slide, i) => (
-            <h1
-              key={`title-${i}`}
-              ref={el => { titlesRef.current[i] = el; }}
-              className="absolute right-6 md:right-16 lg:right-16 -top-4 md:-top-12 text-white text-lg md:text-2xl lg:text-2xl xl:text-2xl font-sabon font-normal tracking-wide text-right invisible drop-shadow-2xl"
-            >
-              {slide.title}
-            </h1>
-          ))}
+            return (
+              <h1
+                key={`title-${i}`}
+                ref={el => { titlesRef.current[i] = el; }}
+                className="font-sabon absolute right-12 text-white text-xl md:text-2xl font-normal tracking-widest text-right invisible drop-shadow-2xl italic"
+              >
+                {isExhibitionSlide ? (
+                  <Link
+                    href={`/${locale}/exhibitions`}
+                    className="pointer-events-auto hover:text-white/70 transition-colors decoration-white/30"
+                  >
+                    {slide.title}
+                  </Link>
+                ) : (
+                  slide.title
+                )}
+              </h1>
+            );
+          })}
         </div>
 
         {/* Footer info (Tagline with Chevron) */}
-        <div className="flex justify-between items-end pb-36 md:pb-12 px-6 md:px-10 lg:px-16 pointer-events-auto w-full">
-          <div className="group flex items-center space-x-4 md:space-x-6 cursor-pointer opacity-90 hover:opacity-100 transition-opacity duration-500 max-w-full">
-            <div ref={chevronRef} className="flex-shrink-0" id="about-chevron" title="Scroll to About" onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}>
-              <svg className="w-6 h-6 md:w-8 md:h-8 text-white stroke-[2.5] group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="flex justify-between items-end pb-32 md:pb-12 px-6 md:px-10 lg:px-16 pointer-events-auto w-full">
+          <div
+            className="group flex items-center space-x-2 md:space-x-6 cursor-pointer"
+            onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+          >
+            <div ref={chevronRef}>
+              <svg className="w-6 h-6 md:w-8 md:h-8 text-white stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </div>
-            <p ref={taglineRef} className="text-white font-sabon text-xl md:text-2xl lg:text-3xl tracking-wide max-w-[85vw] md:max-w-none md:whitespace-nowrap overflow-hidden text-ellipsis drop-shadow-md leading-relaxed transition-all duration-700 ease-out group-hover:tracking-wider group-hover:drop-shadow-[0_0_12px_rgba(255,255,255,0.6)]">
+            <p
+              ref={taglineRef}
+              className="font-sabon text-white text-xl md:text-3xl tracking-wide drop-shadow-md leading-relaxed italic"
+            >
               {tagline}
             </p>
           </div>
         </div>
 
-        {/* Left/Right Arrows for Desktop/Tablet */}
-        <button
-          id="hero-prev"
-          className={`absolute left-4 top-1/2 -translate-y-1/2 text-white p-4 pointer-events-auto transition-all duration-300 opacity-70 hover:opacity-100 hover:scale-110`}
-          aria-label="Previous slide"
-        >
-          <svg className="w-8 h-8 md:w-10 md:h-10 stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
+        {/* Arrows... */}
+        <button id="hero-prev" className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-4 pointer-events-auto transition-all duration-300 hover:scale-110">
+          <svg className="w-8 h-8 md:w-10 md:h-10 stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
         </button>
-        <button
-          id="hero-next"
-          className={`absolute right-4 top-1/2 -translate-y-1/2 text-white p-4 pointer-events-auto transition-all duration-300 opacity-70 hover:opacity-100 hover:scale-110`}
-          aria-label="Next slide"
-        >
-          <svg className="w-8 h-8 md:w-10 md:h-10 stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
+        <button id="hero-next" className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-4 pointer-events-auto transition-all duration-300 hover:scale-110">
+          <svg className="w-8 h-8 md:w-10 md:h-10 stroke-[1.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
         </button>
       </div>
-
-      {/* Programme Modal */}
-      {programmeData && isProgrammeOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md pointer-events-auto" onClick={() => setIsProgrammeOpen(false)}>
-          <div className="absolute inset-0">
-            <Image
-              src={programmeData.backgroundImage.src}
-              alt={programmeData.backgroundImage.alt}
-              fill
-              className="object-cover opacity-50"
-              quality={75}
-            />
-          </div>
-
-          <button
-            className="absolute top-6 right-6 z-50 text-white hover:text-gray-300 transition-transform hover:scale-110 p-2"
-            onClick={(e) => { e.stopPropagation(); setIsProgrammeOpen(false); }}
-          >
-            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-
-          <div
-            className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-12 text-white px-8"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex flex-col justify-center">
-              <h2 className="text-4xl md:text-5xl lg:text-7xl font-sabon mb-6">{programmeData.title}</h2>
-              <p className="text-lg md:text-xl text-gray-200 font-sabon max-w-md">{programmeData.description}</p>
-            </div>
-            <div className="flex flex-col justify-center items-start md:items-end">
-              <ul className="space-y-6 md:space-y-10">
-                {programmeData.menuItems.map((item, idx) => (
-                  <li key={idx}>
-                    <button
-                      className="text-2xl md:text-3xl lg:text-4xl origin-right font-sabon hover:text-gray-300 hover:scale-105 transition-all duration-300"
-                      onClick={() => setIsProgrammeOpen(false)}
-                    >
-                      {item.label}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
