@@ -18,9 +18,14 @@ export default async function Page() {
   const t = await getTranslations('landing');
   const h = await headers();
   const locale = h.get('x-next-intl-locale') || 'en';
+
+  // Data fetching
   const currentExhibition = await getCurrentExhibition(locale);
   const currentProgramme = await getCurrentProgramme(locale);
   const visit = await getVisitData(locale);
+
+  // TO MANIPULATE THE BACKGROUND: 
+  // Update the data in '@/lib/data/contact' or override here:
   const contact = await getContactContent(locale);
 
   return (
@@ -44,7 +49,6 @@ export default async function Page() {
         }}
       />
 
-      {/* The rest of the page content slides up over the Hero as a solid block */}
       <div className="relative z-10 w-full bg-[#0a1116] shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
         <AboutSection />
         <QuotesSection />
@@ -63,11 +67,13 @@ export default async function Page() {
           image={visit.image}
         />
 
+        {/* Contact section receives content from the 'contact' variable */}
         <ContactStayInTouch
           title={contact.title}
           subtitle={contact.subtitle}
           backgroundImage={contact.backgroundImage}
         />
+
         <Footer />
       </div>
     </main>

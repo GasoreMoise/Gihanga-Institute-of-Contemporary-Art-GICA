@@ -56,7 +56,7 @@ export default function PressSection() {
     }, { scope: sectionRef });
 
     return (
-        <section ref={sectionRef} className="w-full bg-white pt-12 md:pt-12 pb-32 md:pb-44 px-6 md:px-12 lg:px-40 flex flex-col items-center">
+        <section ref={sectionRef} className="w-full bg-white pt-12 md:pt-12 pb-44 md:pb-44 px-6 md:px-12 lg:px-40 flex flex-col items-center">
             <div className="overflow-hidden mb-32 md:mb-40 text-center">
                 <h2 className="press-title text-black font-sabon text-[15px] tracking-[0.8em] uppercase font-bold">
                     Press

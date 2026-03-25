@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 
 interface ContactStayInTouchProps {
+  id?: string;
   title: string;
   subtitle: string;
   backgroundImage: { src: string; alt: string };
@@ -18,7 +19,7 @@ export default function ContactStayInTouch({
 }: ContactStayInTouchProps) {
   const t = useTranslations('landing');
   const [bgLoaded, setBgLoaded] = useState(false);
-  
+
   // Contact form state
   const [contactName, setContactName] = useState('');
   const [contactEmail, setContactEmail] = useState('');
@@ -26,7 +27,7 @@ export default function ContactStayInTouch({
   const [contactLoading, setContactLoading] = useState(false);
   const [contactSuccess, setContactSuccess] = useState(false);
   const [contactError, setContactError] = useState('');
-  
+
   // Newsletter state
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterLoading, setNewsletterLoading] = useState(false);
@@ -37,7 +38,7 @@ export default function ContactStayInTouch({
     e.preventDefault();
     setContactLoading(true);
     setContactError('');
-    
+
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -56,13 +57,11 @@ export default function ContactStayInTouch({
         throw new Error(data.error || 'Failed to send message');
       }
 
-      // Success!
       setContactSuccess(true);
       setContactName('');
       setContactEmail('');
       setContactMessage('');
-      
-      // Reset success message after 5 seconds
+
       setTimeout(() => setContactSuccess(false), 5000);
     } catch (error) {
       console.error('Contact form error:', error);
@@ -82,7 +81,7 @@ export default function ContactStayInTouch({
 
     setNewsletterLoading(true);
     setNewsletterError('');
-    
+
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -99,11 +98,9 @@ export default function ContactStayInTouch({
         throw new Error(data.error || 'Failed to subscribe');
       }
 
-      // Success!
       setNewsletterSuccess(true);
       setNewsletterEmail('');
-      
-      // Reset success message after 3 seconds
+
       setTimeout(() => setNewsletterSuccess(false), 3000);
     } catch (error) {
       console.error('Newsletter error:', error);
@@ -113,188 +110,133 @@ export default function ContactStayInTouch({
       setNewsletterLoading(false);
     }
   };
-  
+
   return (
     <section
       id="contact"
-      className="relative w-full min-h-screen overflow-hidden"
+      className="relative w-full min-h-screen flex items-center justify-center py-24 md:py-32 overflow-hidden"
       suppressHydrationWarning
     >
-      {/* Background */}
-      <div className="absolute inset-0">
+      {/* Background - Fully Dynamic */}
+      <div className="absolute inset-0 z-0">
         <Image
           src={backgroundImage.src}
           alt={backgroundImage.alt}
           fill
-          priority={false}
-          loading="lazy"
+          priority
           className="object-cover"
-          quality={75}
-          sizes="100vw"
+          quality={85}
           onLoad={() => setBgLoaded(true)}
         />
-        <div className={`absolute inset-0 ${bgLoaded ? 'bg-black/50' : 'bg-black/0'}`} />
+        {/* Cinematic Gradient Overlay for legibility */}
+        <div className={`absolute inset-0 transition-opacity duration-1000 bg-black/60 ${bgLoaded ? 'opacity-100' : 'opacity-0'}`} />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 mx-auto px-6 py-20 md:py-28">
-        <motion.h2
-          className="text-white font-sabon text-5xl md:text-6xl text-center mb-2"
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          {title}
-        </motion.h2>
-        <motion.p
-          className="text-white/90 font-sabon text-center text-sm md:text-base mb-12"
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          viewport={{ once: true }}
-        >
-          {subtitle}
-        </motion.p>
-
-        {/* Form styled like reference */}
-        <div className="backdrop-blur-[1px]">
-          <form
-            onSubmit={handleContactSubmit}
-            className="space-y-10 w-[620px] max-w-full mx-auto"
-            autoComplete="off"
-            suppressHydrationWarning
+      {/* Content Container */}
+      <div className="relative z-10 w-full max-w-[700px] px-6 mx-auto">
+        <div className="text-center mb-20">
+          <motion.h2
+            className="text-white font-sabon text-5xl md:text-7xl mb-4 tracking-tight"
+            initial={{ opacity: 0, y: -20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
           >
-            <div>
-              <label className="block text-white font-sabon text-sm mb-2">{t('contact.name')}</label>
-              <input 
-                type="text"
-                value={contactName}
-                onChange={(e) => setContactName(e.target.value)}
-                autoComplete="off"
-                suppressHydrationWarning
-                className="w-[620px] max-w-full bg-transparent text-white border-0 border-b border-white/70 rounded-none focus:outline-none focus:ring-0 focus:border-white/90 py-2" 
-              />
-            </div>
-            <div>
-              <label className="block text-white font-sabon text-sm mb-2">{t('contact.email')}</label>
-              <input 
-                type="email"
-                value={contactEmail}
-                onChange={(e) => setContactEmail(e.target.value)}
-                required
-                autoComplete="off"
-                suppressHydrationWarning
-                className="w-[620px] max-w-full bg-transparent text-white border-0 border-b border-white/70 rounded-none focus:outline-none focus:ring-0 focus:border-white/90 py-2" 
-              />
-            </div>
-            <div>
-              <label className="block text-white font-sabon text-sm mb-2">{t('contact.message')}</label>
-              <textarea 
-                rows={4} 
-                value={contactMessage}
-                onChange={(e) => setContactMessage(e.target.value)}
-                required
-                autoComplete="off"
-                suppressHydrationWarning
-                className="w-[620px] max-w-full bg-transparent text-white border-0 border-b border-white/70 rounded-none focus:outline-none focus:ring-0 focus:border-white/90 py-2 resize-none" 
-              />
-            </div>
-            
-            {/* Success/Error Messages */}
-            {contactSuccess && (
-              <motion.div 
-                className="text-green-300 text-center font-sabon"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-              >
-                Message sent successfully!
-              </motion.div>
-            )}
-            {contactError && (
-              <motion.div 
-                className="text-red-300 text-center font-sabon"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-              >
-                {contactError}
-              </motion.div>
-            )}
-            
-            <div className="flex justify-center pt-2">
-              <button 
-                type="submit" 
-                disabled={contactLoading}
-                className="border border-white text-white px-10 py-2 font-sabon hover:bg-white hover:text-black transition disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {contactLoading ? 'Sending...' : t('contact.send')}
-              </button>
-            </div>
-          </form>
+            {title}
+          </motion.h2>
+          <motion.p
+            className="text-white/80 font-sabon italic text-sm md:text-base max-w-md mx-auto leading-relaxed"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            {subtitle}
+          </motion.p>
+        </div>
 
-          {/* Newsletter Subscription */}
-          <div className="mt-20 flex flex-col items-center">
-            <motion.p
-              className="text-white font-sabon text-center text-xl md:text-xl lg:text-2xl mb-12"
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              viewport={{ once: true }}
+        {/* Form Styling: NO BOXES, JUST UNDERLINES */}
+        <form onSubmit={handleContactSubmit} className="space-y-12 w-full" autoComplete="off">
+
+          <div className="relative flex flex-col md:flex-row md:items-end gap-2 md:gap-8 border-b border-white/30 pb-2 focus-within:border-white transition-colors duration-500">
+            <label className="text-white font-sabon italic text-sm md:min-w-[80px] opacity-70">
+              {t('contact.name')}
+            </label>
+            <input
+              type="text"
+              value={contactName}
+              onChange={(e) => setContactName(e.target.value)}
+              className="w-full bg-transparent text-white font-sabon text-lg focus:outline-none placeholder-white/20 border-none ring-0 focus:ring-0"
+            />
+          </div>
+
+          <div className="relative flex flex-col md:flex-row md:items-end gap-2 md:gap-8 border-b border-white/30 pb-2 focus-within:border-white transition-colors duration-500">
+            <label className="text-white font-sabon italic text-sm md:min-w-[80px] opacity-70">
+              {t('contact.email')}
+            </label>
+            <input
+              type="email"
+              value={contactEmail}
+              onChange={(e) => setContactEmail(e.target.value)}
+              required
+              className="w-full bg-transparent text-white font-sabon text-lg focus:outline-none placeholder-white/20 border-none ring-0 focus:ring-0"
+            />
+          </div>
+
+          <div className="relative flex flex-col md:flex-row md:items-end gap-2 md:gap-8 border-b border-white/30 pb-2 focus-within:border-white transition-colors duration-500">
+            <label className="text-white font-sabon italic text-sm md:min-w-[80px] opacity-70">
+              {t('contact.message')}
+            </label>
+            <textarea
+              rows={1}
+              value={contactMessage}
+              onChange={(e) => setContactMessage(e.target.value)}
+              required
+              className="w-full bg-transparent text-white font-sabon text-lg focus:outline-none py-1 resize-none overflow-hidden border-none ring-0 focus:ring-0"
+            />
+          </div>
+
+          <div className="h-6">
+            {contactSuccess && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-green-300 text-center font-sabon text-sm font-bold tracking-widest uppercase">Success</motion.p>}
+            {contactError && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-center font-sabon text-sm">{contactError}</motion.p>}
+          </div>
+
+          <div className="flex justify-center pt-4">
+            <button
+              type="submit"
+              disabled={contactLoading}
+              className="border border-white/40 text-white px-16 py-3 font-sabon text-[11px] uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all duration-700 disabled:opacity-50"
             >
-              {t('contact.newsletter')}
-            </motion.p>
-            <motion.div 
-              className="flex flex-row items-center gap-4 w-[620px] max-w-full"
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              viewport={{ once: true }}
+              {contactLoading ? '...' : t('contact.send')}
+            </button>
+          </div>
+        </form>
+
+        {/* Newsletter Section */}
+        <div className="mt-32 pt-20 border-t border-white/10 flex flex-col items-center">
+          <motion.p className="text-white font-sabon text-center text-xl md:text-2xl mb-12 tracking-wide" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.4 }}>
+            {t('contact.newsletter')}
+          </motion.p>
+
+          <div className="flex flex-col md:flex-row items-center gap-6 w-full">
+            <input
+              type="email"
+              placeholder={t('contact.email')}
+              value={newsletterEmail}
+              onChange={(e) => setNewsletterEmail(e.target.value)}
+              className="w-full bg-transparent text-white border-b border-white/30 focus:border-white rounded-none focus:outline-none py-3 font-sabon text-base placeholder-white/30 transition-colors"
+            />
+            <button
+              type="button"
+              disabled={newsletterLoading}
+              onClick={handleNewsletterSubmit}
+              className="w-full md:w-auto bg-white text-black px-12 py-3 font-sabon text-[10px] uppercase tracking-[0.2em] hover:bg-gray-200 transition-all duration-500"
             >
-              <input 
-                type="email"
-                placeholder={t('contact.email')}
-                value={newsletterEmail}
-                onChange={(e) => setNewsletterEmail(e.target.value)}
-                autoComplete="off"
-                suppressHydrationWarning
-                className="flex-1 bg-transparent text-white border-0 border-b-2 border-white rounded-none focus:outline-none focus:ring-0 focus:border-white py-2.5 font-sabon placeholder-white/50 text-base"
-              />
-              <button 
-                type="button" 
-                disabled={newsletterLoading}
-                onClick={handleNewsletterSubmit}
-                className="bg-white text-black px-10 py-2.5 font-sabon hover:bg-gray-100 transition-all duration-300 whitespace-nowrap flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {newsletterLoading ? 'Subscribing...' : t('contact.newsletterSubscribe')}
-              </button>
-            </motion.div>
-            
-            {/* Newsletter Success/Error Messages */}
-            <div className="mt-4 text-center">
-              {newsletterSuccess && (
-                <motion.div 
-                  className="text-green-300 font-sabon text-sm"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                >
-                  Successfully subscribed!
-                </motion.div>
-              )}
-              {newsletterError && (
-                <motion.div 
-                  className="text-red-300 font-sabon text-sm"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                >
-                  {newsletterError}
-                </motion.div>
-              )}
-            </div>
+              {newsletterLoading ? '...' : t('contact.newsletterSubscribe')}
+            </button>
           </div>
         </div>
       </div>
     </section>
   );
 }
-
-

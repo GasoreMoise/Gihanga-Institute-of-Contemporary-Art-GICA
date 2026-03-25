@@ -22,6 +22,7 @@ export default function Hero({
   slides,
   programmeData
 }: {
+  id?: string;
   tagline: string;
   slides: Slide[];
   programmeData?: {
@@ -86,7 +87,7 @@ export default function Hero({
     if (slides.length === 0) return;
 
     // Initial setup: position slides and titles
-    gsap.set(slidesRef.current, { 
+    gsap.set(slidesRef.current, {
       autoAlpha: i => i === activeIndexRef.current ? 1 : 0,
       zIndex: i => i === activeIndexRef.current ? 1 : 0,
       xPercent: 0
@@ -101,11 +102,11 @@ export default function Hero({
       const nextIndex = gsap.utils.wrap(0, slides.length, index);
       if (isAnimating.current || nextIndex === activeIndexRef.current) return;
       isAnimating.current = true;
-      
+
       const isNext = direction === 1;
       const dX = isNext ? 100 : -100;
       const parallaxX = isNext ? -15 : 15;
-      
+
       const nextSlide = slidesRef.current[nextIndex];
       const currentSlide = slidesRef.current[activeIndexRef.current];
 
@@ -165,8 +166,8 @@ export default function Hero({
   }, { scope: containerRef, dependencies: [] });
 
   return (
-    <section 
-      ref={containerRef} 
+    <section
+      ref={containerRef}
       className="relative h-screen w-full overflow-hidden bg-[#0b0b0b] snap-start touch-pan-y select-none cursor-grab active:cursor-grabbing"
     >
       {/* Slides */}
