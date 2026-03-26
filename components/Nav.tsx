@@ -15,7 +15,6 @@ export default function Nav() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Sensitivity threshold for the shrink effect
       setScrolled(window.scrollY > 50);
     };
     window.addEventListener('scroll', handleScroll);
@@ -37,7 +36,13 @@ export default function Nav() {
     { href: `/${locale}#contact` as any, label: 'Contact' }
   ];
 
-  const isWhitePage = pathname.includes('/exhibitions');
+  // Logic: Add '/talks' to the white page detection list
+  const isWhitePage = pathname.includes('/exhibitions') ||
+    pathname.includes('/screenings') ||
+    pathname.includes('/talks') ||
+    pathname.includes('/library') ||
+    pathname.includes('/events');
+
   const shouldBeBlack = scrolled || isOpen || isWhitePage;
   const activeColorClass = shouldBeBlack ? "text-black" : "text-white";
   const activeIconClass = shouldBeBlack ? "#000000" : "#ffffff";
@@ -55,23 +60,15 @@ export default function Nav() {
 
           <Link href={`/${locale}`} className="pointer-events-auto">
             <img
-              src={shouldBeBlack ? "/logos/logo1.svg" : "/logos/logo1.svg"}
+              // Logo shifts to logo3 (black) on white pages or scroll
+              src={shouldBeBlack ? "/logos/logo3.svg" : "/logos/logo1.svg"}
               alt="GICA"
-              /* LOGO SCALING: 
-                 Transitions from h-12 to h-8 (mobile) 
-                 and h-16 to h-10 (desktop)
-              */
               className={`w-auto transition-all duration-700 ease-in-out object-contain
-                ${scrolled
-                  ? 'h-8 md:h-10'
-                  : 'h-12 md:h-16'
-                }`}
+                ${scrolled ? 'h-8 md:h-10' : 'h-12 md:h-16'}`}
             />
           </Link>
 
           <div className="flex items-center gap-6 md:gap-10 pointer-events-auto">
-
-            {/* EN / KIN Toggle */}
             <div className={`flex items-center font-sabon text-sm md:text-lg tracking-widest transition-colors duration-500 ${activeColorClass}`}>
               <button
                 onClick={() => switchLocale('en')}
@@ -88,7 +85,6 @@ export default function Nav() {
               </button>
             </div>
 
-            {/* Hamburger Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="relative w-8 h-8 flex items-center justify-center focus:outline-none"
@@ -131,7 +127,7 @@ export default function Nav() {
                   <Link
                     href={item.href}
                     onClick={() => setIsOpen(false)}
-                    className="italic text-3xl md:text-5xl tracking-[0.05em] hover:text-black/40 transition-all duration-300"
+                    className="italic text-3xl md:text-3xl tracking-[0.05em] hover:text-black/40 transition-all duration-300"
                   >
                     {item.label}
                   </Link>

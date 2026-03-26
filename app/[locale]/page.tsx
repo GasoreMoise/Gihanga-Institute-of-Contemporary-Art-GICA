@@ -7,10 +7,7 @@ import PartnersSection from '@/components/PartnersSection';
 import PressSection from '@/components/PressSection';
 import VisitSection from '@/components/VisitSection';
 import ContactStayInTouch from '@/components/ContactStayInTouch';
-import NewsletterModal from '@/components/NewsletterModal';
 import Footer from '@/components/Footer';
-import { getCurrentExhibition } from '@/lib/data/exhibitions';
-import { getCurrentProgramme } from '@/lib/data/programme';
 import { getVisitData } from '@/lib/data/visit';
 import { getContactContent } from '@/lib/data/contact';
 
@@ -19,28 +16,30 @@ export default async function Page() {
   const h = await headers();
   const locale = h.get('x-next-intl-locale') || 'en';
 
-  // Data fetching
-  const currentExhibition = await getCurrentExhibition(locale);
-  const currentProgramme = await getCurrentProgramme(locale);
   const visit = await getVisitData(locale);
-
-  // TO MANIPULATE THE BACKGROUND: 
-  // Update the data in '@/lib/data/contact' or override here:
   const contact = await getContactContent(locale);
+
+  // MANUALLY ADD VIDEO PATHS TO THE SCREENINGS SLIDE
+  const slides = [
+    { title: '', image: { src: '/images/hero-background.webp', alt: 'GICA' } },
+    { title: t('hero.slides.exhibitions'), image: { src: '/images/hero-exhibitions.webp', alt: 'Exhibitions' } },
+    {
+      title: t('hero.slides.screenings'),
+      image: { src: '/images/hero-screenings.webp', alt: 'Screenings' },
+      // These keys MUST exist for the Hero component to render videos
+      leftVideo: '/videos/screening-left.webm',
+      rightVideo: '/videos/screening-right.webm'
+    },
+    { title: t('hero.slides.talks'), image: { src: '/images/hero-talks.webp', alt: 'Talks' } },
+    { title: t('hero.slides.library'), image: { src: '/images/hero-library.webp', alt: 'The Koyo Kouoh Library' } },
+    { title: t('hero.slides.events'), image: { src: '/images/hero-events.webp', alt: 'Events' } }
+  ];
 
   return (
     <main className="w-full relative overflow-x-hidden bg-[#0A1116]">
-      <NewsletterModal />
       <Hero
         tagline={t('hero.subtitle')}
-        slides={[
-          { title: '', image: { src: '/images/hero-background.webp', alt: 'GICA' } },
-          { title: t('hero.slides.exhibitions'), image: { src: '/images/hero-exhibitions.webp', alt: 'Exhibitions' } },
-          { title: t('hero.slides.screenings'), image: { src: '/images/hero-screenings.webp', alt: 'Screenings' } },
-          { title: t('hero.slides.talks'), image: { src: '/images/hero-talks.webp', alt: 'Talks' } },
-          { title: t('hero.slides.library'), image: { src: '/images/hero-library.webp', alt: 'The Koyo Kouoh Library' } },
-          { title: t('hero.slides.events'), image: { src: '/images/hero-events.webp', alt: 'Events' } }
-        ]}
+        slides={slides}
       />
 
       <div className="relative z-10 w-full bg-[#0a1116] shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
@@ -61,11 +60,14 @@ export default async function Page() {
           image={visit.image}
         />
 
-        {/* Contact section receives content from the 'contact' variable */}
         <ContactStayInTouch
           title={contact.title}
           subtitle={contact.subtitle}
-          backgroundImage={contact.backgroundImage}
+          // Fix: Passing an object instead of a string
+          backgroundImage={{
+            src: "/images/homecontact-bg.webp",
+            alt: "Contact Background"
+          }}
         />
 
         <Footer />

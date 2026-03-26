@@ -25,6 +25,7 @@ const exhibitions = [
     }
 ];
 
+
 export default function ExhibitionsPage() {
     const locale = useLocale();
 
@@ -84,7 +85,7 @@ export default function ExhibitionsPage() {
                                         initial={{ opacity: 0, y: 30 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-                                        className="relative mx-auto w-[300px] md:w-[500px] h-[350px] md:h-[350px] overflow-hidden bg-neutral-50 group cursor-crosshair"
+                                        className="relative mx-auto w-[300px] md:w-[500px] h-[350px] md:h-[350px] overflow-hidden bg-neutral-50 group cursor-pointer"
                                     >
                                         <Image
                                             src={exh.image}
