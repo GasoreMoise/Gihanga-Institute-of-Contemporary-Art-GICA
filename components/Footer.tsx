@@ -70,7 +70,7 @@ export default function Footer() {
         <div className="hidden md:grid grid-cols-3 gap-8 items-start mb-20">
           <nav className="footer-anim-item flex flex-col space-y-8">
             <h3 className="font-sabon text-2xl tracking-wide opacity-90">Home</h3>
-            <ul className="flex flex-col space-y-4 text-white/50 text-base font-sabon">
+            <ul className="flex flex-col space-y-3 text-white/50 text-base font-sabon">
               {navLinks.map((link) => (
                 <li key={link.name}>
                   <a href={link.id} className="hover:text-white transition-all duration-300 hover:pl-2">{link.name}</a>
@@ -80,7 +80,7 @@ export default function Footer() {
           </nav>
 
           <div className="footer-anim-item flex flex-col items-center">
-            <div className="mb-10 w-56">
+            <div className="mb-10 w-48">
               <img src="/logos/logo1.svg" alt="GICA" className="w-full h-auto" />
             </div>
             <p className="text-white/40 text-sm font-sabon tracking-[0.2em] uppercase">© {currentYear} . All rights reserved.</p>

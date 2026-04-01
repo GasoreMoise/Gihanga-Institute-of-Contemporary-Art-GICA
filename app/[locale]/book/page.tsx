@@ -46,8 +46,8 @@ export default function BookVisit() {
                     <Image src="/images/gateja.webp" alt="GICA" fill className="object-cover brightness-[0.7] grayscale-[0.2]" />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a1116]/60 via-transparent to-transparent" />
                 </motion.div>
-                <div className="absolute bottom-12 left-12 z-20 text-white hidden md:block">
-                    <h1 className="text-4xl lg:text-3xl font-bold tracking-[0.2em] uppercase italic mb-2">Book Your Visit</h1>
+                <div className="absolute md:bottom-12 left-12 z-20 text-white hidden md:block">
+                    <h1 className="text-4xl lg:text-3xl font-bold tracking-[0.2em] italic mb-2">Book Your Visit</h1>
                 </div>
             </section>
 

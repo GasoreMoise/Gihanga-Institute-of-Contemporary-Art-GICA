@@ -24,7 +24,7 @@ const guidelines = [
         id: "02",
         title: "Presence",
         subtitle: "Silence Your Phones & Lower Your Voices",
-        description: "We invite you to be present with the art and considerate of those around you. Please set phones to silent, take calls outside, and keep calls outside, and keep conversations at a courteous volume."
+        description: "We invite you to be present with the art and considerate of those around you. Please set phones to silent, take calls outside, and keep conversations at a courteous volume."
     },
     {
         id: "03",
@@ -58,8 +58,32 @@ const guidelines = [
     }
 ];
 
+const faqs = [
+    {
+        question: "Is GICA entry free?",
+        answer: "Yes. GICA is currently free to the public."
+    },
+    {
+        question: "Do I need to book in advance?",
+        answer: "No booking is required for general visits. Some talks, screenings, or workshops may require prior registration, which will be available via our website."
+    },
+    {
+        question: "What are the opening hours?",
+        answer: "Tuesday - Sunday. 11:00 AM - 5:00 PM (Closed on Mondays)"
+    },
+    {
+        question: "Where is GICA located?",
+        answer: "KN 14 St 28, Kimihurura, Kigali, Rwanda. Pedestrian access is via the small walkway facing the 14th Avenue. Parking access is available via Boho and 14th Avenue, only drop-off in front of GICA."
+    },
+    {
+        question: "Is GICA accessible?",
+        answer: "The ground floor is accessible. The first floor and lower ground floor are accessed via stairs. If you require accessibility support, please contact us in advance and we will do our best to accomodate your visit."
+    }
+];
+
 export default function VisitorGuide() {
     const containerRef = useRef<HTMLDivElement>(null);
+    const [openFaq, setOpenFaq] = useState<number | null>(null);
 
     useGSAP(() => {
         // 1. Reveal Title with SplitText
@@ -141,8 +165,6 @@ export default function VisitorGuide() {
             {/* 2. THE EDITORIAL GUIDE */}
             <section className="max-w-[1400px] mx-auto px-6 md:px-20 lg:px-32 py-40 md:py-64">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-24">
-
-                    {/* Left Column: Philosophical Intro */}
                     <div className="lg:col-span-4 lg:sticky lg:top-40 h-fit">
                         <h2 className="text-[10px] tracking-[0.5em] uppercase font-bold text-neutral-300 mb-12">
                             Ethos
@@ -152,27 +174,18 @@ export default function VisitorGuide() {
                         </p>
                     </div>
 
-                    {/* Right Column: Dynamic Cards */}
                     <div className="lg:col-span-8 space-y-48 md:space-y-72">
                         {guidelines.map((guide) => (
                             <div key={guide.id} className="guide-card relative flex flex-col md:flex-row gap-12 group">
-                                {/* Visual Numbering */}
                                 <div className="guide-number text-4xl md:text-6xl font-bold text-neutral-500 absolute -left-2 md:-left-8 -top-6 md:-top-12 z-0 transition-colors group-hover:text-black">
                                     {guide.id}
                                 </div>
-
                                 <div className="relative z-10 flex-1">
                                     <div className="guide-line h-[1px] bg-black/10 w-full mb-12" />
-
                                     <div className="flex flex-col md:flex-row md:items-baseline gap-4 mb-8">
-                                        <h3 className="text-xs tracking-[0.4em] uppercase text-neutral-400 font-bold">
-                                            {guide.title}
-                                        </h3>
-                                        <h4 className="text-2xl md:text-4xl font-normal italic tracking-tight">
-                                            {guide.subtitle}
-                                        </h4>
+                                        <h3 className="text-xs tracking-[0.4em] uppercase text-neutral-400 font-bold">{guide.title}</h3>
+                                        <h4 className="text-2xl md:text-4xl font-normal italic tracking-tight">{guide.subtitle}</h4>
                                     </div>
-
                                     <p className="text-sm md:text-lg leading-[1.8] text-neutral-600 text-justify max-w-2xl font-light">
                                         {guide.description}
                                     </p>
@@ -183,30 +196,22 @@ export default function VisitorGuide() {
                 </div>
             </section>
 
-            {/* 3. ASSISTANCE BANNER (Minimalist) */}
-            <section className="border-t border-neutral-100 py-40 px-6">
+            {/* 3. NOTICE BANNER */}
+            <section className="py-32 px-6">
                 <div className="max-w-4xl mx-auto text-center">
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        className="space-y-2"
-                    >
-                        <p className="text-black text-sm tracking-[0.3em] uppercase max-w-lg mx-auto leading-loose">
+                    <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="space-y-12">
+                        <p className="text-neutral-900 text-sm tracking-[0.3em] uppercase max-w-lg mx-auto leading-loose">
                             To ensure a safe and welcoming environment for all, visitors who do not respect these guidelines may be asked to leave. Your cooperation helps us protect the institution, its artworks and our community.
                         </p>
                     </motion.div>
                 </div>
             </section>
 
-            {/* 3. ASSISTANCE BANNER (Minimalist) */}
-            <section className="border-t border-neutral-100 py-40 px-6">
+            {/* 3. ASSISTANCE BANNER */}
+            <section className="border-t border-neutral-100 py-32 px-6">
                 <div className="max-w-4xl mx-auto text-center">
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        className="space-y-12"
-                    >
-                        <h2 className="text-3xl md:text-5xl tracking-tighter font-normal">Need assistance during your visit?</h2>
+                    <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="space-y-12">
+                        <h2 className="text-3xl md:text-5xl tracking-tighter font-normal italic">Need assistance during your visit?</h2>
                         <p className="text-neutral-900 text-sm tracking-[0.3em] uppercase max-w-lg mx-auto leading-loose">
                             Our staff is here to make your visit enjoyable and enriching. If you are unsure about anything, please ask, we are happy to assist.
                         </p>
@@ -214,7 +219,60 @@ export default function VisitorGuide() {
                 </div>
             </section>
 
-            {/* 4. UNIFIED FOOTER SECTIONS */}
+            {/* 4. FAQs SECTION (New Interactivity) */}
+            <section className="bg-white py-40 px-6 md:px-20 lg:px-32 border-t border-neutral-100">
+                <div className="max-w-5xl mx-auto">
+                    <div className="flex flex-col md:flex-row justify-between items-baseline mb-20 gap-8">
+                        <h2 className="text-3xl md:text-6xl font-normal tracking-tight">FAQs</h2>
+                        <span className="text-[10px] tracking-[0.5em] uppercase text-neutral-400 font-bold">Information Hub</span>
+                    </div>
+
+                    <div className="space-y-2">
+                        {faqs.map((faq, index) => (
+                            <div key={index} className="border-b border-neutral-100 last:border-none">
+                                <button
+                                    onClick={() => setOpenFaq(openFaq === index ? null : index)}
+                                    className="w-full py-10 flex justify-between items-center group text-left"
+                                >
+                                    <span className="flex items-baseline gap-6">
+                                        <span className="text-[10px] font-bold text-neutral-300">{index + 1}.</span>
+                                        <span className="text-lg md:text-2xl font-normal group-hover:pl-4 transition-all duration-500 ease-out italic">
+                                            {faq.question}
+                                        </span>
+                                    </span>
+                                    <div className="relative w-6 h-6 flex items-center justify-center">
+                                        <div className="absolute w-full h-[1px] bg-black" />
+                                        <motion.div
+                                            animate={{ rotate: openFaq === index ? 0 : 90 }}
+                                            className="absolute w-full h-[1px] bg-black"
+                                        />
+                                    </div>
+                                </button>
+
+                                <AnimatePresence>
+                                    {openFaq === index && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: "auto", opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                                            className="overflow-hidden"
+                                        >
+                                            <div className="pb-12 pl-12 pr-6">
+                                                <p className="text-sm md:text-lg text-neutral-500 max-w-2xl leading-relaxed bg-neutral-50 p-8 border-l-2 border-black italic">
+                                                    {faq.answer}
+                                                </p>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* 5. UNIFIED FOOTER SECTIONS */}
             <div className="relative z-20 w-full bg-[#0a1116] shadow-[0_-20px_80px_rgba(0,0,0,0.15)]">
                 <ContactStayInTouch
                     title="Stay In Touch"
