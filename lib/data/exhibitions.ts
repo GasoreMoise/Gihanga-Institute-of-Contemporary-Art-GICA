@@ -1,7 +1,7 @@
 // Centralized exhibition data - single source of truth
 export const currentExhibition = {
   title: "A bird shall carry the voice",
-  artists: "Saana Gateja, Francis Offman, Kaneza Schaal, Cedric Mizero, Christian Nyampeta, Innocent Nkurunziza, Feline Ntabangena",
+  artists: "Sanaa Gateja, Francis Offman, Kaneza Schaal, Cedric Mizero, Christian Nyampeta, Innocent Nkurunziza, Feline Ntabangena",
   dates: "December 2025 - 19 March 2026",
   image: {
     src: "/images/Francis.webp",
