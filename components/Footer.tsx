@@ -1,7 +1,8 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/all';
 import { useGSAP } from '@gsap/react';
@@ -12,6 +13,7 @@ if (typeof window !== "undefined") {
 
 export default function Footer() {
   const t = useTranslations('footer');
+  const locale = useLocale();
   const footerRef = useRef<HTMLElement>(null);
   const [currentYear, setCurrentYear] = useState<number | null>(null);
 
@@ -51,16 +53,22 @@ export default function Footer() {
   ];
 
   const navLinks = [
-    { name: 'Home', id: '#hero' },
-    { name: 'About Us', id: '#about' },
-    { name: 'Reviews', id: '#quotes' },
-    { name: 'Partners', id: '#partners' },
-    { name: 'Press', id: '#press' },
-    { name: 'Visit Us', id: '#visit' },
-    { name: 'Contact', id: '#contact' },
+    { name: 'Home', path: `/${locale}/#hero` },
+    { name: 'About Us', path: `/${locale}/#about` },
+    { name: 'Reviews', path: `/${locale}/#quotes` },
+    { name: 'Partners', path: `/${locale}/#partners` },
+    { name: 'Press', path: `/${locale}/#press` },
+    { name: 'Visit Us', path: `/${locale}/visit` },
+    { name: 'Contact', path: `/${locale}/#contact` },
   ];
 
-  const progLinks = ['Exhibitions', 'Screenings', 'Library', 'Events', 'Talks'];
+  const progLinks = [
+    { name: 'Exhibitions', path: `/${locale}/exhibitions` },
+    { name: 'Screenings', path: `/${locale}/screenings` },
+    { name: 'Library', path: `/${locale}/library` },
+    { name: 'Events', path: `/${locale}/events` },
+    { name: 'Talks', path: `/${locale}/talks` }
+  ];
 
   return (
     <footer ref={footerRef} className="bg-[#11212B] text-white pt-20 pb-10 border-t border-white/5 w-full">
@@ -73,7 +81,10 @@ export default function Footer() {
             <ul className="flex flex-col space-y-3 text-white/50 text-base font-sabon">
               {navLinks.map((link) => (
                 <li key={link.name}>
-                  <a href={link.id} className="hover:text-white transition-all duration-300 hover:pl-2">{link.name}</a>
+                  {/* FIX: Add 'as any' to the href to bypass strict route typing */}
+                  <Link href={link.path as any} className="hover:text-white transition-all duration-300 hover:pl-2">
+                    {link.name}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -86,7 +97,7 @@ export default function Footer() {
             <p className="text-white/40 text-sm font-sabon tracking-[0.2em] uppercase">© {currentYear} . All rights reserved.</p>
             <div className="flex items-center gap-10 mt-12">
               {socialLinks.map((social) => (
-                <a key={social.name} href={social.url} className="text-white/40 hover:text-white transition-all transform hover:-translate-y-1">
+                <a key={social.name} href={social.url} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-all transform hover:-translate-y-1">
                   <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">{social.icon}</svg>
                 </a>
               ))}
@@ -97,38 +108,42 @@ export default function Footer() {
             <h3 className="font-sabon text-3xl tracking-wide opacity-90">Programme</h3>
             <ul className="flex flex-col items-end space-y-5 text-white/40 text-base font-sabon">
               {progLinks.map((item) => (
-                <li key={item}>
-                  <a href={`#${item.toLowerCase()}`} className="hover:text-white transition-all duration-300 hover:pr-2">{item}</a>
+                <li key={item.name}>
+                  {/* FIX: Add 'as any' to the href here as well */}
+                  <Link href={item.path as any} className="hover:text-white transition-all duration-300 hover:pr-2">
+                    {item.name}
+                  </Link>
                 </li>
               ))}
             </ul>
           </nav>
         </div>
 
-        {/* Mobile Layout (Fixed list and spacing) */}
+        {/* Mobile Layout */}
         <div className="md:hidden flex flex-col items-center pt-6 pb-4">
-
           <div className="mb-12 footer-anim-item">
             <img src="/logos/logo1.svg" alt="GICA" className="w-48 h-auto" />
           </div>
 
           <div className="grid grid-cols-2 w-full gap-x-10 mb-16 footer-anim-item">
-            {/* Left Column: Full Home List */}
             <nav className="flex flex-col space-y-5">
               <h4 className="font-sabon text-[10px] tracking-[0.3em] text-white/30 uppercase font-bold border-b border-white/5 pb-2">Home</h4>
               <ul className="flex flex-col space-y-3 text-white/60 text-xs font-sabon italic">
                 {navLinks.map(link => (
-                  <li key={link.name}><a href={link.id}>{link.name}</a></li>
+                  <li key={link.name}>
+                    <Link href={link.path as any}>{link.name}</Link>
+                  </li>
                 ))}
               </ul>
             </nav>
 
-            {/* Right Column: Full Programme List */}
             <nav className="flex flex-col space-y-5 text-right">
               <h4 className="font-sabon text-[10px] tracking-[0.3em] text-white/30 uppercase font-bold border-b border-white/5 pb-2">Programme</h4>
               <ul className="flex flex-col space-y-3 text-white/60 text-xs font-sabon italic">
                 {progLinks.map(item => (
-                  <li key={item}><a href={`#${item.toLowerCase()}`}>{item}</a></li>
+                  <li key={item.name}>
+                    <Link href={item.path as any}>{item.name}</Link>
+                  </li>
                 ))}
               </ul>
             </nav>
@@ -137,7 +152,7 @@ export default function Footer() {
           <div className="w-full flex flex-col items-center gap-8 border-t border-white/5 pt-10 footer-anim-item">
             <div className="flex gap-10">
               {socialLinks.map((social) => (
-                <a key={social.name} href={social.url} className="text-white/40">
+                <a key={social.name} href={social.url} target="_blank" rel="noopener noreferrer" className="text-white/40">
                   <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">{social.icon}</svg>
                 </a>
               ))}

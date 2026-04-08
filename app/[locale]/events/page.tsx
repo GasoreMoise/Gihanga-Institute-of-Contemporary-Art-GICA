@@ -11,12 +11,6 @@ const events = [
         title: 'ZEITZ MOCAA ART TOUR DINNER',
         period: 'November 2025',
         image: '/images/dinner/hero-bg.webp', // Ensure this path is correct
-        participants: [
-            'Zeitz MOCAA',
-            'Dawidi Band',
-            'Koyo Kouoh',
-            'GICA Team'
-        ],
         curator: 'GICA'
     }
 ];
@@ -33,23 +27,6 @@ export default function EventsPrePage() {
 
                         {/* Sidebar (Pinned Right) */}
                         <div className="absolute top-0 right-8 h-full w-[20%] hidden lg:flex flex-col justify-start z-20 translate-x-[110%] py-2">
-                            <motion.div
-                                initial={{ opacity: 0, x: 10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.6, duration: 0.8 }}
-                                className="space-y-6"
-                            >
-                                <h3 className="text-[9px] tracking-[0.3em] text-neutral-400 uppercase font-bold border-b border-neutral-100 pb-2">
-                                    Participants
-                                </h3>
-                                <ul className="space-y-1.5">
-                                    {event.participants.map((person) => (
-                                        <li key={person} className="text-xs md:text-[13px] tracking-wide text-neutral-700 leading-relaxed">
-                                            {person}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </motion.div>
 
                             <motion.div
                                 initial={{ opacity: 0, x: 10 }}

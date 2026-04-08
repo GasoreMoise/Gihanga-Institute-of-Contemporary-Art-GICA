@@ -90,6 +90,7 @@ export default function ContributorsSection() {
 
     return (
         <section
+            id="partners"
             ref={sectionRef}
             className="w-full bg-white py-14 md:py-20 px-6 md:px-12 lg:px-32 flex flex-col items-center overflow-hidden"
         >

@@ -80,6 +80,7 @@ export default function QuotesSection() {
 
     return (
         <section
+            id="quotes"
             ref={sectionRef}
             className="relative h-screen w-full bg-[#FAF6ED] flex flex-col items-center justify-center overflow-hidden snap-start"
         >
