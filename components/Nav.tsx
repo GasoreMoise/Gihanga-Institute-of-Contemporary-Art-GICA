@@ -55,7 +55,6 @@ export default function Nav() {
     { href: `/${locale}/#about`, label: 'About' },
     { href: `/${locale}/visit`, label: 'Visitor Guide' },
     { href: `/${locale}/book`, label: 'Book Your Visit' },
-    { href: `/${locale}/support`, label: 'Support GICA' },
     { href: `/${locale}/#contact`, label: 'Contact' }
   ];
 
