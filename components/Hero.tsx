@@ -7,6 +7,7 @@ import { useLocale } from 'next-intl';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { Observer, TextPlugin, ScrollTrigger } from 'gsap/all';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(useGSAP, Observer, TextPlugin, ScrollTrigger);
@@ -17,38 +18,80 @@ type Slide = {
   image: { src: string; alt: string };
   leftVideo?: string;
   rightVideo?: string;
+  href?: string;
 };
 
 export default function Hero({ id, tagline, slides }: { id?: string; tagline: string; slides: Slide[]; }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const slidesRef = useRef<(HTMLDivElement | null)[]>([]);
   const titlesRef = useRef<(HTMLHeadingElement | null)[]>([]);
-  const taglineRef = useRef<HTMLParagraphElement>(null);
+  const taglineRef = useRef<HTMLDivElement>(null);
   const chevronRef = useRef<HTMLDivElement>(null);
 
+  const [isHovered, setIsHovered] = useState(false);
+  const [displayText, setDisplayText] = useState('');
+  const [currentIndexTyping, setCurrentIndexTyping] = useState(0);
+  const [particlePositions, setParticlePositions] = useState<Array<{ initialX: number; initialY: number; targetX: number; targetY: number }>>([]);
+
+  // Motion values for magnetic effect
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springX = useSpring(mouseX, { stiffness: 150, damping: 15 });
+  const springY = useSpring(mouseY, { stiffness: 150, damping: 15 });
+
   const activeIndexRef = useRef(0);
+  const [currentIndex, setCurrentIndex] = useState(0); // State to trigger re-renders for UI conditionals
   const isAnimating = useRef(false);
   const locale = useLocale();
   const sabonFont = '"Sabon Next LT", Sabon, serif';
 
-  useGSAP(() => {
-    if (taglineRef.current) {
-      gsap.set(taglineRef.current, { text: "", fontFamily: sabonFont });
-      gsap.to(taglineRef.current, {
-        text: tagline,
-        duration: Math.min(tagline.length * 0.05, 3),
-        ease: "none",
-        delay: 0.5,
-        onComplete: () => {
-          gsap.set(taglineRef.current, { clearProps: "all" });
-          if (taglineRef.current) taglineRef.current.style.fontFamily = sabonFont;
-        }
-      });
+  useEffect(() => {
+    if (currentIndex > 0) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
     }
-    if (chevronRef.current) {
-      gsap.to(chevronRef.current, { y: 8, repeat: -1, yoyo: true, ease: "power1.inOut", duration: 1.2 });
+    return () => { document.body.style.overflow = 'unset'; }
+  }, [currentIndex]);
+
+  // Typewriter effect
+  useEffect(() => {
+    if (currentIndexTyping < tagline.length) {
+      const timeout = setTimeout(() => {
+        setDisplayText(prev => prev + tagline[currentIndexTyping]);
+        setCurrentIndexTyping(prev => prev + 1);
+      }, 50); // Adjust speed here
+      return () => clearTimeout(timeout);
     }
-  }, { scope: containerRef });
+  }, [currentIndexTyping, tagline]);
+
+  // Generate particle positions only on client side to avoid hydration mismatch
+  useEffect(() => {
+    const positions = Array.from({ length: 6 }, () => ({
+      initialX: Math.random() * 200 - 100,
+      initialY: Math.random() * 100 - 50,
+      targetX: Math.random() * 400 - 200,
+      targetY: Math.random() * 200 - 100,
+    }));
+    setParticlePositions(positions);
+  }, []);
+
+  // Magnetic effect handler
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!taglineRef.current) return;
+    const rect = taglineRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    mouseX.set((e.clientX - centerX) * 0.1);
+    mouseY.set((e.clientY - centerY) * 0.1);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+    setIsHovered(false);
+  };
 
   useGSAP(() => {
     if (slides.length === 0) return;
@@ -64,20 +107,24 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
     });
 
     const gotoSlide = (index: number, direction: number) => {
-      const nextIndex = gsap.utils.wrap(0, slides.length, index);
-      if (isAnimating.current || nextIndex === activeIndexRef.current) return;
+      // Bound the index so we don't loop around
+      if (index < 0) index = 0;
+      if (index >= slides.length) index = slides.length - 1;
+
+      if (isAnimating.current || index === activeIndexRef.current) return;
       isAnimating.current = true;
 
       const isNext = direction === 1;
       const dX = isNext ? 100 : -100;
       const parallaxX = isNext ? -15 : 15;
 
-      const nextSlide = slidesRef.current[nextIndex];
+      const nextSlide = slidesRef.current[index];
       const currentSlide = slidesRef.current[activeIndexRef.current];
-      const nextTitle = titlesRef.current[nextIndex];
+      const nextTitle = titlesRef.current[index];
       const currentTitle = titlesRef.current[activeIndexRef.current];
 
-      activeIndexRef.current = nextIndex;
+      activeIndexRef.current = index;
+      setCurrentIndex(index); // Update state to toggle conditionals
 
       gsap.set(currentSlide, { zIndex: 0 });
       gsap.set(nextSlide, { autoAlpha: 1, zIndex: 1, xPercent: dX });
@@ -97,15 +144,25 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
         .to(nextTitle, { autoAlpha: 1, x: 0, duration: 1 }, 0.25);
     };
 
-    const nextSlide = () => gotoSlide(activeIndexRef.current + 1, 1);
-    const prevSlide = () => gotoSlide(activeIndexRef.current - 1, -1);
+    const nextSlide = () => {
+      if (activeIndexRef.current > 0 && activeIndexRef.current < slides.length - 1) {
+        gotoSlide(activeIndexRef.current + 1, 1);
+      }
+    };
+    const prevSlide = () => {
+      if (activeIndexRef.current > 1) {
+        gotoSlide(activeIndexRef.current - 1, -1);
+      }
+    };
 
-    Observer.create({
+    const observer = Observer.create({
       target: containerRef.current,
       type: "wheel,touch,pointer",
       wheelSpeed: -1,
-      onLeft: () => !isAnimating.current && nextSlide(),
-      onRight: () => !isAnimating.current && prevSlide(),
+      onLeft: () => !isAnimating.current && activeIndexRef.current > 0 && nextSlide(),
+      onRight: () => !isAnimating.current && activeIndexRef.current > 0 && prevSlide(),
+      onUp: () => !isAnimating.current && activeIndexRef.current > 0 && nextSlide(),
+      onDown: () => !isAnimating.current && activeIndexRef.current > 0 && prevSlide(),
       tolerance: 30,
       preventDefault: false
     });
@@ -115,17 +172,20 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
     if (nextBtn) nextBtn.onclick = nextSlide;
     if (prevBtn) prevBtn.onclick = prevSlide;
 
-    ScrollTrigger.create({
-      trigger: containerRef.current,
-      start: "top top",
-      end: "+=100%",
-      pin: true,
-      pinSpacing: false,
-    });
+    // We expose a global function so the Enter button can manually trigger it
+    (window as any).triggerHeroEnter = () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => { gotoSlide(1, 1); }, 300);
+    };
+    (window as any).triggerHeroBack = () => {
+      gotoSlide(0, -1);
+    };
+
+    return () => observer.kill();
   }, { scope: containerRef, dependencies: [slides] });
 
   return (
-    <section id={id || "hero"} ref={containerRef} className="font-sabon relative h-screen w-full overflow-hidden bg-[#0a1116] snap-start touch-pan-y select-none isolate">
+    <section id={id || "hero"} ref={containerRef} className="font-sabon relative h-[100dvh] w-full overflow-hidden bg-[#0a1116] snap-start touch-pan-y select-none isolate">
       {slides.map((slide, i) => (
         <div key={`slide-${i}`} ref={el => { slidesRef.current[i] = el; }} className="absolute inset-0 w-full h-full flex items-center justify-center will-change-transform overflow-hidden">
 
@@ -142,7 +202,7 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
             </div>
           )}
 
-          <div className={`relative h-full flex items-center justify-center transition-all duration-1000 z-10 ${slide.leftVideo ? 'w-full md:w-[50%]' : 'w-full'}`}>
+          <div className={`relative h-full flex items-center justify-center transition-all duration-1000 brightness-75 z-10 ${slide.leftVideo ? 'w-full md:w-[50%]' : 'w-full'}`}>
             <Image src={slide.image.src} alt={slide.image.alt} fill priority={i === 0} className="object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0a1116] via-transparent to-transparent opacity-80" />
             {slide.leftVideo && <div className="absolute inset-0 shadow-[0_0_80px_rgba(0,0,0,1)] pointer-events-none" />}
@@ -151,7 +211,28 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
       ))}
 
       <div className="absolute inset-0 z-30 flex flex-col pointer-events-none">
-        <div className="flex-1 relative w-full pointer-events-none mt-32 md:mt-40 px-6 md:px-16">
+
+        {/* Centered Entry View for Slide 0 */}
+        <div className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 ${currentIndex === 0 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+          <h1 className="font-sabon text-white text-3xl md:text-3xl lg:text-5xl font-normal text-center drop-shadow-xl px-4 max-w-5xl leading-tight">
+            Gihanga Institute<br />of Contemporary Art
+          </h1>
+          <h2 className="font-sabon text-white text-md md:text-xl lg:text-xl tracking-[0.2em] uppercase mt-6 mb-16 text-center drop-shadow-lg">
+            KIGALI
+          </h2>
+          <button
+            onClick={() => (window as any).triggerHeroEnter && (window as any).triggerHeroEnter()}
+            className="font-sabon italic text-white text-xl md:text-lg hover:text-white/70 transition-colors pointer-events-auto flex items-center space-x-2 drop-shadow-lg group relative z-50"
+          >
+            <span>Enter</span>
+            <svg className="w-6 h-6 transform group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Dynamic Slide Titles for Slide 1+ */}
+        <div className={`flex-1 relative w-full pointer-events-none mt-32 md:mt-40 px-6 md:px-16 transition-opacity duration-700 ${currentIndex === 0 ? 'opacity-0' : 'opacity-100'}`}>
           {slides.map((slide, i) => {
             const lowerTitle = slide.title.toLowerCase();
             const isExhibitionSlide = lowerTitle.includes('exhibition');
@@ -179,19 +260,128 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
           })}
         </div>
 
-        <div className="flex justify-between items-end pb-32 md:pb-12 px-6 md:px-10 lg:px-16 pointer-events-auto w-full">
-          <div className="group flex items-center space-x-4 cursor-pointer" onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}>
-            <div ref={chevronRef} className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" /></svg>
-            </div>
-            <p ref={taglineRef} className="font-sabon text-white text-lg md:text-2xl tracking-wide italic font-light drop-shadow-md leading-relaxed">{tagline}</p>
-          </div>
+        {/* Tagline (Visible only on Slide 0) */}
+        <div className={`flex justify-between items-end pb-6 md:pb-16 px-6 md:px-10 lg:px-16 w-full transition-opacity duration-700 ${currentIndex === 0 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+          <motion.div
+            className="flex flex-col md:flex-row items-center md:items-end space-y-4 md:space-y-0 md:space-x-4 w-full"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          >
+            {/* Scroll indicator arrow */}
+            <motion.div
+              className="flex-shrink-0 cursor-pointer order-2 md:order-1 mt-4 md:mt-0"
+              animate={{ y: [0, 4, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              whileHover={{ scale: 1.2, y: 0 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              <motion.svg
+                className="w-4 h-4 md:w-5 md:h-5 text-white"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                whileHover={{ rotate: 180 }}
+                transition={{ duration: 0.3 }}
+              >
+                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+              </motion.svg>
+            </motion.div>
+
+            {/* Interactive Tagline */}
+            <motion.div
+              ref={taglineRef}
+              className="relative cursor-pointer order-1 md:order-2"
+              onMouseMove={handleMouseMove}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={handleMouseLeave}
+              style={{
+                x: springX,
+                y: springY,
+              }}
+            >
+              {/* Subtle background glow effect */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-white/5 via-white/2 to-white/5 rounded-lg blur-lg"
+                animate={{
+                  opacity: isHovered ? 0.6 : 0,
+                  scale: isHovered ? 1.05 : 1,
+                }}
+                transition={{ duration: 0.4 }}
+              />
+
+              {/* Main text */}
+              <motion.div
+                className="relative z-10 text-white tracking-wider text-lg md:text-xl lg:text-2xl xl:text-2xl font-sabon font-normal max-w-full md:max-w-4xl lg:max-w-6xl xl:max-w-9xl leading-relaxed text-left md:text-left drop-shadow-md"
+                animate={{
+                  textShadow: isHovered
+                    ? "0 0 15px rgba(255, 255, 255, 0.4)"
+                    : "0 0 0px rgba(255, 255, 255, 0)",
+                  filter: isHovered ? "brightness(1.1)" : "brightness(1)",
+                }}
+                transition={{ duration: 0.3 }}
+              >
+                {/* Typewriter text with cursor */}
+                <span className="relative">
+                  {displayText}
+                  {currentIndexTyping < tagline.length && (
+                    <motion.span
+                      className="inline-block w-0.5 h-6 md:h-8 bg-white ml-1"
+                      animate={{ opacity: [0, 1, 0] }}
+                      transition={{ duration: 1, repeat: Infinity }}
+                    />
+                  )}
+                </span>
+
+                {/* Particle effects on hover */}
+                {isHovered && particlePositions.length > 0 && (
+                  <>
+                    {particlePositions.map((pos, i) => (
+                      <motion.div
+                        key={i}
+                        className="absolute w-1 h-1 bg-white rounded-full"
+                        initial={{
+                          x: pos.initialX,
+                          y: pos.initialY,
+                          opacity: 0,
+                          scale: 0
+                        }}
+                        animate={{
+                          x: pos.targetX,
+                          y: pos.targetY,
+                          opacity: [0, 1, 0],
+                          scale: [0, 1, 0]
+                        }}
+                        transition={{
+                          duration: 2,
+                          delay: i * 0.1,
+                          repeat: Infinity,
+                          repeatDelay: 1
+                        }}
+                      />
+                    ))}
+                  </>
+                )}
+              </motion.div>
+            </motion.div>
+          </motion.div>
         </div>
 
-        <button id="hero-prev" className="absolute left-6 top-1/2 -translate-y-1/2 text-white/30 hover:text-white p-4 pointer-events-auto transition-all duration-500">
+        {/* Back to Main Page Button (Visible only on the Last Slide) */}
+        <div className={`absolute bottom-12 md:bottom-20 left-0 right-0 flex justify-center pointer-events-none transition-opacity duration-700 z-50 ${currentIndex === slides.length - 1 ? 'opacity-100 pointer-events-auto' : 'opacity-0'}`}>
+          <button
+            onClick={() => (window as any).triggerHeroBack && (window as any).triggerHeroBack()}
+            className="font-sabon text-white tracking-wider text-lg md:text-xl border border-white/30 rounded-full px-4 py-2 hover:bg-white hover:text-black transition-all duration-300 drop-shadow-lg relative z-50 pointer-events-auto"
+          >
+            Back to Main Page
+          </button>
+        </div>
+
+        {/* Left/Right Navigation Arrows (Hidden on Slide 0) */}
+        <button id="hero-prev" className={`absolute left-6 top-1/2 -translate-y-1/2 text-white/30 hover:text-white p-4 transition-all duration-500 ${currentIndex <= 1 ? 'opacity-0 pointer-events-none scale-95' : 'opacity-100 pointer-events-auto scale-100'}`}>
           <svg className="w-10 h-10 stroke-[1]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
         </button>
-        <button id="hero-next" className="absolute right-6 top-1/2 -translate-y-1/2 text-white/30 hover:text-white p-4 pointer-events-auto transition-all duration-500">
+        <button id="hero-next" className={`absolute right-6 top-1/2 -translate-y-1/2 text-white/30 hover:text-white p-4 transition-all duration-500 ${currentIndex === 0 || currentIndex === slides.length - 1 ? 'opacity-0 pointer-events-none scale-95' : 'opacity-100 pointer-events-auto scale-100'}`}>
           <svg className="w-10 h-10 stroke-[1]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
         </button>
       </div>

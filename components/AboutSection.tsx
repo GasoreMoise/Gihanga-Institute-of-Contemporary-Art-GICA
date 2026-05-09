@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { SplitText, ScrollTrigger } from 'gsap/all';
@@ -13,136 +14,133 @@ if (typeof window !== "undefined") {
 export default function AboutSection() {
   const t = useTranslations('landing');
   const containerRef = useRef<HTMLElement>(null);
-
-  // Dedicated refs to fully isolate text nodes from React's Virtual DOM reconciliation engine
   const bodyRef = useRef<HTMLDivElement>(null);
-  const missionRef = useRef<HTMLDivElement>(null);
-  const gihangaRef = useRef<HTMLDivElement>(null);
-  const symbolRef = useRef<HTMLDivElement>(null);
 
-  // Capture translation strings safely as dependencies
   const bodyText = t('about.body');
-  const missionText = t('about.mission');
-  const gihangaText = t('about.gihanga');
-  const symbolText = t('about.symbol');
 
   useGSAP(() => {
-    // 1. Manually inject text outside of React's lifecycle.
-    // This physically prevents React from throwing 'insertBefore' NotFoundErrors,
-    // because React's Virtual DOM assumes these wrapper divs are eternally empty!
     if (bodyRef.current) bodyRef.current.innerHTML = bodyText;
-    if (missionRef.current) missionRef.current.innerHTML = missionText;
-    if (gihangaRef.current) gihangaRef.current.innerHTML = gihangaText;
-    if (symbolRef.current) symbolRef.current.innerHTML = symbolText;
 
-    const textElements = [
-      bodyRef.current,
-      missionRef.current,
-      gihangaRef.current,
-      symbolRef.current
-    ].filter(Boolean) as HTMLElement[];
+    // 1. Title Reveal
+    gsap.from(".about-main-title", {
+      opacity: 0,
+      y: 20,
+      duration: 1.2,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: ".about-main-title",
+        start: "top 90%",
+      }
+    });
 
-    const splits: SplitText[] = [];
+    // 2. Body Text Reveal
+    const bodyLines = new SplitText(bodyRef.current, { type: "lines" });
+    gsap.from(bodyLines.lines, {
+      opacity: 0,
+      y: 30,
+      stagger: 0.05,
+      duration: 1,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: bodyRef.current,
+        start: "top 85%",
+      }
+    });
 
-    textElements.forEach((el) => {
-      // Natively split without double-spooling
-      const split = new SplitText(el, {
-        type: "lines, words",
-        linesClass: "overflow-hidden w-full",
-        wordsClass: "inline-block"
-      });
-
-      splits.push(split);
-
-      split.lines.forEach((lineElement) => {
-        const line = lineElement as HTMLElement;
-        line.style.textAlign = "justify";
-        line.style.textAlignLast = "justify";
-      });
-
-      gsap.from(split.words, {
-        yPercent: 120,
-        autoAlpha: 0,
-        duration: 1.4,
-        ease: "power4.out",
-        stagger: 0.02,
+    // 3. Image & Block Reveals
+    const revealItems = gsap.utils.toArray('.reveal-item');
+    revealItems.forEach((item: any) => {
+      gsap.from(item, {
+        opacity: 0,
+        y: 40,
+        duration: 1.2,
+        ease: "power3.out",
         scrollTrigger: {
-          trigger: el,
-          start: "top 85%",
+          trigger: item,
+          start: "top 90%",
         }
       });
     });
 
-    gsap.from('.fade-in-element', {
-      autoAlpha: 0,
-      y: 30,
-      duration: 1.5,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 75%",
-      }
-    });
-
-    // Unspool GSAP directly cleanly during unmount
-    return () => {
-      splits.forEach(s => s.revert());
-    };
-
-  }, { scope: containerRef, dependencies: [bodyText, missionText, gihangaText, symbolText] });
+  }, { scope: containerRef, dependencies: [bodyText] });
 
   return (
     <section
       id="about"
       ref={containerRef}
-      className="relative min-h-screen w-full bg-[#0a1116] flex flex-col items-center justify-center py-10 md:py-12 lg:py-16 px-6 md:px-12 lg:px-20 xl:px-32 snap-start"
+      className="relative min-h-screen w-full bg-[#0a1116] flex flex-col items-center py-16 md:py-16 lg:py-28 px-6 md:px-12 lg:px-20 text-white selection:bg-[#B59A7D] selection:text-black"
     >
-      <div className="w-full mx-auto flex flex-col justify-between h-full gap-8 md:gap-10 lg:gap-12">
+      <div className="max-w-[1400px] w-full">
 
-        {/* Title */}
-        <div className="text-center fade-in-element flex-shrink-0">
-          <h2 className="text-white text-2xl md:text-3xl lg:text-3xl font-sabon font-normal tracking-wide">
-            {t('about.title')}
+        {/* 1. SIMPLE PLAIN TITLE */}
+        <div className="mb-16 md:mb-28">
+          <h2 className="about-main-title font-sabon text-2xl md:text-4xl tracking-tight">
+            About
           </h2>
+          <div className="h-[1px] w-16 bg-white/20 mt-8" />
         </div>
 
-        {/* Main Body */}
-        <div
-          ref={bodyRef}
-          className="w-full text-white text-opacity-90 font-sabon text-sm md:text-lg lg:text-xl xl:text-lg leading-relaxed lg:leading-[1.6] text-justify"
-        ></div>
-
-        {/* Mission (Right aligned) */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full">
-          <div className="col-span-1 md:col-span-6 hidden md:block"></div>
+        {/* 2. FOUNDING VISION: Readable Lead Paragraph */}
+        <div className="mb-24 md:mb-32">
           <div
-            ref={missionRef}
-            className="col-span-1 md:col-span-6 text-white text-opacity-80 font-sabon text-xs md:text-sm lg:text-base leading-relaxed lg:leading-loose tracking-wide text-justify md:pl-10"
+            ref={bodyRef}
+            className="font-sabon text-lg md:text-xl lg:text-2xl text-white/90 font-light justify-center leading-relaxed md:leading-snug"
           ></div>
         </div>
 
-        {/* Gihanga (Left aligned) */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full">
-          <div
-            ref={gihangaRef}
-            className="col-span-1 md:col-span-6 text-white text-opacity-80 font-sabon text-xs md:text-sm lg:text-base leading-relaxed lg:leading-loose tracking-wide text-justify md:pr-10"
-          ></div>
-          <div className="col-span-1 md:col-span-6 hidden md:block"></div>
-        </div>
+        {/* 3. CENTER COMPOSITION: Mission, Heritage & Image */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-20 items-start mb-20 md:mb-32">
 
-        {/* Symbol (Right aligned) */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full items-end mt-0 md:mt-2">
-          <div className="col-span-1 md:col-span-6 hidden md:block"></div>
-          <div className="col-span-1 md:col-span-6 flex flex-col md:flex-row items-center gap-6 md:pl-10">
-            {/* Symbol Illustration */}
-            <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 fade-in-element mix-blend-lighten">
-              <img src="/images/about-logo.webp" alt="GICA Symbol" className="w-full h-full object-contain" />
-            </div>
-            <div
-              ref={symbolRef}
-              className="text-white text-opacity-80 font-sabon text-[0.65rem] md:text-xs lg:text-sm leading-relaxed tracking-wide text-justify pt-2 md:pt-0"
-            ></div>
+          {/* GICA Detail Image */}
+          <div className="reveal-item md:col-span-7 relative aspect-[4/5] md:aspect-[12/10] overflow-hidden transition-all duration-[1500ms]">
+            <Image
+              src="/images/about-main.webp"
+              alt="GICA Detail"
+              fill
+              className="object-cover"
+            />
           </div>
+
+          {/* Mission & Heritage Aligned Besides Image */}
+          <div className="md:col-span-5 space-y-20">
+            <div className="reveal-item space-y-6">
+              <h3 className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-bold">Mission</h3>
+              <p className="font-sabon text-lg italic text-white/80 leading-relaxed">
+                {t('about.mission')}"
+              </p>
+            </div>
+
+            <div className="reveal-item space-y-6">
+              <h3 className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-bold">The Heritage</h3>
+              <p className="font-sabon text-base text-white/60 leading-relaxed text-justify">
+                {t('about.gihanga')}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 4. BOTTOM COMPOSITION: Symbolism & Texture */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+
+          <div className="reveal-item md:col-start-6 md:col-span-6 order-1 md:order-2">
+            <div className="space-y-10">
+              <p className="font-sabon text-sm md:text-md lg:text-lg font-light italic leading-snug text-white/90">
+                "{t('about.symbol')}"
+              </p>
+            </div>
+          </div>
+
+          <div className="reveal-item md:col-span-4 order-2 md:order-1">
+            <div className="relative h-24 md:h-32 w-48 md:w-64 ml-16 md:ml-0 transition-all duration-1000">
+              <Image
+                src="/logos/crane.png"
+                alt="GICA Texture"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
+
         </div>
 
       </div>

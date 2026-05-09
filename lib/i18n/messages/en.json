@@ -13,29 +13,29 @@
     },
     "about": {
       "title": "About",
-      "body": "The Gihanga Institute of Contemporary Art (GICA) in Kigali is an independent non-profit art institute dedicated to contemporary art and to fostering critical exchange. Spanning 777 sqm, GICA was designed by Rwandan architect Amin Gafaranga and co-founded by Kami Gahiga and Kaneza Schaal. GICA encompasses a range of contemporary art practices including visual art, performance, film and literature. Through its professional art facilities, GICA is committed to providing artists in Rwanda, is credited in Rwandan mythology and oral traditions, technlogies, and practices that shaped Rwandan society.",
-      "mission": "“ GICA' mission is to provide access to contemporary art for all Rwandans and to position the region within global art conversations. Our vision is to establish Rwanda as a leading hub for contemporary art and intellectual exchange “",
-      "gihanga": "Gihanga is the mythical first king and founding father of Rwanda. He is celebrated for introducing the core cultural and technological advancements of early society, symbolizing the link between historical tradition and modern progress",
-      "symbol": "The symbol inspired by the Grey Crowned Crane, represents the Great Lakes region and embodies artistic vision, awakening, and cultural unity."
+      "body": "Gihanga Institute of Contemporary Art (GICA) in Kigali is an independent non-profit art institute dedicated to contemporary art and to fostering critical exchange. Spanning 777 sqm, GICA was designed by Rwandan architect Amin Gafaranga and co-founded by Kami Gahiga and Kaneza Schaal. The institute encompasses a range of contemporary art practices including visual art, performance, film and literature, and is commmitted to supporting artists working in Rwanda and across the region.",
+      "mission": "“ GICA' mission is to provide access to contemporary art in Rwanda and the region and to position the region within global artistic and intellectual conversations. Our vision is to establish Rwanda as a leading hub for contemporary art and critical exchange.",
+      "gihanga": "(noun) a legendary figure often regarded as the founding hero and first king of Rwanda, Gihanga is credited in Rwandan mythology and oral tradition with introducing the essential cultural traditions, technologies, and practices that shaped Rwandan society, symbolising the link between historical inheritance and contemporary creation.",
+      "symbol": "The institute's symbol is inspired by the golden crested crown of the Grey Crowned Crane, the emblematic bird native to the Great Lakes region. Our symbol represents artistic vision, awakening, and cultural unity."
     },
     "quotes": [
       {
         "text": "This is a huge contribution to Rwanda's growing cultural infrastructure and creative industry.",
         "author": "Jean-Guy Africa",
-        "company": "CEO of Rwanda Development Board"
+        "company": "CEO, Rwanda Development Board"
       },
       {
         "text": "What a brilliant and pioneering idea. It is a timely and truly needed space.",
         "author": "Dr.Salah Hassan",
-        "company": "Director of African Institute in Sharjah"
+        "company": "Director, African Institute in Sharjah"
       },
       {
         "text": "GICA's inauguration marks a very special moment for the country's cultural arts, its platform makes the arts more accessible to all.",
         "author": "Hon. Sandrine Umutoni",
-        "company": "Minister of State for Youth and the Arts, Rwanda"
+        "company": "Minister, State for Youth and the Arts, Rwanda"
       },
       {
-        "text": "It is an amazing new initiative for Rwanda, it is a platform that I really believe is going to change the impact of art and culture in the region...It is all very beautiful to see them under one roof, in the same exhibition, in the same space.",
+        "text": "It is an amazing new initiative for Rwanda, it is a platform that I really believe is going to change the impact of art and culture in the region.",
         "author": "Touria El Glaoui",
         "company": "Founding Director, 1-54 Contemporary African Art Fair (London, Marrakech, New York)"
       },
@@ -47,7 +47,12 @@
       {
         "text": "What a gift for Kigali, for Rwanda, Africa and the world.",
         "author": "Caroline Greyling",
-        "company": "Director of Noval Foundation, Cape Town, South Africa"
+        "company": "Director, Noval Foundation, Cape Town, South Africa"
+      },
+      {
+        "text": "Art is a basic language and this space will give more visibility to artists from Rwanda and beyond. It creates hope for the next generation of artists, offering them a platform where they can build their careers. It's an immense addition to the cultural landscape of Rwanda.",
+        "author": "Othman Lazraq",
+        "company": "Founder, Museum of Contemporary African Art Al Maaden (MACAAL)"
       }
     ],
     "welcome": {
@@ -63,7 +68,7 @@
       "title": "Programme"
     },
     "visit": {
-      "title": "Visit Us"
+      "title": "Visit"
     },
     "contact": {
       "title": "Contact",
@@ -82,7 +87,7 @@
     "title": "Programme"
   },
   "visit": {
-    "title": "Visit Us"
+    "title": "Visit"
   },
   "contributors": {
     "title": "Contributors",
@@ -99,7 +104,7 @@
     "home": "Home",
     "programme": "Programme",
     "about": "About",
-    "visit": "Visit Us",
+    "visit": "Visit",
     "contact": "Contact",
     "exhibitions": "Exhibitions",
     "screenings": "Screenings",

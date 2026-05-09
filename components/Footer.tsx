@@ -77,7 +77,7 @@ export default function Footer() {
         {/* Desktop Layout */}
         <div className="hidden md:grid grid-cols-3 gap-8 items-start mb-20">
           <nav className="footer-anim-item flex flex-col space-y-8">
-            <h3 className="font-sabon text-2xl tracking-wide opacity-90">Home</h3>
+            <h3 className="font-sabon text-2xl tracking-wide opacity-90">GICA</h3>
             <ul className="flex flex-col space-y-3 text-white/50 text-base font-sabon">
               {navLinks.map((link) => (
                 <li key={link.name}>

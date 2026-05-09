@@ -1,5 +1,5 @@
 export const visitData = {
-  title: 'Visit Us',
+  title: 'Visit',
   openingTitle: 'Opening Hours',
   openingNote: 'Forthcoming – Opening Winter 2025',
   openingHours: {

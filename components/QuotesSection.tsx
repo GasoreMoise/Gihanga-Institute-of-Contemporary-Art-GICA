@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { useMessages } from 'next-intl';
+import { motion, AnimatePresence } from 'framer-motion'; // Explicitly imported
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { SplitText } from 'gsap/all';
@@ -16,55 +17,46 @@ export default function QuotesSection() {
 
     const [index, setIndex] = useState(0);
     const [mounted, setMounted] = useState(false);
+
     const sectionRef = useRef<HTMLElement>(null);
     const quoteTextRef = useRef<HTMLHeadingElement>(null);
     const metaRef = useRef<HTMLDivElement>(null);
     const splitRef = useRef<SplitText | null>(null);
 
-    useEffect(() => {
-        setMounted(true);
-    }, []);
+    useEffect(() => { setMounted(true); }, []);
 
     const { contextSafe } = useGSAP({ scope: sectionRef });
 
     const handleTransition = contextSafe((nextIndex: number) => {
-        // CRITICAL: Revert any existing split immediately to restore the raw text node
-        // This prevents the "disappearing text" issue during React re-renders.
-        if (splitRef.current) {
-            splitRef.current.revert();
-            splitRef.current = null;
-        }
-
         const tl = gsap.timeline();
 
-        // 1. Exit Animation
+        // 1. OUTRO: Smooth fade and slight lift
         tl.to([quoteTextRef.current, metaRef.current], {
             autoAlpha: 0,
-            y: -15,
-            duration: 0.3,
-            ease: "power2.in",
+            y: -10,
+            duration: 0.4,
+            ease: "power2.inOut",
             onComplete: () => {
+                if (splitRef.current) splitRef.current.revert();
                 setIndex(nextIndex);
             }
         });
 
-        // 2. Entrance Animation
+        // 2. INTRO: Staggered "ink-bleed" reveal
         tl.fromTo([quoteTextRef.current, metaRef.current],
-            { autoAlpha: 0, y: 20 },
+            { autoAlpha: 0, y: 15 },
             {
                 autoAlpha: 1,
                 y: 0,
                 duration: 0.8,
                 ease: "expo.out",
                 onStart: () => {
-                    // Re-split the new text only after it has been rendered by React
                     if (quoteTextRef.current) {
-                        splitRef.current = new SplitText(quoteTextRef.current, { type: "chars" });
+                        splitRef.current = new SplitText(quoteTextRef.current, { type: "words,chars" });
                         gsap.from(splitRef.current.chars, {
-                            autoAlpha: 0,
-                            y: 8,
-                            stagger: 0.015,
-                            duration: 0.7,
+                            opacity: 0,
+                            duration: 0.6,
+                            stagger: 0.008,
                             ease: "power2.out"
                         });
                     }
@@ -72,9 +64,6 @@ export default function QuotesSection() {
             }
         );
     });
-
-    const nextQuote = () => handleTransition((index + 1) % quotes.length);
-    const prevQuote = () => handleTransition((index - 1 + quotes.length) % quotes.length);
 
     if (!mounted || quotes.length === 0) return null;
 
@@ -84,52 +73,72 @@ export default function QuotesSection() {
             ref={sectionRef}
             className="relative h-screen w-full bg-[#FAF6ED] flex flex-col items-center justify-center overflow-hidden snap-start"
         >
-            {/* Minimalist Edge Marks */}
-            <div className="absolute inset-0 flex justify-between items-center px-6 md:px-12 pointer-events-none opacity-[0.05] select-none">
-                <span className="text-[35vw] font-serif translate-y-1/16 md:-translate-y-0 -translate-x-1/4">&ldquo;</span>
-                <span className="text-[35vw] font-serif translate-y-1/16 md:-translate-y-0 translate-x-1/4">&rdquo;</span>
+            {/* AMBIENT BACKGROUND: Gentle pulse for institutional depth */}
+            <div className="absolute inset-0 flex justify-between items-center px-10 pointer-events-none select-none">
+                <motion.span
+                    animate={{ opacity: [0.02, 0.04, 0.02] }}
+                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                    className="text-[25vw] font-serif text-[#0A1116]"
+                >
+                    &ldquo;
+                </motion.span>
+                <motion.span
+                    animate={{ opacity: [0.02, 0.04, 0.02] }}
+                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                    className="text-[25vw] font-serif text-[#0A1116]"
+                >
+                    &rdquo;
+                </motion.span>
             </div>
 
-            <div className="max-w-4xl w-full relative z-10 px-6 flex flex-col items-center text-center">
+            <div className="max-w-3xl w-full relative z-10 px-8 flex flex-col items-center text-center -mt-16">
+                {/* FONT REDUCTION: 
+                  Institutional Standard sizes: text-lg (Mobile) to text-2xl (Desktop)
+                */}
                 <h2
                     ref={quoteTextRef}
-                    className="text-[#0A1116] font-sabon text-xl md:text-2xl lg:text-3xl italic font-light mb-16 leading-relaxed"
+                    className="text-[#0A1116] font-sabon text-lg md:text-xl lg:text-2xl italic font-light mb-12 leading-[1.6] tracking-normal"
+                    style={{ wordBreak: 'keep-all', overflowWrap: 'break-word' }}
                 >
                     {quotes[index].text}
                 </h2>
 
                 <div ref={metaRef} className="flex flex-col items-center">
-                    <div className="h-[1px] w-6 bg-[#0A1116]/20 mb-6" />
-                    <p className="text-[#0A1116] font-sabon tracking-[0.4em] text-[0.65rem] uppercase font-bold">
+                    <div className="h-[1px] w-8 bg-black/10 mb-8" />
+                    <p className="text-[#0A1116] font-sabon tracking-[0.4em] text-[10px] md:text-[11px] uppercase font-bold">
                         {quotes[index].author}
                     </p>
-                    <p className="text-[#0A1116]/40 font-sabon text-[0.55rem] uppercase tracking-[0.2em] mt-2">
+                    <p className="text-[#0A1116]/40 font-sabon text-[9px] md:text-[10px] uppercase tracking-[0.25em] mt-2">
                         {quotes[index].company}
                     </p>
                 </div>
             </div>
 
-            {/* De-corporatized Navigation: No box, increased distance */}
-            <div className="absolute bottom-16 flex items-center justify-between w-full max-w-[240px] md:max-w-[320px]">
+            {/* NAVIGATION: Minimal and functional */}
+            <div className="absolute bottom-16 flex items-center justify-between w-full max-w-[280px] md:max-w-[340px]">
                 <button
-                    onClick={prevQuote}
-                    className="text-[#0A1116]/90 hover:text-[#0A1116] hover:scale-125 transition-all duration-300 p-2"
-                    aria-label="Previous Quote"
+                    onClick={() => handleTransition((index - 1 + quotes.length) % quotes.length)}
+                    className="group p-4 cursor-pointer transition-transform active:scale-95"
+                    aria-label="Previous"
                 >
-                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-6 h-6 text-black/30 group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M15 19l-7-7 7-7" />
                     </svg>
                 </button>
 
-                {/* Subtle visual center anchor */}
-                <div className="w-1 h-1 rounded-full bg-[#0A1116]/10" />
+                <div className="flex flex-col items-center gap-3 mt-6">
+                    <span className="text-[9px] font-bold tracking-[0.3em] text-black/40 uppercase">
+                        {index + 1} / {quotes.length}
+                    </span>
+                    <div className="w-[1px] h-4 bg-black/5" />
+                </div>
 
                 <button
-                    onClick={nextQuote}
-                    className="text-[#0A1116]/90 hover:text-[#0A1116] hover:scale-125 transition-all duration-300 p-2"
-                    aria-label="Next Quote"
+                    onClick={() => handleTransition((index + 1) % quotes.length)}
+                    className="group p-4 cursor-pointer transition-transform active:scale-95"
+                    aria-label="Next"
                 >
-                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-6 h-6 text-black/30 group-hover:text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 5l7 7-7 7" />
                     </svg>
                 </button>
