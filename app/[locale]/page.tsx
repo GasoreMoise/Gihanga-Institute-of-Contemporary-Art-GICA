@@ -50,15 +50,14 @@ export default async function Page() {
         <PressSection />
         <VisitSection
           title={visit.title}
-          openingTitle={visit.openingTitle}
-          openingNote={visit.openingNote}
           openingHours={visit.openingHours}
-          emailLabel={visit.emailLabel}
+          address={visit.address.split(',')[0]}
+          addressDetails={visit.address.split(',').slice(1).join(',').trim()}
           email={visit.email}
-          socialLabel={visit.socialLabel}
           social={visit.social}
-          address={visit.address}
-          image={visit.image}
+          bookingTitle="Book Your Visit"
+          guidelinesTitle="Visitor Guidelines"
+          guidelinesNote="For detailed information about visitor conduct and institutional policies, please refer to our Codes of Conduct."
         />
 
         <ContactStayInTouch

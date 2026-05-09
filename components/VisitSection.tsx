@@ -19,7 +19,6 @@ interface FAQ {
 
 interface VisitSectionProps {
   title: string;
-  subtitle: string;
   openingHours?: { days: string; hours: string };
   address: string;
   addressDetails: string;
@@ -33,7 +32,6 @@ interface VisitSectionProps {
 
 export default function VisitSection({
   title,
-  subtitle,
   openingHours,
   address,
   addressDetails,
@@ -116,7 +114,6 @@ export default function VisitSection({
         {/* 2. CORE INFO GRID */}
         <div className="text-center mb-16">
           <h2 className="font-sabon text-3xl md:text-4xl mb-4">{title}</h2>
-          <p className="font-sabon italic opacity-60">{subtitle}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8 mb-20 border-y border-black/5 py-16">

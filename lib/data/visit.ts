@@ -1,7 +1,6 @@
 export const visitData = {
   title: 'Visit',
   openingTitle: 'Opening Hours',
-  openingNote: 'Forthcoming – Opening Winter 2025',
   openingHours: {
     days: 'Tuesday - Sunday', // Add your days range here
     hours: '11am - 5pm' // Add your hours here
