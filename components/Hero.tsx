@@ -242,10 +242,10 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
             const isEventsSlide = lowerTitle.includes('events');
 
             let linkHref = "";
+            if (isLibrarySlide) linkHref = `/${locale}/library`;
             if (isExhibitionSlide) linkHref = `/${locale}/exhibitions`;
             if (isScreeningSlide) linkHref = `/${locale}/screenings`;
             if (isTalksSlide) linkHref = `/${locale}/talks`;
-            if (isLibrarySlide) linkHref = `/${locale}/library`;
             if (isEventsSlide) linkHref = `/${locale}/events`;
 
             return (

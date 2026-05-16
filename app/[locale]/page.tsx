@@ -19,21 +19,41 @@ export default async function Page() {
   const visit = await getVisitData(locale);
   const contact = await getContactContent(locale);
 
-  // MANUALLY ADD VIDEO PATHS TO THE SCREENINGS SLIDE
+  // REARRANGED SYSTEM SLIDE INTERACTIVE SEQUENCING
   const slides = [
-    { title: '', image: { src: '/images/hero-background.webp', alt: 'GICA' }, href: '/' },
-    { title: t('hero.slides.exhibitions'), image: { src: '/images/hero-exhibitions.webp', alt: 'Exhibitions' }, href: '/exhibitions' },
+    {
+      title: '',
+      image: { src: '/images/hero-background.webp', alt: 'GICA' },
+      href: '/'
+    },
+    {
+      title: t('hero.slides.library'),
+      image: { src: '/images/hero-library.webp', alt: 'The Koyo Kouoh Library' },
+      href: '/library'
+    },
+    {
+      title: t('hero.slides.exhibitions'),
+      image: { src: '/images/hero-exhibitions.webp', alt: 'Exhibitions' },
+      href: '/exhibitions'
+    },
     {
       title: t('hero.slides.screenings'),
       image: { src: '/images/hero-screenings.webp', alt: 'Screenings' },
-      // These keys MUST exist for the Hero component to render videos
+      // Preserved multi-stream video keys for ambient split-screen configurations
       leftVideo: '/videos/screening-left.webm',
       rightVideo: '/videos/screening-right.webm',
       href: '/programme/screenings'
     },
-    { title: t('hero.slides.talks'), image: { src: '/images/hero-talks.webp', alt: 'Talks' }, href: '/programme/talks' },
-    { title: t('hero.slides.library'), image: { src: '/images/hero-library.webp', alt: 'The Koyo Kouoh Library' }, href: '/library' },
-    { title: t('hero.slides.events'), image: { src: '/images/hero-events.webp', alt: 'Events' }, href: '/programme/events' }
+    {
+      title: t('hero.slides.talks'),
+      image: { src: '/images/hero-talks.webp', alt: 'Talks' },
+      href: '/programme/talks'
+    },
+    {
+      title: t('hero.slides.events'),
+      image: { src: '/images/hero-events.webp', alt: 'Events' },
+      href: '/programme/events'
+    }
   ];
 
   return (
@@ -63,7 +83,6 @@ export default async function Page() {
         <ContactStayInTouch
           title={contact.title}
           subtitle={contact.subtitle}
-          // Fix: Passing an object instead of a string
           backgroundImage={{
             src: "/images/homecontact-bg.webp",
             alt: "Contact Background"
