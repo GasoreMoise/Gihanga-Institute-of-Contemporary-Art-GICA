@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,33 +10,10 @@ export default function Nav() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [kigaliHour, setKigaliHour] = useState(new Date().getUTCHours() + 2);
 
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
-
-  useEffect(() => {
-    const updateKigaliTime = () => {
-      const now = new Date();
-      const kigaliTime = new Intl.DateTimeFormat('en-GB', {
-        timeZone: 'Africa/Kigali',
-        hour: 'numeric',
-        hour12: false,
-      }).format(now);
-      setKigaliHour(parseInt(kigaliTime));
-    };
-    updateKigaliTime();
-    const interval = setInterval(updateKigaliTime, 60000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const craneClipPath = useMemo(() => {
-    if (kigaliHour >= 0 && kigaliHour < 6) return 'polygon(0% 0%, 25% 0%, 25% 100%, 0% 100%)';
-    if (kigaliHour >= 6 && kigaliHour < 12) return 'polygon(0% 0%, 50% 0%, 50% 100%, 0% 100%)';
-    if (kigaliHour >= 12 && kigaliHour < 18) return 'polygon(0% 0%, 75% 0%, 75% 100%, 0% 100%)';
-    return 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)';
-  }, [kigaliHour]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -99,7 +76,6 @@ export default function Nav() {
                 animate={{
                   opacity: isHovered ? 1 : 0,
                   scale: isHovered ? 2.2 : 0.5,
-                  clipPath: isHovered ? craneClipPath : 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)'
                 }}
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 className="absolute inset-0 flex items-center justify-center pointer-events-none"
@@ -107,7 +83,7 @@ export default function Nav() {
                 <img
                   src="/logos/crane.png"
                   alt="GICA Crane"
-                  className={`w-auto object-contain transition-all duration-700 ${scrolled ? 'h-8 md:h-10' : 'h-12 md:h-16'} ${shouldBeBlack ? 'brightness-0' : 'brightness-110'}`}
+                  className={`w-auto object-contain transition-all duration-700 ${scrolled ? 'h-8 md:h-10' : 'h-12 md:h-16'} ${shouldBeBlack ? 'brightness-0' : 'brightness-111'}`}
                 />
               </motion.div>
             </div>
@@ -120,7 +96,7 @@ export default function Nav() {
               <button onClick={() => switchLocale('rw')} className="opacity-40 hover:opacity-100 cursor-pointer p-2">KIN</button>
             </div>
 
-            {/* MAIN TOGGLE: This now hides completely when menu is open to prevent overlap */}
+            {/* MAIN TOGGLE */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className={`relative w-10 h-10 flex items-center justify-center focus:outline-none cursor-pointer group transition-opacity duration-300 ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
@@ -154,7 +130,7 @@ export default function Nav() {
             transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
             className="fixed inset-0 z-[250] bg-[#FDFBF7] flex flex-col items-center justify-center font-sabon pointer-events-auto"
           >
-            {/* CLEAN CLOSE BUTTON: Placed high to ensure it captures clicks */}
+            {/* CLEAN CLOSE BUTTON */}
             <button
               onClick={() => setIsOpen(false)}
               className="absolute top-8 md:top-12 right-6 md:right-12 group flex items-center gap-4 cursor-pointer z-[300] p-4"

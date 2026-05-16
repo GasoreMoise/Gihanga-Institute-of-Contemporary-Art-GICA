@@ -97,7 +97,7 @@ export default function QuotesSection() {
                 */}
                 <h2
                     ref={quoteTextRef}
-                    className="text-[#0A1116] font-sabon text-lg md:text-xl lg:text-2xl italic font-light mb-12 leading-[1.6] tracking-normal"
+                    className="text-[#0A1116] font-sabon text-xl md:text-2xl lg:text-3xl italic font-light mb-12 leading-[1.6] tracking-normal"
                     style={{ wordBreak: 'keep-all', overflowWrap: 'break-word' }}
                 >
                     {quotes[index].text}
@@ -105,10 +105,10 @@ export default function QuotesSection() {
 
                 <div ref={metaRef} className="flex flex-col items-center">
                     <div className="h-[1px] w-8 bg-black/10 mb-8" />
-                    <p className="text-[#0A1116] font-sabon tracking-[0.4em] text-[10px] md:text-[11px] uppercase font-bold">
+                    <p className="text-[#0A1116] font-sabon tracking-[0.4em] text-[12px] md:text-[15px] uppercase font-bold">
                         {quotes[index].author}
                     </p>
-                    <p className="text-[#0A1116]/40 font-sabon text-[9px] md:text-[10px] uppercase tracking-[0.25em] mt-2">
+                    <p className="text-[#0A1116]/40 font-sabon text-[9px] md:text-[12px] uppercase tracking-[0.25em] mt-2">
                         {quotes[index].company}
                     </p>
                 </div>
