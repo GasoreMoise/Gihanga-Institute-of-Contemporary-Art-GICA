@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Play } from 'lucide-react';
 import ContactStayInTouch from '@/components/ContactStayInTouch';
 import Footer from '@/components/Footer';
@@ -13,7 +13,7 @@ const talkContent = {
     date: "Thursday, 22 January 2025",
     headerImage: "/images/art/hero-bg.webp",
     videoImage: "/images/hero-talks.webp",
-    videoUrl: "https://6kf3phgbvin96dfd.private.blob.vercel-storage.com/Culture,%20Philosophy,%20And%20Space%20%20A%20Conversation%20On%20Architecture,%20Theatre,%20And%20Art.mp4?vercel-blob-delegation=eyJzdG9yZUlkIjoic3RvcmVfNktGM3BoZ0JWaW45NmRGRCIsIm93bmVySWQiOiJ0ZWFtX1lVT2NOc29RZmxDOThPSGVnSlgwOXhZSCIsInBhdGhuYW1lIjoiKiIsIm9wZXJhdGlvbnMiOlsiZ2V0IiwiaGVhZCJdLCJ2YWxpZFVudGlsIjoxNzc4OTgzOTk5NTk5LCJpYXQiOjE3Nzg5NDA3OTk4MTd9.9CjrtbmKyYixyCf9MmSLvCWR_ttDLrGXX7u6l4e2NYc&vercel-blob-signature=993BMxkIWko_RJq70B8N-tV-fPTwPhJOQhTAmUP-ybA",
+    youtubeId: "x9xxcD258i8", // Core YouTube video ID
     paragraphs: [
         "GICA brought together a distinguished panel — including Carole Karemera, Christian Benimana from Mass Design, Alex Ndibwami, Andrew Todd, and Lisa Katangali, Curatorial Coordinator of the Pan-African Biennale — for a rich dialogue exploring the intersection of local architecture practice and contemporary African arts.",
         "This conversation illuminated how these elements manifest in sectors like theatre and creative mediums, addressing the challenges encountered in these fields while seeking optimal approaches to designing public spaces and structures.",
@@ -29,21 +29,13 @@ const talkContent = {
 
 export default function TalkDetailPage() {
     const [isMounted, setIsMounted] = useState(false);
-    const [hasPlayed, setHasPlayed] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-    const videoRef = useRef<HTMLVideoElement>(null);
 
-    // Guard against Next.js 15 layout hydration shifts
+    // Safeguard to prevent Next.js hydration mismatches
     useEffect(() => {
         setIsMounted(true);
     }, []);
-
-    const handlePlayVideo = () => {
-        if (videoRef.current) {
-            videoRef.current.play();
-            setHasPlayed(true);
-        }
-    };
 
     const handleNext = () => {
         setSelectedIndex((prev) => (prev !== null ? (prev + 1) % talkContent.gallery.length : null));
@@ -53,7 +45,6 @@ export default function TalkDetailPage() {
         setSelectedIndex((prev) => (prev !== null ? (prev - 1 + talkContent.gallery.length) % talkContent.gallery.length : null));
     };
 
-    // Global keyboard navigation listener for the photo grid lightbox
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (selectedIndex === null) return;
@@ -93,44 +84,66 @@ export default function TalkDetailPage() {
             <div className="max-w-[1400px] mx-auto px-6 md:px-20 lg:px-32 py-14">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-16 items-start mb-32">
 
-                    {/* NATIVE HIGH-PERFORMANCE STREAMING VIDEO CONTAINER WITH INSTITUTIONAL OVERLAY */}
+                    {/* REVAMPED PRIVACY-ENHANCED YOUTUBE PLAYER CONTAINER */}
                     <div className="md:col-span-7 w-full">
-                        <div className="relative h-[300px] md:h-[450px] w-full shadow-2xl bg-black overflow-hidden group">
+                        <div className="relative h-[300px] md:h-[450px] w-full shadow-2xl bg-black overflow-hidden group rounded-3xl border border-neutral-100">
 
-                            {/* Institutional Play Interface Overlay */}
-                            <AnimatePresence>
-                                {!hasPlayed && (
+                            <AnimatePresence mode="wait">
+                                {!isPlaying ? (
                                     <motion.div
+                                        key="facade"
                                         initial={{ opacity: 1 }}
                                         exit={{ opacity: 0 }}
-                                        transition={{ duration: 0.5 }}
-                                        onClick={handlePlayVideo}
+                                        transition={{ duration: 0.4, ease: 'easeInOut' }}
+                                        onClick={() => setIsPlaying(true)}
                                         className="absolute inset-0 z-20 cursor-pointer flex flex-col items-center justify-center"
                                     >
+                                        {/* Background Poster Cover with micro-scale on group hover */}
+                                        <Image
+                                            src={talkContent.videoImage}
+                                            alt="Video Cover Preview"
+                                            fill
+                                            priority
+                                            sizes="(max-width: 768px) 100vw, 60vw"
+                                            className="object-cover opacity-70 group-hover:opacity-60 transition-all duration-1000 ease-out group-hover:scale-105"
+                                        />
 
-                                        {/* Centered Play Button Element */}
-                                        <div className="relative z-30 w-10 h-10 md:w-16 md:h-16 rounded-full border border-white/20 flex items-center justify-center backdrop-blur-md text-white group-hover:scale-110 group-hover:bg-white group-hover:text-black transition-all duration-500 ease-out shadow-xl">
-                                            <Play fill="currentColor" className="w-6 h-6 md:w-8 md:h-8 ml-1" />
+                                        {/* Enhanced Institutional Centered Play Button */}
+                                        <div className="relative z-30 w-14 h-14 md:w-16 md:h-16 rounded-full border border-white/30 flex items-center justify-center backdrop-blur-md text-white group-hover:scale-110 group-hover:bg-white group-hover:text-black group-hover:border-white transition-all duration-500 ease-out shadow-2xl">
+                                            <Play fill="currentColor" className="w-5 h-5 md:w-6 md:h-6 ml-0.5 transition-transform duration-500 group-hover:scale-105" />
                                         </div>
+
+                                        {/* Interactive Minimal Label Callout */}
+                                        <div className="absolute bottom-6 left-6 right-6 z-30 flex items-center justify-between pointer-events-none">
+                                            <p className="text-[10px] tracking-[0.4em] uppercase text-white font-medium transition-all duration-500 group-hover:translate-x-1">
+                                                Click to stream recording
+                                            </p>
+                                            <span className="text-[9px] tracking-[0.2em] uppercase text-white/50 font-mono opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                                                [02:14:00]
+                                            </span>
+                                        </div>
+                                    </motion.div>
+                                ) : (
+                                    <motion.div
+                                        key="player"
+                                        initial={{ opacity: 0, scale: 0.98 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ duration: 0.5, ease: 'easeOut' }}
+                                        className="absolute inset-0 w-full h-full z-10"
+                                    >
+                                        <iframe
+                                            src={`https://www.youtube-nocookie.com/embed/${talkContent.youtubeId}?autoplay=1&rel=0&modestbranding=1&showinfo=0&controls=1`}
+                                            title="GICA Recording"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                            allowFullScreen
+                                            className="w-full h-full border-0 shadow-inner"
+                                        ></iframe>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
 
-                            {/* Underlying Streaming Media Architecture */}
-                            <video
-                                ref={videoRef}
-                                controls={hasPlayed} // Only display controls after the container is launched
-                                preload="metadata"
-                                playsInline
-                                controlsList="nodownload"
-                                className="w-full h-full object-cover"
-                                onPlay={() => setHasPlayed(true)}
-                            >
-                                <source src={talkContent.videoUrl} type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
                         </div>
-                        <div className="mt-4 flex items-center gap-4">
+                        <div className="mt-4 flex items-center justify-between border-b border-neutral-100 pb-2">
                             <span className="text-[9px] tracking-[0.4em] uppercase font-bold text-neutral-400">
                                 Conversation Recording
                             </span>
