@@ -39,7 +39,6 @@ const galleryData = [
     { id: 29, src: '/images/inuma/work29.webp', artist: 'Innocent Nkurunziza', work: '528Hz Frequency, 2025', credit: 'Photo: Aniket Uke' },
     { id: 30, src: '/images/inuma/work30.webp', artist: 'Innocent Nkurunziza', work: 'Installation View, 2025', credit: 'Photo: Aniket Uke' },
     { id: 31, src: '/images/inuma/work31.webp', artist: 'Feline Ntabangana', work: 'Installation View, 2025', credit: 'Photo: Aniket Uke' },
-
 ];
 
 const artistProfiles = [
@@ -192,8 +191,7 @@ export default function ExhibitionDetailPage() {
                 <section className="mb-40 max-w-3xl mx-auto">
                     <h2 className="text-xl md:text-2xl font-bold tracking-[0.25em] uppercase mb-12 text-center leading-relaxed">INUMA : A BIRD SHALL CARRY THE VOICE</h2>
                     <div className="space-y-8 text-[15px] md:text-[17px] leading-[1.9] text-neutral-800 text-justify font-light">
-                        <p>‘Inuma: A Bird Shall Carry the Voice’ presents works by Rwandan artists Francis Offman, Kaneza Schaal, Cedric Mizero, Sanaa Gateja, Innocent Nkurunziza, Féline Ntabangana, and Christian Nyampeta. Encompassing installation, painting, textiles, photography, performance, and film, the selected works carry textures, rhythms, and silences that extend across borders and generations.</p>
-                        <p>The title of this exhibition finds inspiration from both scripture and visual form. Ecclesiastes 10:20 states: “Curse not the king, no, not even in thy thoughts; for a bird of the air shall carry the voice, and that which hath wings shall tell the matter.” This biblical forewarning acknowledges that no voice is ever fully confined. What is whispered may travel and what is pronounced in silence can resurface. The Inuma (Kinyarwanda for dove) becomes a metaphor for the quiet of flight and the strength of the message it bears, echoing the voices of the participating artists as they resonate from Kigali to Kampala, Bologna to Brussels, and New York.</p>
+                        <p>This exhibition is made possible with the generous support of our Founding Supporter the Mellon Foundation.<i> Inuma: A Bird Shall Carry the Voice</i> features works by Francis Offman, Kaneza Schaal, Innocent Nkurunziza, Feline Ntabangana, Christian Nyampera, Sanaa Gateja, and Cedric Mizero. The artists gathered in the institute's inaugural exhibition are connected through the Rwandan lineage and work across multiple geographies. They mobilize material, gesture, and memory to articulate forms of knowledge that resist disappearance. The exhibition takes its title from Ecclestiates 10:20, a verse that asserts the inevitable circulation of utterance beyond its point of origin. This concept resonates with the figure of the inuma, the dove in Rwandan cosmology regarded as a mediator between visible and invisible worlds. Each work operates on the threshold of the spoken and the unspoken, insisting that meaning persists beyond its quietest registers.</p>
                     </div>
                 </section>
 
@@ -239,11 +237,19 @@ export default function ExhibitionDetailPage() {
                                                 animate={{ opacity: 1 }}
                                                 exit={{ opacity: 0 }}
                                                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                                                className="fixed inset-0 z-[150] bg-white flex flex-col md:flex-row items-center justify-center overflow-hidden"
+                                                // LOGIC UPDATE: Set z-index to 250 to ensure modal covers fixed navbar
+                                                className="fixed inset-0 z-[250] bg-white flex flex-col md:flex-row items-center justify-center overflow-hidden"
                                             >
-                                                <button onClick={() => setExpandedArtist(null)} className="absolute top-10 right-5 z-[160] text-3xl font-light hover:rotate-90 transition-transform duration-500">✕</button>
+                                                {/* LOGIC UPDATE: Adjusted top and right values to prevent nav overlap */}
+                                                <button
+                                                    onClick={() => setExpandedArtist(null)}
+                                                    className="absolute top-12 md:top-16 right-8 md:right-16 z-[260] text-3xl font-light hover:rotate-90 transition-transform duration-500 p-4"
+                                                >
+                                                    ✕
+                                                </button>
 
-                                                <div className="max-w-6xl w-full flex flex-col md:flex-row items-start px-10 gap-16 md:gap-24 overflow-y-auto max-h-screen py-20 no-scrollbar">
+                                                {/* LOGIC UPDATE: Added py-32 to create a safe zone from browser top edge/nav */}
+                                                <div className="max-w-6xl w-full flex flex-col md:flex-row items-start px-10 gap-16 md:gap-24 overflow-y-auto max-h-screen py-32 no-scrollbar">
                                                     <div className="w-[280px] md:w-[320px] lg:w-[350px] flex-shrink-0 relative shadow-xl ml-auto md:ml-0 mr-auto md:mr-0">
                                                         <div className="aspect-[4/5] relative">
                                                             <Image src={artist.img} alt={artist.name} fill unoptimized className="object-cover" />

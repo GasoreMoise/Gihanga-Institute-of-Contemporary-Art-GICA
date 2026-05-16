@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
 import gsap from 'gsap';
@@ -34,7 +34,7 @@ const librarySections = [
     {
         id: 'archive',
         title: 'Archive',
-        subtitle: 'Collection of material from historically Rwandan and East African artists, initiatives, establishing frameworks to preserve, nurture, and present these artists’ work.',
+        subtitle: 'A collection of material from regional artists and initiatives, establishing frameworks to preserve, nurture, and present their work.',
         image: '/images/library/archive.webp',
     },
     {
@@ -72,10 +72,17 @@ const librarySections = [
 export default function LibraryPage() {
     const containerRef = useRef<HTMLDivElement>(null);
     const locale = useLocale();
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     useGSAP(() => {
-        // We select ALL cards including the first "Hub" card
+        if (!isMounted) return;
+
         const cards = gsap.utils.toArray<HTMLElement>('.library-card');
+        let isResetting = false;
 
         cards.forEach((card, i) => {
             ScrollTrigger.create({
@@ -83,21 +90,52 @@ export default function LibraryPage() {
                 start: "top top",
                 pin: true,
                 pinSpacing: false,
-                // Each card pins for 100% of the viewport height
                 end: () => `+=${window.innerHeight}`,
                 id: `card-${i}`,
                 invalidateOnRefresh: true,
+                onUpdate: (self) => {
+                    // Detect upward scroll direction when we are deep into the stacked slides
+                    if (self.direction === -1 && !isResetting && window.scrollY > window.innerHeight) {
+                        isResetting = true;
+
+                        // 1. Instantly fade out all text and images on the stacked cards to break the unstacking visual
+                        gsap.to('.library-card:not(:first-child) .card-content-wrapper', {
+                            opacity: 0,
+                            duration: 0.2,
+                            overwrite: 'auto'
+                        });
+
+                        // 2. Instantly drop the container height or translate slides down out of view
+                        gsap.to('.library-card:not(:first-child)', {
+                            yPercent: 100,
+                            duration: 0.4,
+                            stagger: 0.05,
+                            ease: "power2.inOut",
+                            onComplete: () => {
+                                // 3. Snap the window scroll position back to the top cleanly
+                                window.scrollTo(0, 0);
+                                ScrollTrigger.refresh();
+
+                                // 4. Restore cards to their normal pristine layout state at the top
+                                gsap.set('.library-card:not(:first-child)', { yPercent: 0 });
+                                gsap.set('.library-card:not(:first-child) .card-content-wrapper', { opacity: 1 });
+
+                                setTimeout(() => {
+                                    isResetting = false;
+                                }, 100);
+                            }
+                        });
+                    }
+                }
             });
         });
 
         return () => {
             ScrollTrigger.getAll().forEach(t => t.kill());
         };
-    }, { scope: containerRef });
+    }, { scope: containerRef, dependencies: [isMounted] });
 
     const handleNavClick = (index: number) => {
-        // Since the Hub is index 0, "Place" is index 1, "Collection" is index 2...
-        // The scroll target is simply index * viewport height
         const scrollTarget = (index + 1) * window.innerHeight;
 
         gsap.to(window, {
@@ -106,6 +144,10 @@ export default function LibraryPage() {
             ease: "power4.inOut"
         });
     };
+
+    if (!isMounted) {
+        return <div className="min-h-screen bg-white" />;
+    }
 
     return (
         <main ref={containerRef} className="bg-white font-sabon selection:bg-black selection:text-white overflow-x-hidden">
@@ -118,13 +160,14 @@ export default function LibraryPage() {
                         alt="Library Hub"
                         fill
                         unoptimized
+                        sizes="100vw"
                         className="object-cover brightness-[0.5]"
                         priority
                     />
                 </div>
 
                 <div className="relative z-10 w-full">
-                    <h1 className="text-[2.2rem] md:text-[2.5rem] lg:text-[2.5rem] leading-[1.2] tracking-tight font-normal max-w-6xl">
+                    <h1 className="text-[1.8rem] md:text-[2.2rem] lg:text-[2.2rem] leading-[1.2] tracking-tight font-normal max-w-6xl">
                         Library as a{" "}
                         <span className="inline-flex flex-wrap gap-x-4">
                             {librarySections.map((s, i) => (
@@ -150,45 +193,49 @@ export default function LibraryPage() {
                         id={section.id}
                         key={section.id}
                         className="library-card relative h-screen w-full overflow-hidden flex items-end pb-24 px-6 md:px-15 lg:px-20 text-white"
-                        style={{ zIndex: i + 20 }} // Start z-index higher than the hub
+                        style={{ zIndex: i + 20 }}
                     >
-                        <div className="absolute inset-0 z-0">
-                            <Image
-                                src={section.image}
-                                alt={section.title}
-                                fill
-                                unoptimized
-                                className="object-cover brightness-[0.4]"
-                            />
-                        </div>
+                        {/* Wrapper added to cleanly manage inner content opacity transitions */}
+                        <div className="card-content-wrapper absolute inset-0 w-full h-full flex items-end pb-24 px-6 md:px-15 lg:px-20">
+                            <div className="absolute inset-0 z-0">
+                                <Image
+                                    src={section.image}
+                                    alt={section.title}
+                                    fill
+                                    unoptimized
+                                    sizes="100vw"
+                                    className="object-cover brightness-[0.4]"
+                                />
+                            </div>
 
-                        <div className="relative z-10 max-w-4xl">
-                            <h2 className="text-4xl md:text-4xl font-bold tracking-tight mb-6">{section.title}</h2>
+                            <div className="relative z-10 max-w-4xl w-full">
+                                <h2 className="text-4xl md:text-4xl font-bold tracking-tight mb-6">{section.title}</h2>
 
-                            {section.subtitle && (
-                                <p className="text-lg md:text-2xl leading-relaxed font-light mb-8 max-w-3xl italic opacity-90">
-                                    {section.subtitle}
-                                </p>
-                            )}
+                                {section.subtitle && (
+                                    <p className="text-lg md:text-2xl leading-relaxed font-light mb-8 max-w-3xl italic opacity-90">
+                                        {section.subtitle}
+                                    </p>
+                                )}
 
-                            {section.details && (
-                                <div className="space-y-4 text-sm md:text-lg opacity-80 font-light max-w-2xl">
-                                    {section.details.map((detail, index) => (
-                                        <p key={index}>{detail}</p>
-                                    ))}
-                                </div>
-                            )}
+                                {section.details && (
+                                    <div className="space-y-4 text-sm md:text-lg opacity-80 font-light max-w-2xl">
+                                        {section.details.map((detail, index) => (
+                                            <p key={index}>{detail}</p>
+                                        ))}
+                                    </div>
+                                )}
 
-                            {section.list && (
-                                <ul className="space-y-3 text-lg md:text-2xl font-light italic opacity-90">
-                                    {section.list.map((item, index) => (
-                                        <li key={index} className="flex items-center gap-4">
-                                            <span className="w-1.5 h-1.5 bg-white rounded-full opacity-40" />
-                                            {item}
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
+                                {section.list && (
+                                    <ul className="space-y-3 text-lg md:text-2xl font-light italic opacity-90">
+                                        {section.list.map((item, index) => (
+                                            <li key={index} className="flex items-center gap-4">
+                                                <span className="w-1.5 h-1.5 bg-white rounded-full opacity-40" />
+                                                {item}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
                         </div>
                     </section>
                 ))}
@@ -198,7 +245,7 @@ export default function LibraryPage() {
             <div className="relative z-[100] w-full bg-[#0a1116]">
                 <ContactStayInTouch
                     title="Stay in Touch"
-                    subtitle="For any enquiries, thoughts and ideas please do not hesistate to reach out to us."
+                    subtitle="For any enquiries, thoughts and ideas please do not hesitate to reach out to us."
                     backgroundImage={{
                         src: "/images/library/contact.webp",
                         alt: "GICA Library Contact"

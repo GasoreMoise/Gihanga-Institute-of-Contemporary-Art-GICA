@@ -38,7 +38,7 @@ const teamData = [
         category: "Communications & Digital",
         members: [
             { name: "Iris Teta", role: "Communications Officer" },
-            { name: "Moise NSHUTI GASORE", role: "Digital Platform & Documentation" }
+            { name: "Moise Nshuti Gasore", role: "Digital Platform & Documentation" }
         ]
     }
 ];

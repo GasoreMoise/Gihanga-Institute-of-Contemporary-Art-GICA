@@ -13,7 +13,7 @@ const exhibitions = [
         period: '21 Dec 2025 - 19 March 2026',
         image: '/images/hero-exhibitions.webp', // Ensure this path is correct
         artists: [
-            'Saana Gateja',
+            'Sanaa Gateja',
             'Innocent Nkurunziza',
             'Feline Ntabangana',
             'Francis Offman',
