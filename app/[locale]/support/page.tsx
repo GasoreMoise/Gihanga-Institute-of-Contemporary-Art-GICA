@@ -1,8 +1,8 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/all';
@@ -62,8 +62,16 @@ const supportingWays = [
 
 export default function SupportPage() {
     const containerRef = useRef<HTMLElement>(null);
+    const [isMounted, setIsMounted] = useState(false);
+    const [expandedIndices, setExpandedIndices] = useState<number[]>([]);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     useGSAP(() => {
+        if (!isMounted) return;
+        
         gsap.from(".support-item", {
             opacity: 0,
             y: 30,
@@ -75,7 +83,17 @@ export default function SupportPage() {
                 start: "top 80%",
             }
         });
-    }, { scope: containerRef });
+    }, { scope: containerRef, dependencies: [isMounted] });
+
+    const toggleExpand = (idx: number) => {
+        setExpandedIndices(prev => 
+            prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx]
+        );
+    };
+
+    if (!isMounted) {
+        return <div className="min-h-screen bg-[#FAF6ED]" />;
+    }
 
     return (
         <main ref={containerRef} className="bg-[#FAF6ED] font-sabon text-[#0A1116] selection:bg-black selection:text-white">
@@ -83,7 +101,7 @@ export default function SupportPage() {
             {/* 1. HERO HEADER */}
             <section className="relative h-[80vh] md:h-[100vh] w-full flex items-center justify-center overflow-hidden">
                 <Image
-                    src="/images/support-hero-3.webp" // Use the night view image from your wireframe
+                    src="/images/support-hero-3.webp"
                     alt="GICA at night"
                     fill
                     className="object-cover brightness-50"
@@ -121,26 +139,73 @@ export default function SupportPage() {
                 <h2 className="text-2xl md:text-3xl mb-20">Ways of Supporting</h2>
 
                 <div className="support-list divide-y divide-black/5 border-t border-black/15">
-                    {supportingWays.map((way, idx) => (
-                        <div key={idx} className="support-item group grid grid-cols-1 md:grid-cols-12 py-12 md:py-16 gap-8 md:gap-4 items-start transition-colors hover:bg-black/[0.01]">
-                            <div className="md:col-span-2 flex justify-center md:justify-start">
-                                <div className="w-16 h-16 md:w-20 md:h-20 opacity-100 group-hover:opacity-100 transition-opacity">
-                                    {way.icon}
-                                </div>
-                            </div>
-                            <div className="md:col-span-5 space-y-4">
-                                <h3 className="text-xl md:text-2xl italic">{way.title}</h3>
-                                <p className="text-sm opacity-60 leading-relaxed pr-8">{way.description}</p>
-                            </div>
-                            <div className="md:col-span-5 md:border-l border-black/15 md:pl-12 pt-4 md:pt-0">
-                                <p className="text-sm italic opacity-60 leading-relaxed">
-                                    {way.benefit}
-                                </p>
-                            </div>
-                        </div>
-                    ))}
+                    {supportingWays.map((way, idx) => {
+                        const isExpanded = expandedIndices.includes(idx);
 
-                    {/* 4. YOUTH PROGRAMME (Highlighted Section) */}
+                        return (
+                            <div 
+                                key={idx} 
+                                className="support-item group flex flex-col py-8 md:py-12 transition-colors hover:bg-black/[0.005]"
+                            >
+                                <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-4 items-start w-full">
+                                    {/* Icon Column */}
+                                    <div className="md:col-span-2 flex justify-center md:justify-start">
+                                        <div className="w-16 h-16 md:w-20 md:h-20 opacity-100 transition-opacity">
+                                            {way.icon}
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Info Column */}
+                                    <div className="md:col-span-8 space-y-4">
+                                        <h3 className="text-xl md:text-2xl italic">{way.title}</h3>
+                                        <p className="text-sm opacity-60 leading-relaxed pr-4">{way.description}</p>
+                                    </div>
+                                    
+                                    {/* Pure Minimalist Asterisk (*) Trigger */}
+                                    <div className="md:col-span-2 flex items-center justify-end pt-2 md:pt-4">
+                                        <button 
+                                            onClick={() => toggleExpand(idx)}
+                                            className="w-10 h-10 flex items-center justify-center focus:outline-none cursor-pointer text-[#B59A7D] hover:text-black transition-colors"
+                                            aria-label={isExpanded ? "Hide benefits" : "View benefits"}
+                                            aria-expanded={isExpanded}
+                                        >
+                                            <motion.span 
+                                                animate={{ rotate: isExpanded ? 45 : 0 }}
+                                                transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
+                                                className="text-2xl md:text-3xl font-light select-none leading-none block pb-1"
+                                            >
+                                                *
+                    </motion.span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Dynamic Animated Inline Benefit Content */}
+                                <AnimatePresence initial={false}>
+                                    {isExpanded && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: "auto", opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            transition={{ duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
+                                            className="overflow-hidden w-full"
+                                        >
+                                            <div className="mt-6 pt-6 border-t border-dashed border-black/10 grid grid-cols-1 md:grid-cols-12 w-full">
+                                                <div className="hidden md:block md:col-span-2" />
+                                                <div className="col-span-1 md:col-span-10">
+                                                    <p className="text-sm md:text-[15px] italic opacity-70 leading-relaxed max-w-2xl text-justify">
+                                                        {way.benefit}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        );
+                    })}
+
+                    {/* 4. YOUTH PROGRAMME */}
                     <div className="support-item bg-black/[0.03] -mx-6 px-6 md:mx-0 md:px-0 grid grid-cols-1 md:grid-cols-12 py-16 md:py-24 pb-10 gap-8 md:gap-4 items-center">
                         <div className="md:col-span-2 flex justify-center md:justify-start md:pl-12">
                             <div className="w-20 h-20 opacity-60">

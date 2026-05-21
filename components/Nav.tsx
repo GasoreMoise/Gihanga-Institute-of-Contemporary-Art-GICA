@@ -31,7 +31,7 @@ export default function Nav() {
   const navItems = [
     { href: `/${locale}/#about`, label: 'About' },
     { href: `/${locale}/team`, label: 'Team' },
-    { href: `/${locale}/visit`, label: 'Visit' },
+    { href: `/${locale}/#visit`, label: 'Visit' },
     { href: `/${locale}/membership`, label: 'Membership' },
     { href: `/${locale}/support`, label: 'Support' },
     { href: `/${locale}/#contact`, label: 'Contact' }

@@ -51,7 +51,7 @@ export default function MembershipsPrePage() {
                         Coming Soon
                     </p>
                     <p className="text-sm md:text-lg italic opacity-50 max-w-lg mx-auto leading-relaxed">
-                        Our tiered institutional fellowship and community membership programs are currently being structured. Join our mailing list to be notified when enrollment options go live.
+                        Our tiered community membership programme is coming soon. Join our mailing list to be notified when enrollment options go live.
                     </p>
                 </motion.div>
 

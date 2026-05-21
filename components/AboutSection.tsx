@@ -104,14 +104,13 @@ export default function AboutSection() {
           {/* Mission & Heritage Aligned Besides Image */}
           <div className="md:col-span-5 space-y-20">
             <div className="reveal-item space-y-6">
-              <h3 className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-bold">Mission</h3>
+              <h3 className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-bold">Mission & Vision</h3>
               <p className="font-sabon text-lg italic text-white/80 leading-relaxed">
-                {t('about.mission')}"
+                {t('about.mission')}
               </p>
             </div>
 
             <div className="reveal-item space-y-6">
-              <h3 className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-bold">The Heritage</h3>
               <p className="font-sabon text-base text-white/60 leading-relaxed text-justify">
                 {t('about.gihanga')}
               </p>
@@ -125,7 +124,7 @@ export default function AboutSection() {
           <div className="reveal-item md:col-start-6 md:col-span-6 order-1 md:order-2">
             <div className="space-y-10">
               <p className="font-sabon text-sm md:text-md lg:text-lg font-light italic leading-snug text-white/90">
-                "{t('about.symbol')}"
+                {t('about.symbol')}
               </p>
             </div>
           </div>

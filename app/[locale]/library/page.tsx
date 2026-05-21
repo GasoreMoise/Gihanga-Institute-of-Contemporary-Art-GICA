@@ -17,15 +17,20 @@ const librarySections = [
     {
         id: 'place',
         title: 'Place',
-        subtitle: 'A warm welcoming and nourishing environment for gatherings, meetings, discussions, recordings and more.',
         image: '/images/library/place.webp',
+        list: [
+            'Gatherings',
+            'Meetings',
+            'Discussions',
+            'Recordings and more',
+        ]
     },
     {
         id: 'collection',
         title: 'Collection',
-        subtitle: 'Comprehensive library of books grown organically through the GICA’s activities, focusing on Africana visual cultures including visual arts, photography, architecture, design fashion, and emergent cultures.',
         image: '/images/library/collection.webp',
-        details: [
+        list: [
+            'Comprehensive library of books grown organically through the GICA’s activities, focusing on Africana visual cultures including visual arts, photography, architecture, design fashion, and emergent cultures.',
             'Library of publishers on the continent (Chimurenga, Keleketla, Manufactoriel)',
             'Library of international publishers focusing on Africana visual arts',
             'Library of Rwandan, East African, and African cultures, histories, religions, societies, traditions, in collaboration with leading institutions.'
@@ -34,26 +39,29 @@ const librarySections = [
     {
         id: 'archive',
         title: 'Archive',
-        subtitle: 'A collection of material from regional artists and initiatives, establishing frameworks to preserve, nurture, and present their work.',
         image: '/images/library/archive.webp',
+        list: [
+            'A collection of material from regional artists and initiatives, establishing frameworks to preserve, nurture, and present their work.'
+        ]
     },
     {
         id: 'network',
         title: 'Network',
-        subtitle: 'Regional, international and transnational interlibrary program of exchange through materials and programme.',
         image: '/images/library/network.webp',
+        list: [
+            'Regional',
+            'International',
+            'Transnational',
+        ]
     },
     {
         id: 'community',
         title: 'Community',
-        subtitle: 'Engagement and exchange programme with local institutions and initiatives in arts and culture.',
         image: '/images/library/community.webp',
-    },
-    {
-        id: 'people',
-        title: 'People',
-        subtitle: 'Community-focused exchange with emphasis on Elder, dignitaries, and storytellers.',
-        image: '/images/library/people.webp',
+        list: [
+            'Engagements',
+            'Exchange programmes',
+        ]
     },
     {
         id: 'classroom',
@@ -82,7 +90,6 @@ export default function LibraryPage() {
         if (!isMounted) return;
 
         const cards = gsap.utils.toArray<HTMLElement>('.library-card');
-        let isResetting = false;
 
         cards.forEach((card, i) => {
             ScrollTrigger.create({
@@ -93,40 +100,6 @@ export default function LibraryPage() {
                 end: () => `+=${window.innerHeight}`,
                 id: `card-${i}`,
                 invalidateOnRefresh: true,
-                onUpdate: (self) => {
-                    // Detect upward scroll direction when we are deep into the stacked slides
-                    if (self.direction === -1 && !isResetting && window.scrollY > window.innerHeight) {
-                        isResetting = true;
-
-                        // 1. Instantly fade out all text and images on the stacked cards to break the unstacking visual
-                        gsap.to('.library-card:not(:first-child) .card-content-wrapper', {
-                            opacity: 0,
-                            duration: 0.2,
-                            overwrite: 'auto'
-                        });
-
-                        // 2. Instantly drop the container height or translate slides down out of view
-                        gsap.to('.library-card:not(:first-child)', {
-                            yPercent: 100,
-                            duration: 0.4,
-                            stagger: 0.05,
-                            ease: "power2.inOut",
-                            onComplete: () => {
-                                // 3. Snap the window scroll position back to the top cleanly
-                                window.scrollTo(0, 0);
-                                ScrollTrigger.refresh();
-
-                                // 4. Restore cards to their normal pristine layout state at the top
-                                gsap.set('.library-card:not(:first-child)', { yPercent: 0 });
-                                gsap.set('.library-card:not(:first-child) .card-content-wrapper', { opacity: 1 });
-
-                                setTimeout(() => {
-                                    isResetting = false;
-                                }, 100);
-                            }
-                        });
-                    }
-                }
             });
         });
 
@@ -195,7 +168,6 @@ export default function LibraryPage() {
                         className="library-card relative h-screen w-full overflow-hidden flex items-end pb-24 px-6 md:px-15 lg:px-20 text-white"
                         style={{ zIndex: i + 20 }}
                     >
-                        {/* Wrapper added to cleanly manage inner content opacity transitions */}
                         <div className="card-content-wrapper absolute inset-0 w-full h-full flex items-end pb-24 px-6 md:px-15 lg:px-20">
                             <div className="absolute inset-0 z-0">
                                 <Image
@@ -210,20 +182,6 @@ export default function LibraryPage() {
 
                             <div className="relative z-10 max-w-4xl w-full">
                                 <h2 className="text-4xl md:text-4xl font-bold tracking-tight mb-6">{section.title}</h2>
-
-                                {section.subtitle && (
-                                    <p className="text-lg md:text-2xl leading-relaxed font-light mb-8 max-w-3xl italic opacity-90">
-                                        {section.subtitle}
-                                    </p>
-                                )}
-
-                                {section.details && (
-                                    <div className="space-y-4 text-sm md:text-lg opacity-80 font-light max-w-2xl">
-                                        {section.details.map((detail, index) => (
-                                            <p key={index}>{detail}</p>
-                                        ))}
-                                    </div>
-                                )}
 
                                 {section.list && (
                                     <ul className="space-y-3 text-lg md:text-2xl font-light italic opacity-90">

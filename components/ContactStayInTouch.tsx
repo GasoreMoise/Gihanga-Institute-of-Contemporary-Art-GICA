@@ -201,7 +201,7 @@ export default function ContactStayInTouch({
             {contactError && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400 text-center font-sabon text-sm">{contactError}</motion.p>}
           </div>
 
-          <div className="flex justify-center pt-4">
+          <div className="flex justify-center -pt-10 md:pt-4">
             <button
               type="submit"
               disabled={contactLoading}

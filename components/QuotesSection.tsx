@@ -71,7 +71,7 @@ export default function QuotesSection() {
         <section
             id="quotes"
             ref={sectionRef}
-            className="relative h-screen w-full bg-[#FAF6ED] flex flex-col items-center justify-center overflow-hidden snap-start"
+            className="relative h-[60vh] md:h-[80vh] w-full bg-[#FAF6ED] flex flex-col items-center justify-center overflow-hidden snap-start"
         >
             {/* AMBIENT BACKGROUND: Gentle pulse for institutional depth */}
             <div className="absolute inset-0 flex justify-between items-center px-10 pointer-events-none select-none">
@@ -91,7 +91,7 @@ export default function QuotesSection() {
                 </motion.span>
             </div>
 
-            <div className="max-w-3xl w-full relative z-10 px-8 flex flex-col items-center text-center -mt-16">
+            <div className="max-w-3xl w-full relative z-10 px-8 flex flex-col items-center text-center -mt-20">
                 {/* FONT REDUCTION: 
                   Institutional Standard sizes: text-lg (Mobile) to text-2xl (Desktop)
                 */}
@@ -103,7 +103,7 @@ export default function QuotesSection() {
                     {quotes[index].text}
                 </h2>
 
-                <div ref={metaRef} className="flex flex-col items-center">
+                <div ref={metaRef} className="flex flex-col items-center mt-18 md:mt-10">
                     <div className="h-[1px] w-8 bg-black/10 mb-8" />
                     <p className="text-[#0A1116] font-sabon tracking-[0.4em] text-[12px] md:text-[15px] uppercase font-bold">
                         {quotes[index].author}
@@ -115,7 +115,7 @@ export default function QuotesSection() {
             </div>
 
             {/* NAVIGATION: Minimal and functional */}
-            <div className="absolute bottom-16 flex items-center justify-between w-full max-w-[280px] md:max-w-[340px]">
+            <div className="absolute flex items-center justify-between w-full max-w-[280px] md:max-w-[340px] mt-72">
                 <button
                     onClick={() => handleTransition((index - 1 + quotes.length) % quotes.length)}
                     className="group p-4 cursor-pointer transition-transform active:scale-95"

@@ -161,7 +161,7 @@ export default function VisitSection({
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
             <div className="mt-4 text-left space-y-1">
-              <p className="text-[12px] opacity-40 italic text-center">Takes less than 1 minute.<br /> Group visits are welcome.</p>
+              <p className="text-[12px] opacity-40 italic text-center">Takes less than 1 minute.<br /> Group visits larger than 5 <br /> are welcome to contacts us <br /> ahead of time.</p>
             </div>
           </div>
         </div>
