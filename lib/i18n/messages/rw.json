@@ -1,6 +1,17 @@
 {
+  "nav": {
+    "about": "Ibyerekeye",
+    "team": "Abakozi",
+    "visit": "Gusura",
+    "membership": "Abanyamuryango",
+    "support": "Shyigikira GICA",
+    "contact": "Twandikire"
+  },
   "landing": {
     "hero": {
+      "institutionName": "Ikigo cya Gihanga",
+      "institutionSubName": "cy'Ubuhanzi Bugezweho",
+      "locationCity": "KIGALI",
       "title": "Igicumbi cy'ubuhanzi, ubushakashatsi, hamwe n'ibitekerezo rusange.",
       "subtitle": "Igicumbi cy'ubuhanzi, ubushakashatsi, hamwe n'ibitekerezo rusange.",
       "slides": {
@@ -13,7 +24,7 @@
     },
     "about": {
       "title": "Ibyerekeye",
-      "body": "Ikigo cya Gihanga cy’Ubugeni bugezweho GICA ni ikigo kidaharanira inyungu. GICA ni igicumbi cy’isomero, imurikabikorwa, urubuga rwo kwidagaduriramo no gukinirwa imikino, icyumba cyo kwerekeramo amashusho, sitidiyo n’uburyo bwo kwakira abahanzi. Inyubako ifite ubuso bwa metero kare 777 yagenewe gushyigikira abahanzi b’Abanyarwanda n’akarere binyuze mu imurikabikorwa riteguwe neza, ahantu ho gusangirira ibikorwa by’ubuhanzi, no mu bushake bwo guteza imbere ibiganiro n’uguhangana kw’imitima mu by’ubugeni.",
+      "body": "Ikigo cya Gihanga cy’Ubugeni bugezweho GICA ni ikigo kidaharanira inyungu. GICA ni igicumbi cy’isomero, imurikabikorwa, urubuga rwo kwidagaduriramo no gukinirwamo imikino, icyumba cyo kwerekeramo amashusho, sitidiyo n’uburyo bwo kwakira abahanzi. Inyubako ifite ubuso bwa metero kare 777 yagenewe gushyigikira abahanzi b’Abanyarwanda n’akarere binyuze mu imurikabikorwa riteguwe neza, ahantu ho gusangirira ibikorwa by’ubuhanzi, no mu bushake bwo guteza imbere ibiganiro n’uguhangana kw’imitima mu by’ubugeni.",
       "mission": "Inshingano za GICA ni ukwereka no kugeza ubushakashatsi n'ibihangano by'uburyo bwa none ku banyarwanda n'abatuye akarere kacu, ndetse no gushyira aka karere mu biganiro by'ubuhanzi n'ubwenge ku rwego rw'isi. Intego yacu y'ahazaza ni ugushyira u Rwanda mu myanya y'imbere nk'ihuriro rikomeye ry'uburyo bugezweho n'urubuga rw'urwunge rw'ibitekerezo bishya.",
       "gihanga": "Gihanga (izina): Ni umwami w'amateka akaba n'ikirangirire akenshi afatwa nk'umwami fatizo n'umuhanzi w'u Rwanda. Mu nsigamigani n'amateka y'u Rwanda avugwa mu magambo, Gihanga ahabwa icyubahiro cyo kuba ari we wazanye imigenzo y'umuco w'ifatizo, ikoranabuhanga rya kinyarwanda, n'imikorere yashyizeho ishusho y'umuryanga nyarwanda; ibi bikaba ikimenyetso gihuza umurage w'amateka twasigiwe n'ubushakashatsi cyangwa ibihangano bishya bya none.",
       "symbol": "Ikirangantego cy'iki kigo gishingiye ku gisingo cy'izahabu kigize ikamba ry'Umusambi, inyoni y'icyitegererezo ikomoka mu karere k'Ibiyaga bigari. Cyerekana iyerekwa ry'ubuhanzi, ikanguka ry'intekerezo, n'ubumwe bw'umuco."
@@ -89,28 +100,57 @@
   "visit": {
     "title": "Dusure"
   },
-  "contributors": {
-    "title": "Abagize uruganda",
-    "subtitle": "Turashaka gushimira abantu n’imiryango ikurikira baduteye inkunga muri uru rugendo, byadufashije kubaka no gushyiraho umusingi ukomeye wo kugerageza ubuhanzi",
-    "benefactor": {
-      "heading": "UMUTERANKUNGA",
-      "body": "Turashimira inkunga y’agaciro twahawe na Mellon Foundation, umuterankunga wacu."
-    }
+  "partners": {
+    "title": "Abaterankunga",
+    "subtitle": "Turashimira abantu ku giti cyabo n'imiryango badushigikiye mu rugendo rwacu...",
+    "founding": "UMUTERANKUNGA W'IFATIZO",
+    "cultural": "ABAFATANYABIKORWA MU MUCO",
+    "travel": "UMUFATANYABIKORWA MU NGENDO"
+  },
+  "press": {
+    "title": "Itangazamakuru"
+  },
+  "visit_page": {
+    "hero_title": "Gusura GICA",
+    "hero_subtitle": "Gena gahunda yo gusura GICA no kwibonera ubuhanzi bugezweho i Kigali.",
+    "label_hours": "Amasaha yo Gufungura",
+    "label_location": "Aho dukorera",
+    "label_contact": "Twandikire/ Tuvugishe",
+    "booking_heading": "Gena gahunda yo gusura",
+    "booking_paragraph": "Turabakangurira gufata umwanya hakiri kare kugira ngo ugire urugendo rwiza kandi ruzira gutinda mu mirongo. Abaje batafashe umwanya nabo bahawe ikaze.",
+    "booking_btn": "Gena gahunda yo gusura",
+    "booking_note": "Bitwara igihe kitageze ku munota 1.\nAmatsinda arenze abantu 5\nbahawe ikaze mu kuduhamagara\nmbere yo kuhagera.",
+    "faq_heading": "Ibibazo Bikunze Kubazwa",
+    "faq_default_0": { "q": "Ese kwinjira muri GICA ni ubuntu?", "a": "Yego. Kwinjira muri GICA ni ubuntu ku muryango mugari kugeza ubu." },
+    "faq_default_1": { "q": "Ese ndengewe no kubanza gufata umwanya mbere?", "a": "Ntabwo ari ngombwa gufata umwanya mbere ku ruzinduko rusanzwe. Ibiganiro bimwe, imurikashusho, cyangwa amahugurwa bishobora gusaba kwiyandikisha mbere, bikaba bizajya bikorerwa kuri website yacu." },
+    "faq_default_2": { "q": "Ni ayahe masaha yo gufungura?", "a": "Kuwa kabiri - Ku cyumweru. Kuva saa tanu z'amanywa (11:00 AM) kugeza saa kumi n'imwe z'umugoroba (5:00 PM) (Kuwa mbere turafunze)." },
+    "faq_default_3": { "q": "GICA iherereye he?", "a": "KN 14 St 28, Kimihurura, Kigali, Rwanda. Ahatambuka abanyamaguru ni mu kayira gato karebana na '14th Avenue'. Parikingi iboneka unyuze Boho na '14th Avenue', imbere ya GICA hagenewe gusa gukuriramo abantu." },
+    "faq_default_4": { "q": "Ese inyubako ya GICA iragendeka kubafite ubumuga?", "a": "Igice kibanza (Ground floor) kiragendeka neza. Etaje ya mbere n'iy'epfo bigerwaho unyuze ku ngazi. Niba ukeneye ubufasha bw'umwihariko bwo kugenda, ushobora kutwandikira mbere y'urugendo maze tukazakwakira mu buryo bwiza bushoboka." },
+    "guidelines_heading": "Amabwiriza Agenga Abasura",
+    "guidelines_paragraph_before_link": "Kugira ngo umenye neza amabwiriza abagenga n'amategeko y'ikigo cyacu, urasabwa gusoma ",
+    "guidelines_link_text": "Amabwiriza Ngengamikorere",
+    "guidelines_paragraph_after_link": "."
   },
   "notFound": {
     "title": "Urupapuro rutabonetse"
   },
-  "footer": {
-    "home": "Ahabanza",
-    "programme": "Gahunda",
-    "about": "Ibyerekeye",
-    "visit": "Dusure",
-    "contact": "Twandikire",
-    "exhibitions": "Imurika",
-    "screenings": "Iyerekana mashusho",
-    "performances": "Imikino ya Gihanga",
-    "events": "Ibikorwa",
-    "talks": "Ibiganiro",
-    "workshops": "Amahugurwa"
-  }
+"footer": {
+  "home": "Intangiriro",
+  "programme": "Gahunda",
+  "about": "Ibyerekeye",
+  "visit": "Gusura",
+  "visit_gca": "Gusura GICA",
+  "memberships": "Abanyamuryango",
+  "support": "Shyigikira GICA",
+  "contact": "Twandikire",
+  "press": "Itangazamakuru",
+  "library": "Isomero",
+  "exhibitions": "Imurikabikorwa",
+  "screenings": "Iyerekana mashusho",
+  "performances": "Ibyerekanwa",
+  "events": "Ibikorwa",
+  "talks": "Ibiganiro",
+  "workshops": "Amahugurwa",
+  "rights": "All Rights Reserved."
+}
 }

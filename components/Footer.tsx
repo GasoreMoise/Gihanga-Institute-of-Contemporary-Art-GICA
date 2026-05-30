@@ -57,26 +57,27 @@ export default function Footer() {
     },
     {
       name: 'LinkedIn',
-      url: 'https://www.linkedin.com/company/gihanga-institute-of-contemporary-art', // Update to your exact institutional handle path if needed
+      url: 'https://www.linkedin.com/company/gihanga-institute-of-contemporary-art',
       icon: <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
     }
   ];
 
+  // Token keys mapped directly to your matching JSON dictionary addresses
   const gicaLinks = [
-    { name: 'About', path: `/${locale}/#about` },
-    { name: 'Visit GICA', path: `/${locale}/#visit` },
-    { name: 'Memberships', path: `/${locale}/memberships` },
-    { name: 'Support Us', path: `/${locale}/support` },
-    { name: 'Contact', path: `/${locale}/#contact` },
-    { name: 'Press', path: `/${locale}/#press` },
+    { key: 'about', name: 'About', path: `/${locale}/#about` },
+    { key: 'visit_gca', name: 'Visit GICA', path: `/${locale}/#visit` },
+    { key: 'memberships', name: 'Memberships', path: `/${locale}/memberships` },
+    { key: 'support', name: 'Support Us', path: `/${locale}/support` },
+    { key: 'contact', name: 'Contact', path: `/${locale}/#contact` },
+    { key: 'press', name: 'Press', path: `/${locale}/#press` },
   ];
 
   const progLinks = [
-    { name: 'Library', path: `/${locale}/library` },
-    { name: 'Exhibitions', path: `/${locale}/exhibitions` },
-    { name: 'Screenings', path: `/${locale}/screenings` },
-    { name: 'Talks', path: `/${locale}/talks` },
-    { name: 'Events', path: `/${locale}/events` }
+    { key: 'library', name: 'Library', path: `/${locale}/library` },
+    { key: 'exhibitions', name: 'Exhibitions', path: `/${locale}/exhibitions` },
+    { key: 'screenings', name: 'Screenings', path: `/${locale}/screenings` },
+    { key: 'talks', name: 'Talks', path: `/${locale}/talks` },
+    { key: 'events', name: 'Events', path: `/${locale}/events` }
   ];
 
   return (
@@ -91,9 +92,9 @@ export default function Footer() {
             <h3 className="font-sabon text-2xl tracking-wide opacity-90">GICA</h3>
             <ul className="flex flex-col space-y-3 text-white/50 text-base font-sabon">
               {gicaLinks.map((link) => (
-                <li key={link.name}>
+                <li key={link.key}>
                   <Link href={link.path as any} className="hover:text-white transition-all duration-300 hover:pl-2">
-                    {link.name}
+                    {t.has(link.key) ? t(link.key) : link.name}
                   </Link>
                 </li>
               ))}
@@ -105,10 +106,10 @@ export default function Footer() {
             <div className="mb-10 w-40">
               <img src="/logos/logo1.svg" alt="GICA Logo" className="w-full h-auto" />
             </div>
-            <p className="text-white/40 text-sm font-sabon tracking-[0.2em] uppercase">
-              © {currentYear} . All rights reserved.
+            <p className="text-white/40 text-sm font-sabon tracking-[0.2em] uppercase text-center">
+              © {currentYear} . {t.has('rights') ? t('rights') : 'All rights reserved.'}
             </p>
-            <div className="flex items-center gap-8 mt-12">
+            <div className="flex items-center justify-center gap-8 mt-12">
               {socialLinks.map((social) => (
                 <a
                   key={social.name}
@@ -126,12 +127,12 @@ export default function Footer() {
 
           {/* RIGHT COLUMN: PROGRAMME LINKS */}
           <nav className="footer-anim-item flex flex-col items-end space-y-8">
-            <h3 className="font-sabon text-3xl tracking-wide opacity-90">Programme</h3>
+            <h3 className="font-sabon text-3xl tracking-wide opacity-90">{t('programme')}</h3>
             <ul className="flex flex-col items-end space-y-5 text-white/40 text-base font-sabon">
               {progLinks.map((item) => (
-                <li key={item.name}>
+                <li key={item.key}>
                   <Link href={item.path as any} className="hover:text-white transition-all duration-300 hover:pr-2">
-                    {item.name}
+                    {t.has(item.key) ? t(item.key) : item.name}
                   </Link>
                 </li>
               ))}
@@ -150,9 +151,11 @@ export default function Footer() {
             <nav className="flex flex-col space-y-5">
               <h4 className="font-sabon text-[10px] tracking-[0.3em] text-white/30 uppercase font-bold border-b border-white/5 pb-2">GICA</h4>
               <ul className="flex flex-col space-y-3 text-white/60 text-xs font-sabon italic">
-                {gicaLinks.map(link => (
-                  <li key={link.name}>
-                    <Link href={link.path as any}>{link.name}</Link>
+                {gicaLinks.map((link) => (
+                  <li key={link.key}>
+                    <Link href={link.path as any}>
+                      {t.has(link.key) ? t(link.key) : link.name}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -160,11 +163,15 @@ export default function Footer() {
 
             {/* MOBILE RIGHT COLUMN */}
             <nav className="flex flex-col space-y-5 text-right">
-              <h4 className="font-sabon text-[10px] tracking-[0.3em] text-white/30 uppercase font-bold border-b border-white/5 pb-2">Programme</h4>
+              <h4 className="font-sabon text-[10px] tracking-[0.3em] text-white/30 uppercase font-bold border-b border-white/5 pb-2">
+                {t('programme')}
+              </h4>
               <ul className="flex flex-col space-y-3 text-white/60 text-xs font-sabon italic">
-                {progLinks.map(item => (
-                  <li key={item.name}>
-                    <Link href={item.path as any}>{item.name}</Link>
+                {progLinks.map((item) => (
+                  <li key={item.key}>
+                    <Link href={item.path as any}>
+                      {t.has(item.key) ? t(item.key) : item.name}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -187,7 +194,7 @@ export default function Footer() {
                 </a>
               ))}
             </div>
-            <p className="text-white/20 text-[9px] tracking-[0.4em] uppercase font-bold font-sabon mb-2">
+            <p className="text-white/20 text-[9px] tracking-[0.4em] uppercase font-bold font-sabon mb-2 text-center">
               © {currentYear} . GICA RWANDA
             </p>
           </div>

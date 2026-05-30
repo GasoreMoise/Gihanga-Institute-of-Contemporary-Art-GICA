@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter, usePathname } from 'next/navigation';
 
@@ -11,6 +11,8 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
+  // Targets the dedicated standalone navbar translation namespace
+  const t = useTranslations('nav'); 
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
@@ -28,13 +30,14 @@ export default function Nav() {
     router.push(segments.join('/') as any);
   };
 
+  // Maps items directly to the dedicated keys in your JSON files
   const navItems = [
-    { href: `/${locale}/#about`, label: 'About' },
-    { href: `/${locale}/team`, label: 'Team' },
-    { href: `/${locale}/#visit`, label: 'Visit' },
-    { href: `/${locale}/membership`, label: 'Membership' },
-    { href: `/${locale}/support`, label: 'Support' },
-    { href: `/${locale}/#contact`, label: 'Contact' }
+    { href: `/${locale}/#about`, label: t('about') },
+    { href: `/${locale}/team`, label: t('team') },
+    { href: `/${locale}/#visit`, label: t('visit') },
+    { href: `/${locale}/membership`, label: t('membership') },
+    { href: `/${locale}/support`, label: t('support') },
+    { href: `/${locale}/#contact`, label: t('contact') }
   ];
 
   const isWhitePage = pathname.includes('/exhibitions') || pathname.includes('/library') ||
@@ -90,10 +93,42 @@ export default function Nav() {
           </Link>
 
           <div className="flex items-center gap-6 md:gap-10 pointer-events-auto relative z-[210]">
-            <div className={`flex items-center font-sabon text-sm md:text-lg tracking-widest transition-colors duration-500 ${activeColorClass}`}>
-              <button onClick={() => switchLocale('en')} className="opacity-40 hover:opacity-100 cursor-pointer p-2">EN</button>
-              <span className="opacity-30">/</span>
-              <button onClick={() => switchLocale('rw')} className="opacity-40 hover:opacity-100 cursor-pointer p-2">KIN</button>
+            
+            {/* Minimalist language tracking block with thin visual layout line */}
+            <div className={`flex items-center font-sabon text-sm md:text-lg tracking-widest transition-colors duration-500 relative ${activeColorClass}`}>
+              <div className="relative flex flex-col items-center">
+                <button 
+                  onClick={() => switchLocale('en')} 
+                  className={`cursor-pointer px-2 py-1 transition-opacity duration-300 ${locale === 'en' ? 'opacity-100 font-bold' : 'opacity-40 hover:opacity-80'}`}
+                >
+                  EN
+                </button>
+                {locale === 'en' && (
+                  <motion.div 
+                    layoutId="activeLangLine" 
+                    className={`h-[1px] w-4 absolute bottom-0 ${shouldBeBlack ? 'bg-black' : 'bg-white'}`}
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </div>
+
+              <span className="opacity-30 px-1">/</span>
+
+              <div className="relative flex flex-col items-center">
+                <button 
+                  onClick={() => switchLocale('rw')} 
+                  className={`cursor-pointer px-2 py-1 transition-opacity duration-300 ${locale === 'rw' ? 'opacity-100 font-bold' : 'opacity-40 hover:opacity-80'}`}
+                >
+                  KIN
+                </button>
+                {locale === 'rw' && (
+                  <motion.div 
+                    layoutId="activeLangLine" 
+                    className={`h-[1px] w-4 absolute bottom-0 ${shouldBeBlack ? 'bg-black' : 'bg-white'}`}
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </div>
             </div>
 
             {/* MAIN TOGGLE */}
@@ -145,7 +180,7 @@ export default function Nav() {
 
             <nav className="flex flex-col items-center space-y-3 md:space-y-4 text-black relative z-[260]">
               {navItems.map((item, index) => (
-                <div key={item.label} className="overflow-hidden py-1">
+                <div key={item.href} className="overflow-hidden py-1">
                   <Link
                     href={item.href as any}
                     onClick={(e) => {

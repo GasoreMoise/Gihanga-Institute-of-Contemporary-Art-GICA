@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { SplitText, ScrollTrigger } from 'gsap/all';
@@ -19,6 +20,8 @@ interface PressAgency {
 }
 
 export default function PressSection() {
+    // Points directly to the standalone root translation dictionary namespace
+    const t = useTranslations('press'); 
     const sectionRef = useRef<HTMLElement>(null);
     const [hoveredId, setHoveredId] = useState<number | null>(null);
     const [mounted, setMounted] = useState(false);
@@ -64,8 +67,9 @@ export default function PressSection() {
         <section id="press" ref={sectionRef} className="w-full bg-white pt-24 md:pt-32 pb-64 px-6 md:px-12 lg:px-32 flex flex-col items-center overflow-visible">
 
             <div className="text-center mb-40 md:mb-56">
-                <h2 className="press-title text-black font-sabon text-[13px] md:text-[15px] tracking-[0.8em] uppercase font-bold">
-                    Press
+                {/* Updated core layout string from t('press') to t('title') to sync with root key */}
+                <h2 className="press-title text-black font-sabon text-[13px] md:text-[15px] tracking-[0.8em] uppercase font-bold text-center">
+                    {t('title')}
                 </h2>
                 <div className="mt-6 w-12 h-[1px] bg-black/10 mx-auto" />
             </div>
@@ -99,7 +103,6 @@ export default function PressSection() {
                                     initial={{ opacity: 0, y: 0, scale: 0.98 }}
                                     animate={{ opacity: 1, y: 15, scale: 1 }}
                                     exit={{ opacity: 0, y: 0, scale: 0.98 }}
-                                    // w-[220px] on mobile creates a much more balanced look vs the logo width
                                     className="absolute top-full z-[200] bg-[#11212B] px-5 py-6 md:px-8 md:py-10 w-[220px] md:w-[340px] text-center shadow-2xl flex flex-col items-center"
                                 >
                                     <span className="text-[7px] md:text-[9px] text-white/30 uppercase tracking-[0.4em] block mb-3 font-bold">

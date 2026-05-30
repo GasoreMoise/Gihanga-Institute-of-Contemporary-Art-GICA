@@ -1,6 +1,17 @@
 {
+  "nav": {
+    "about": "About",
+    "team": "Team",
+    "visit": "Visit",
+    "membership": "Membership",
+    "support": "Support",
+    "contact": "Contact"
+  },
   "landing": {
     "hero": {
+      "institutionName": "Gihanga Institute",
+      "institutionSubName": "of Contemporary Art",
+      "locationCity": "KIGALI",
       "title": "A living space for art, research, and collective imagination.",
       "subtitle": "A living space for art, research, and collective imagination.",
       "slides": {
@@ -89,28 +100,57 @@
   "visit": {
     "title": "Visit"
   },
-  "contributors": {
-    "title": "Contributors",
-    "subtitle": "We would like to thank the following individuals and organizations who have supported us along the way, which has helped us build and provide a solid foundation for artistic experiment",
-    "benefactor": {
-      "heading": "FOUNDING BENEFACTOR",
-      "body": "We are grateful for the generous support extended to us by the Mellon Foundation, our Founding Benefactor."
-    }
+  "partners": {
+    "title": "Partners",
+    "subtitle": "We would like to thank the following individuals and organizations who have supported us along the way...",
+    "founding": "FOUNDING SUPPORTER",
+    "cultural": "CULTURAL PARTNERS",
+    "travel": "TRAVEL PARTNER"
+  },
+  "press": {
+    "title": "Press"
+  },
+  "visit_page": {
+    "hero_title": "Visit GICA",
+    "hero_subtitle": "Plan your visit and experience contemporary art in Kigali.",
+    "label_hours": "Opening Hours",
+    "label_location": "Location",
+    "label_contact": "Contact",
+    "booking_heading": "Book Your Visit",
+    "booking_paragraph": "We highly encourage you to book your visit in advance to ensure a smooth experience and avoid waiting in line. Walk-ins are welcome, subject to capacity.",
+    "booking_btn": "Book Your Visit",
+    "booking_note": "Takes less than 1 minute.\nGroup visits larger than 5\nare welcome to contact us\nahead of time.",
+    "faq_heading": "FAQs",
+    "faq_default_0": { "q": "Is GICA entry free?", "a": "Yes. GICA is currently free to the public." },
+    "faq_default_1": { "q": "Do I need to book in advance?", "a": "No booking is required for general visits. Some talks, screenings, or workshops may require prior registration, which will be available via our website." },
+    "faq_default_2": { "q": "What are the opening hours?", "a": "Tuesday - Sunday. 11:00 AM - 5:00 PM (Closed on Mondays)" },
+    "faq_default_3": { "q": "Where is GICA located?", "a": "KN 14 St 28, Kimihurura, Kigali, Rwanda. Pedestrian access is via the small walkway facing the 14th Avenue. Parking access is available via Boho and 14th Avenue, only drop-off in front of GICA." },
+    "faq_default_4": { "q": "Is GICA accessible?", "a": "The ground floor is accessible. The first floor and lower ground floor are accessed via stairs. If you require accessibility support, please contact us in advance and we will do our best to accommodate your visit." },
+    "guidelines_heading": "Visitor Guidelines",
+    "guidelines_paragraph_before_link": "For detailed information about visitor conduct and institutional policies, please refer to our ",
+    "guidelines_link_text": "Codes of Conduct",
+    "guidelines_paragraph_after_link": "."
   },
   "notFound": {
     "title": "Page Not Found"
   },
-  "footer": {
-    "home": "Home",
-    "programme": "Programme",
-    "about": "About",
-    "visit": "Visit",
-    "contact": "Contact",
-    "exhibitions": "Exhibitions",
-    "screenings": "Screenings",
-    "performances": "Performances",
-    "events": "Events",
-    "talks": "Talks",
-    "workshops": "Workshops"
-  }
+"footer": {
+  "home": "Home",
+  "programme": "Programme",
+  "about": "About",
+  "visit": "Visit",
+  "visit_gca": "Visit GICA",
+  "memberships": "Memberships",
+  "support": "Support Us",
+  "contact": "Contact",
+  "press": "Press",
+  "library": "Library",
+  "exhibitions": "Exhibitions",
+  "screenings": "Screenings",
+  "performances": "Performances",
+  "events": "Events",
+  "talks": "Talks",
+  "workshops": "Workshops",
+  "rights": "All rights reserved."
+}
 }

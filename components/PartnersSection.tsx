@@ -10,24 +10,26 @@ if (typeof window !== "undefined") {
     gsap.registerPlugin(useGSAP, SplitText, ScrollTrigger);
 }
 
-export default function ContributorsSection() {
-    const t = useTranslations('contributors');
+export default function PartnersSection() {
+    // Corrected namespace lookup matching your unified en.json / rw.json trees
+    const t = useTranslations('partners');
     const sectionRef = useRef<HTMLElement>(null);
 
+    // Categories array configured to use dictionary keys for localized text injection
     const categories = [
         {
-            title: "FOUNDING SUPPORTER",
+            key: 'founding',
             partners: [{ name: 'Mellon Foundation', src: '/images/logo-mellon.webp' }]
         },
         {
-            title: "CULTURAL PARTNERS",
+            key: 'cultural',
             partners: [
                 { name: 'Rwanda Arts Initiative', src: '/images/logo-rwanda.webp' },
                 { name: 'Ishyo Arts Centre', src: '/images/logo-ishyo.webp' }
             ]
         },
         {
-            title: "TRAVEL PARTNER",
+            key: 'travel',
             partners: [{ name: 'RwandAir', src: '/images/rwandair-logo.webp' }]
         }
     ];
@@ -77,8 +79,8 @@ export default function ContributorsSection() {
             ref={sectionRef}
             className="w-full bg-white py-14 md:py-20 px-6 md:px-12 lg:px-32 flex flex-col items-center overflow-hidden"
         >
-            <h2 className="partners-main-title text-black font-sabon text-[0.65rem] md:text-[15px] tracking-[0.5em] uppercase font-bold mb-12 md:mb-20">
-                PARTNERS
+            <h2 className="partners-main-title text-black font-sabon text-[0.65rem] md:text-[15px] tracking-[0.5em] uppercase font-bold mb-12 md:mb-20 text-center">
+                {t('title')}
                 <div className="mt-4 w-12 h-[1px] bg-black/10 mx-auto" />
             </h2>
 
@@ -86,8 +88,8 @@ export default function ContributorsSection() {
                 {categories.map((cat, idx) => (
                     <div key={idx} className="flex flex-col items-center">
                         <div className="mb-16">
-                            <h3 className={`cat-header-${idx} text-black/40 font-sabon text-[0.6rem] md:text-[0.65rem] tracking-[0.3em] uppercase font-bold`}>
-                                {cat.title}
+                            <h3 className={`cat-header-${idx} text-black/40 font-sabon text-[0.6rem] md:text-[0.65rem] tracking-[0.3em] uppercase font-bold text-center`}>
+                                {t(cat.key as any)}
                             </h3>
                         </div>
 
@@ -104,7 +106,6 @@ export default function ContributorsSection() {
                                             <img
                                                 src={partner.src}
                                                 alt={partner.name}
-                                                // Scaled up ONLY the Mellon Foundation logo
                                                 className={`logo-img-${idx} ${isMellon
                                                     ? 'h-20 md:h-28 lg:h-32'
                                                     : 'h-10 md:h-14 lg:h-16'

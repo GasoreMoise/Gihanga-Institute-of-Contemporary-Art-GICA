@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { Observer, TextPlugin, ScrollTrigger } from 'gsap/all';
@@ -26,24 +26,23 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
   const slidesRef = useRef<(HTMLDivElement | null)[]>([]);
   const titlesRef = useRef<(HTMLHeadingElement | null)[]>([]);
   const taglineRef = useRef<HTMLDivElement>(null);
-  const chevronRef = useRef<HTMLDivElement>(null);
+
+  const t = useTranslations('landing.hero');
+  const locale = useLocale();
 
   const [isHovered, setIsHovered] = useState(false);
   const [displayText, setDisplayText] = useState('');
   const [currentIndexTyping, setCurrentIndexTyping] = useState(0);
   const [particlePositions, setParticlePositions] = useState<Array<{ initialX: number; initialY: number; targetX: number; targetY: number }>>([]);
 
-  // Motion values for magnetic effect
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const springX = useSpring(mouseX, { stiffness: 150, damping: 15 });
   const springY = useSpring(mouseY, { stiffness: 150, damping: 15 });
 
   const activeIndexRef = useRef(0);
-  const [currentIndex, setCurrentIndex] = useState(0); // State to trigger re-renders for UI conditionals
+  const [currentIndex, setCurrentIndex] = useState(0);
   const isAnimating = useRef(false);
-  const locale = useLocale();
-  const sabonFont = '"Sabon Next LT", Sabon, serif';
 
   useEffect(() => {
     if (currentIndex > 0) {
@@ -54,18 +53,16 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
     return () => { document.body.style.overflow = 'unset'; }
   }, [currentIndex]);
 
-  // Typewriter effect
   useEffect(() => {
     if (currentIndexTyping < tagline.length) {
       const timeout = setTimeout(() => {
         setDisplayText(prev => prev + tagline[currentIndexTyping]);
         setCurrentIndexTyping(prev => prev + 1);
-      }, 50); // Adjust speed here
+      }, 50);
       return () => clearTimeout(timeout);
     }
   }, [currentIndexTyping, tagline]);
 
-  // Generate particle positions only on client side to avoid hydration mismatch
   useEffect(() => {
     const positions = Array.from({ length: 6 }, () => ({
       initialX: Math.random() * 200 - 100,
@@ -76,7 +73,6 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
     setParticlePositions(positions);
   }, []);
 
-  // Magnetic effect handler
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!taglineRef.current) return;
     const rect = taglineRef.current.getBoundingClientRect();
@@ -107,7 +103,6 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
     });
 
     const gotoSlide = (index: number, direction: number) => {
-      // Bound the index so we don't loop around
       if (index < 0) index = 0;
       if (index >= slides.length) index = slides.length - 1;
 
@@ -124,7 +119,7 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
       const currentTitle = titlesRef.current[activeIndexRef.current];
 
       activeIndexRef.current = index;
-      setCurrentIndex(index); // Update state to toggle conditionals
+      setCurrentIndex(index);
 
       gsap.set(currentSlide, { zIndex: 0 });
       gsap.set(nextSlide, { autoAlpha: 1, zIndex: 1, xPercent: dX });
@@ -172,7 +167,6 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
     if (nextBtn) nextBtn.onclick = nextSlide;
     if (prevBtn) prevBtn.onclick = prevSlide;
 
-    // We expose a global function so the Enter button can manually trigger it
     (window as any).triggerHeroEnter = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(() => { gotoSlide(1, 1); }, 300);
@@ -212,17 +206,17 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
 
       <div className="absolute inset-0 z-30 flex flex-col pointer-events-none">
 
-        {/* Centered Entry View for Slide 0 */}
+        {/* LOCALIZED ENTRY COVERS FOR SLIDE 0 */}
         <div className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 ${currentIndex === 0 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
           <h1 className="font-sabon text-white text-3xl md:text-3xl lg:text-5xl font-normal text-center drop-shadow-xl px-4 max-w-5xl leading-tight">
-            Gihanga Institute<br />of Contemporary Art
+            {t('institutionName')}<br />{t('institutionSubName')}
           </h1>
           <h2 className="font-sabon text-white text-md md:text-xl lg:text-xl tracking-[0.2em] uppercase mt-6 mb-16 text-center drop-shadow-lg">
-            KIGALI
+            {t('locationCity')}
           </h2>
           <button
             onClick={() => (window as any).triggerHeroEnter && (window as any).triggerHeroEnter()}
-            className="font-sabon italic text-white text-xl md:text-lg hover:text-white/70 transition-colors pointer-events-auto flex items-center space-x-2 drop-shadow-lg group relative z-50"
+            className="font-sabon italic text-white text-xl md:text-lg hover:text-white/70 transition-colors pointer-events-auto flex items-center space-x-2 drop-shadow-lg group relative z-50 cursor-pointer"
           >
             <span>Enter</span>
             <svg className="w-6 h-6 transform group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -234,24 +228,38 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
         {/* Dynamic Slide Titles for Slide 1+ */}
         <div className={`flex-1 relative w-full pointer-events-none mt-32 md:mt-40 px-6 md:px-16 transition-opacity duration-700 ${currentIndex === 0 ? 'opacity-0' : 'opacity-100'}`}>
           {slides.map((slide, i) => {
-            const lowerTitle = slide.title.toLowerCase();
-            const isExhibitionSlide = lowerTitle.includes('exhibition');
-            const isScreeningSlide = lowerTitle.includes('screening');
-            const isTalksSlide = lowerTitle.includes('talk');
-            const isLibrarySlide = lowerTitle.includes('library');
-            const isEventsSlide = lowerTitle.includes('events');
+            const currentTitleLower = slide.title.toLowerCase().trim();
 
+            // PULL SYSTEM: Extract active translations straight out of next-intl schema values
+            const libraryMatch = t('slides.library').toLowerCase().trim();
+            const exhibitionsMatch = t('slides.exhibitions').toLowerCase().trim();
+            const screeningsMatch = t('slides.screenings').toLowerCase().trim();
+            const talksMatch = t('slides.talks').toLowerCase().trim();
+            const eventsMatch = t('slides.events').toLowerCase().trim();
+
+            // FALLBACK PAIRING: Keeps standard routing intact if dictionary fails to mount
             let linkHref = "";
-            if (isLibrarySlide) linkHref = `/${locale}/library`;
-            if (isExhibitionSlide) linkHref = `/${locale}/exhibitions`;
-            if (isScreeningSlide) linkHref = `/${locale}/screenings`;
-            if (isTalksSlide) linkHref = `/${locale}/talks`;
-            if (isEventsSlide) linkHref = `/${locale}/events`;
+            if (currentTitleLower === libraryMatch || currentTitleLower === "the koyo kouoh library") {
+              linkHref = `/${locale}/library`;
+            } else if (currentTitleLower === exhibitionsMatch || currentTitleLower === "exhibitions") {
+              linkHref = `/${locale}/exhibitions`;
+            } else if (currentTitleLower === screeningsMatch || currentTitleLower === "screenings") {
+              linkHref = `/${locale}/screenings`;
+            } else if (currentTitleLower === talksMatch || currentTitleLower === "talks") {
+              linkHref = `/${locale}/talks`;
+            } else if (currentTitleLower === eventsMatch || currentTitleLower === "events") {
+              linkHref = `/${locale}/events`;
+            }
 
             return (
               <h1 key={`title-${i}`} ref={el => { titlesRef.current[i] = el; }} className="font-sabon absolute right-12 text-white text-xl md:text-2xl font-normal tracking-[0.05em] text-right invisible drop-shadow-2xl italic">
                 {linkHref ? (
-                  <Link href={linkHref as any} className="pointer-events-auto hover:text-white/70 transition-colors">{slide.title}</Link>
+                  <Link 
+                    href={linkHref as any} 
+                    className="pointer-events-auto hover:text-white/70 transition-colors cursor-pointer relative z-[999] inline-block"
+                  >
+                    {slide.title}
+                  </Link>
                 ) : (
                   slide.title
                 )}
@@ -268,9 +276,8 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-            {/* Scroll indicator arrow */}
             <motion.div
-              className="flex-shrink-0 cursor-pointer order-2 md:order-1 mt-4 md:mt-0"
+              className="flex-shrink-0 cursor-pointer order-2 md:order-1 mt-4 md:mt-0 pointer-events-auto"
               animate={{ y: [0, 4, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
               whileHover={{ scale: 1.2, y: 0 }}
@@ -288,40 +295,28 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
               </motion.svg>
             </motion.div>
 
-            {/* Interactive Tagline */}
             <motion.div
               ref={taglineRef}
-              className="relative cursor-pointer order-1 md:order-2"
+              className="relative cursor-pointer order-1 md:order-2 pointer-events-auto"
               onMouseMove={handleMouseMove}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={handleMouseLeave}
-              style={{
-                x: springX,
-                y: springY,
-              }}
+              style={{ x: springX, y: springY }}
             >
-              {/* Subtle background glow effect */}
               <motion.div
                 className="absolute inset-0 bg-gradient-to-r from-white/5 via-white/2 to-white/5 rounded-lg blur-lg"
-                animate={{
-                  opacity: isHovered ? 0.6 : 0,
-                  scale: isHovered ? 1.05 : 1,
-                }}
+                animate={{ opacity: isHovered ? 0.6 : 0, scale: isHovered ? 1.05 : 1 }}
                 transition={{ duration: 0.4 }}
               />
 
-              {/* Main text */}
               <motion.div
                 className="relative z-10 text-white tracking-wider text-lg md:text-xl lg:text-2xl xl:text-2xl font-sabon font-normal max-w-full md:max-w-4xl lg:max-w-6xl xl:max-w-9xl leading-relaxed text-left md:text-left drop-shadow-md"
                 animate={{
-                  textShadow: isHovered
-                    ? "0 0 15px rgba(255, 255, 255, 0.4)"
-                    : "0 0 0px rgba(255, 255, 255, 0)",
-                  filter: isHovered ? "brightness(1.1)" : "brightness(1)",
+                  textShadow: isHovered ? "0 0 15px rgba(255, 255, 255, 0.4)" : "0 0 0px rgba(255, 255, 255, 0)",
+                  filter: isHovered ? "brightness(1.1)" : "brightness(1)"
                 }}
                 transition={{ duration: 0.3 }}
               >
-                {/* Typewriter text with cursor */}
                 <span className="relative">
                   {displayText}
                   {currentIndexTyping < tagline.length && (
@@ -333,31 +328,15 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
                   )}
                 </span>
 
-                {/* Particle effects on hover */}
                 {isHovered && particlePositions.length > 0 && (
                   <>
                     {particlePositions.map((pos, i) => (
                       <motion.div
                         key={i}
                         className="absolute w-1 h-1 bg-white rounded-full"
-                        initial={{
-                          x: pos.initialX,
-                          y: pos.initialY,
-                          opacity: 0,
-                          scale: 0
-                        }}
-                        animate={{
-                          x: pos.targetX,
-                          y: pos.targetY,
-                          opacity: [0, 1, 0],
-                          scale: [0, 1, 0]
-                        }}
-                        transition={{
-                          duration: 2,
-                          delay: i * 0.1,
-                          repeat: Infinity,
-                          repeatDelay: 1
-                        }}
+                        initial={{ x: pos.initialX, y: pos.initialY, opacity: 0, scale: 0 }}
+                        animate={{ x: pos.targetX, y: pos.targetY, opacity: [0, 1, 0], scale: [0, 1, 0] }}
+                        transition={{ duration: 2, delay: i * 0.1, repeat: Infinity, repeatDelay: 1 }}
                       />
                     ))}
                   </>
@@ -367,21 +346,21 @@ export default function Hero({ id, tagline, slides }: { id?: string; tagline: st
           </motion.div>
         </div>
 
-        {/* Back to Main Page Button (Visible only on the Last Slide) */}
+        {/* Back to Main Page Button */}
         <div className={`absolute bottom-12 md:bottom-20 left-0 right-0 flex justify-center pointer-events-none transition-opacity duration-700 z-50 ${currentIndex === slides.length - 1 ? 'opacity-100 pointer-events-auto' : 'opacity-0'}`}>
           <button
             onClick={() => (window as any).triggerHeroBack && (window as any).triggerHeroBack()}
-            className="font-sabon text-white tracking-wider text-lg md:text-xl border border-white/30 rounded-full px-4 py-2 hover:bg-white hover:text-black transition-all duration-300 drop-shadow-lg relative z-50 pointer-events-auto"
+            className="font-sabon text-white tracking-wider text-lg md:text-xl border border-white/30 rounded-full px-4 py-2 hover:bg-white hover:text-black transition-all duration-300 drop-shadow-lg relative z-50 pointer-events-auto cursor-pointer"
           >
             Back to Main Page
           </button>
         </div>
 
-        {/* Left/Right Navigation Arrows (Hidden on Slide 0) */}
-        <button id="hero-prev" className={`absolute left-6 top-1/2 -translate-y-1/2 text-white/30 hover:text-white p-4 transition-all duration-500 ${currentIndex <= 1 ? 'opacity-0 pointer-events-none scale-95' : 'opacity-100 pointer-events-auto scale-100'}`}>
+        {/* Left/Right Navigation Arrows */}
+        <button id="hero-prev" className={`absolute left-6 top-1/2 -translate-y-1/2 text-white/30 hover:text-white p-4 transition-all duration-500 ${currentIndex <= 1 ? 'opacity-0 pointer-events-none scale-95' : 'opacity-100 pointer-events-auto scale-100 cursor-pointer'}`}>
           <svg className="w-10 h-10 stroke-[1]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
         </button>
-        <button id="hero-next" className={`absolute right-6 top-1/2 -translate-y-1/2 text-white/30 hover:text-white p-4 transition-all duration-500 ${currentIndex === 0 || currentIndex === slides.length - 1 ? 'opacity-0 pointer-events-none scale-95' : 'opacity-100 pointer-events-auto scale-100'}`}>
+        <button id="hero-next" className={`absolute right-6 top-1/2 -translate-y-1/2 text-white/30 hover:text-white p-4 transition-all duration-500 ${currentIndex === 0 || currentIndex === slides.length - 1 ? 'opacity-0 pointer-events-none scale-95' : 'opacity-100 pointer-events-auto scale-100 cursor-pointer'}`}>
           <svg className="w-10 h-10 stroke-[1]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
         </button>
       </div>
