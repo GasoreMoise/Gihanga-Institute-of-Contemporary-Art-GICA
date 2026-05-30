@@ -24,6 +24,7 @@ interface VisitSectionProps {
   addressDetails: string;
   email: string;
   social: string;
+  phoneNumber: string;
   bookingTitle: string;
   faqs?: FAQ[];
   guidelinesTitle: string;
@@ -37,6 +38,7 @@ export default function VisitSection({
   addressDetails,
   email,
   social,
+  phoneNumber,
   bookingTitle,
   faqs = [],
   guidelinesTitle,
@@ -136,9 +138,10 @@ export default function VisitSection({
           <div className="flex flex-col items-center text-center space-y-4">
             <Mail className="w-6 h-6 stroke-[1px] opacity-40" />
             <h3 className="uppercase tracking-[0.3em] text-[10px] font-bold opacity-40">Contact</h3>
-            <div className="font-sabon text-sm leading-relaxed">
+            <div className="font-sabon text-sm leading-relaxed space-y-0.5">
               <a href={`mailto:${email}`} className="block hover:opacity-50 transition-opacity">{email}</a>
-              <a href={`https://instagram.com/${social?.replace('@', '')}`} target="_blank" className="block hover:opacity-50 transition-opacity">{social}</a>
+              <a href={`https://instagram.com/${social?.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="block hover:opacity-50 transition-opacity">{social}</a>
+              <a href={`tel:${phoneNumber?.replace(/\s+/g, '')}`} className="block hover:opacity-50 transition-opacity">{phoneNumber}</a>
             </div>
           </div>
         </div>
@@ -161,12 +164,12 @@ export default function VisitSection({
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
             <div className="mt-4 text-left space-y-1">
-              <p className="text-[12px] opacity-40 italic text-center">Takes less than 1 minute.<br /> Group visits larger than 5 <br /> are welcome to contacts us <br /> ahead of time.</p>
+              <p className="text-[12px] opacity-40 italic text-center">Takes less than 1 minute.<br /> Group visits larger than 5 <br /> are welcome to contact us <br /> ahead of time.</p>
             </div>
           </div>
         </div>
 
-        {/* 4. FAQs SECTION - NOW LOADED WITH INSTITUTIONAL DATA */}
+        {/* 4. FAQs SECTION */}
         <div className="max-w-5xl mx-auto mb-20">
           <div className="flex flex-col md:flex-row justify-between items-baseline mb-10 gap-8">
             <h2 className="text-3xl md:text-5xl font-normal tracking-tight font-sabon text-black">FAQs</h2>

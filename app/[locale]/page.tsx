@@ -75,6 +75,7 @@ export default async function Page() {
           addressDetails={visit.address.split(',').slice(1).join(',').trim()}
           email={visit.email}
           social={visit.social}
+          phoneNumber={visit.phoneNumber}
           bookingTitle="Book Your Visit"
           guidelinesTitle="Visitor Guidelines"
           guidelinesNote="For detailed information about visitor conduct and institutional policies, please refer to our Codes of Conduct."
