@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
-import { getLocale, getMessages } from 'next-intl/server';
-import { SpeedInsights } from '@vercel/speed-insights/next'
-import { Analytics } from '@vercel/analytics/react'
+import { getMessages } from 'next-intl/server';
+import Nav from '@/components/Nav';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@vercel/analytics/react';
 
-import { orgJsonLd } from '@/lib/seo/jsonld';
 import '../globals.css';
 import '../fonts.css';
 
@@ -21,50 +21,32 @@ export const metadata: Metadata = {
     default: 'GICA',
     template: '%s | GICA',
   },
-  description:
-    'A living space for art, research, and collective imagination in Kigali, Rwanda.',
-  icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
-      { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' }
-    ],
-    apple: [
-      { url: '/apple-touch-icon.png', type: 'image/png', sizes: '180x180' }
-    ]
-  },
-  openGraph: {
-    type: 'website',
-    url: 'https://www.gica.art',
-    title: 'GICA',
-    siteName: 'GICA',
-    images: [
-      { url: '/og/og-default.jpg', width: 1200, height: 630, alt: 'GICA' }
-    ]
-  },
-  twitter: { card: 'summary_large_image', site: '@gica', creator: '@gica' },
-  alternates: { canonical: 'https://www.gica.art' }
+  description: 'A living space for art, research, and collective imagination in Kigali, Rwanda.',
 };
 
 export default async function RootLayout({
-  children
+  children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }) {
-  const locale = await getLocale();
+  // Await params correctly for Next.js 15
+  const { locale } = await params;
   const messages = await getMessages();
+
   return (
+    // suppressHydrationWarning is critical here
+    <html lang={locale} suppressHydrationWarning>
+      <body className="min-h-screen bg-white text-neutral-900 antialiased p-0 m-0">
         <NextIntlClientProvider locale={locale} messages={messages}>
-          {/* <Nav /> */}
-          {children}
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd()) }}
-          />
-      <SpeedInsights />
-      <Analytics />
+          <Nav />
+          {/* Ensure main is relative so it doesn't collapse */}
+          <main className="relative">{children}</main>
+          <SpeedInsights />
+          <Analytics />
         </NextIntlClientProvider>
+      </body>
+    </html>
   );
 }
-
-

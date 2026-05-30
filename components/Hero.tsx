@@ -1,72 +1,69 @@
 'use client';
 
 import Image from 'next/image';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { useState, useEffect, useRef } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
+import { useState, useRef, useEffect } from 'react';
 import { useLocale } from 'next-intl';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { Observer, TextPlugin, ScrollTrigger } from 'gsap/all';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
 
-export default function Hero({
-  title,
-  subtitle,
-  image,
-  programmeData
-}: {
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(useGSAP, Observer, TextPlugin, ScrollTrigger);
+}
+
+type Slide = {
   title: string;
-  subtitle?: string;
-  image?: { src: string; width: number; height: number; blurDataURL?: string };
-  programmeData?: {
-    title: string;
-    description: string;
-    menuItems: { label: string }[];
-    backgroundImage: {
-      src: string;
-      alt: string;
-      width: number;
-      height: number;
-    };
-  };
-}) {
-  const [isEnglish, setIsEnglish] = useState(true);
-  const [isProgrammeOpen, setIsProgrammeOpen] = useState(false);
-  const router = useRouter();
-  const pathname = usePathname();
-  const locale = useLocale();
-  const [bgLoaded, setBgLoaded] = useState(false);
+  image: { src: string; alt: string };
+  leftVideo?: string;
+  rightVideo?: string;
+  href?: string;
+};
+
+export default function Hero({ id, tagline, slides }: { id?: string; tagline: string; slides: Slide[]; }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const slidesRef = useRef<(HTMLDivElement | null)[]>([]);
+  const titlesRef = useRef<(HTMLHeadingElement | null)[]>([]);
+  const taglineRef = useRef<HTMLDivElement>(null);
+  const chevronRef = useRef<HTMLDivElement>(null);
+
   const [isHovered, setIsHovered] = useState(false);
   const [displayText, setDisplayText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndexTyping, setCurrentIndexTyping] = useState(0);
   const [particlePositions, setParticlePositions] = useState<Array<{ initialX: number; initialY: number; targetX: number; targetY: number }>>([]);
-  
+
   // Motion values for magnetic effect
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const springX = useSpring(mouseX, { stiffness: 150, damping: 15 });
   const springY = useSpring(mouseY, { stiffness: 150, damping: 15 });
-  
-  const taglineRef = useRef<HTMLDivElement>(null);
 
-  // Get the full tagline text
-  const fullText = title || (locale === 'en'
-    ? (subtitle || "A living space for art, research and collective imagination")
-    : (subtitle || "Umunsi w'ubuzima bw'ubuhanzi, ubushakashatsi n'ibitekerezo by'umuryango"));
+  const activeIndexRef = useRef(0);
+  const [currentIndex, setCurrentIndex] = useState(0); // State to trigger re-renders for UI conditionals
+  const isAnimating = useRef(false);
+  const locale = useLocale();
+  const sabonFont = '"Sabon Next LT", Sabon, serif';
+
+  useEffect(() => {
+    if (currentIndex > 0) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; }
+  }, [currentIndex]);
 
   // Typewriter effect
   useEffect(() => {
-    if (currentIndex < fullText.length) {
+    if (currentIndexTyping < tagline.length) {
       const timeout = setTimeout(() => {
-        setDisplayText(prev => prev + fullText[currentIndex]);
-        setCurrentIndex(prev => prev + 1);
+        setDisplayText(prev => prev + tagline[currentIndexTyping]);
+        setCurrentIndexTyping(prev => prev + 1);
       }, 50); // Adjust speed here
       return () => clearTimeout(timeout);
     }
-  }, [currentIndex, fullText]);
-
-  // Reset typewriter when locale changes
-  useEffect(() => {
-    setDisplayText('');
-    setCurrentIndex(0);
-  }, [locale]);
+  }, [currentIndexTyping, tagline]);
 
   // Generate particle positions only on client side to avoid hydration mismatch
   useEffect(() => {
@@ -85,7 +82,7 @@ export default function Hero({
     const rect = taglineRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-    
+
     mouseX.set((e.clientX - centerX) * 0.1);
     mouseY.set((e.clientY - centerY) * 0.1);
   };
@@ -96,117 +93,176 @@ export default function Hero({
     setIsHovered(false);
   };
 
-  const switchLocale = (newLocale: string) => {
-    if (!pathname) return;
-    const segments = pathname.split('/');
-    segments[1] = newLocale;
-    router.push(segments.join('/') as any);
-  };
+  useGSAP(() => {
+    if (slides.length === 0) return;
+    gsap.set(slidesRef.current, {
+      autoAlpha: i => i === activeIndexRef.current ? 1 : 0,
+      zIndex: i => i === activeIndexRef.current ? 1 : 0,
+      xPercent: 0
+    });
+    gsap.set(titlesRef.current, {
+      autoAlpha: i => i === activeIndexRef.current ? 1 : 0,
+      x: i => i === activeIndexRef.current ? 0 : 50,
+      y: 0
+    });
 
-  const openProgramme = () => {
-    setIsProgrammeOpen(true);
-  };
+    const gotoSlide = (index: number, direction: number) => {
+      // Bound the index so we don't loop around
+      if (index < 0) index = 0;
+      if (index >= slides.length) index = slides.length - 1;
 
-  const closeProgramme = () => {
-    setIsProgrammeOpen(false);
-  };
+      if (isAnimating.current || index === activeIndexRef.current) return;
+      isAnimating.current = true;
+
+      const isNext = direction === 1;
+      const dX = isNext ? 100 : -100;
+      const parallaxX = isNext ? -15 : 15;
+
+      const nextSlide = slidesRef.current[index];
+      const currentSlide = slidesRef.current[activeIndexRef.current];
+      const nextTitle = titlesRef.current[index];
+      const currentTitle = titlesRef.current[activeIndexRef.current];
+
+      activeIndexRef.current = index;
+      setCurrentIndex(index); // Update state to toggle conditionals
+
+      gsap.set(currentSlide, { zIndex: 0 });
+      gsap.set(nextSlide, { autoAlpha: 1, zIndex: 1, xPercent: dX });
+      gsap.set(nextTitle, { autoAlpha: 0, x: isNext ? 100 : -100 });
+
+      const tl = gsap.timeline({
+        defaults: { duration: 1.25, ease: "power2.inOut" },
+        onComplete: () => {
+          gsap.set(currentSlide, { autoAlpha: 0 });
+          isAnimating.current = false;
+        }
+      });
+
+      tl.to(currentSlide, { xPercent: parallaxX }, 0)
+        .to(nextSlide, { xPercent: 0 }, 0)
+        .to(currentTitle, { autoAlpha: 0, x: isNext ? -50 : 50, duration: 0.6 }, 0)
+        .to(nextTitle, { autoAlpha: 1, x: 0, duration: 1 }, 0.25);
+    };
+
+    const nextSlide = () => {
+      if (activeIndexRef.current > 0 && activeIndexRef.current < slides.length - 1) {
+        gotoSlide(activeIndexRef.current + 1, 1);
+      }
+    };
+    const prevSlide = () => {
+      if (activeIndexRef.current > 1) {
+        gotoSlide(activeIndexRef.current - 1, -1);
+      }
+    };
+
+    const observer = Observer.create({
+      target: containerRef.current,
+      type: "wheel,touch,pointer",
+      wheelSpeed: -1,
+      onLeft: () => !isAnimating.current && activeIndexRef.current > 0 && nextSlide(),
+      onRight: () => !isAnimating.current && activeIndexRef.current > 0 && prevSlide(),
+      onUp: () => !isAnimating.current && activeIndexRef.current > 0 && nextSlide(),
+      onDown: () => !isAnimating.current && activeIndexRef.current > 0 && prevSlide(),
+      tolerance: 30,
+      preventDefault: false
+    });
+
+    const nextBtn = document.getElementById('hero-next');
+    const prevBtn = document.getElementById('hero-prev');
+    if (nextBtn) nextBtn.onclick = nextSlide;
+    if (prevBtn) prevBtn.onclick = prevSlide;
+
+    // We expose a global function so the Enter button can manually trigger it
+    (window as any).triggerHeroEnter = () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => { gotoSlide(1, 1); }, 300);
+    };
+    (window as any).triggerHeroBack = () => {
+      gotoSlide(0, -1);
+    };
+
+    return () => observer.kill();
+  }, { scope: containerRef, dependencies: [slides] });
+
   return (
-    <section className="relative h-screen w-full overflow-hidden">
-      {/* Background Image */}
-      {image?.src && (
-        <Image
-          src={image.src}
-          alt="GICA - A living space for art, research and collective imagination"
-          width={image.width}
-          height={image.height}
-          priority
-          fetchPriority="high"
-          placeholder={image.blurDataURL ? 'blur' : 'empty'}
-          blurDataURL={image.blurDataURL}
-          sizes="100vw"
-          quality={75}
-          className="absolute inset-0 w-full h-full object-cover"
-          onLoad={() => setBgLoaded(true)}
-        />
-      )}
-      
-      {/* Dark overlay for better text readability */}
-      <div className={`absolute inset-0 ${bgLoaded ? 'bg-black/40' : 'bg-black/0'}`} />
-      
-      {/* Content Container */}
-      <div className="relative z-10 h-full flex flex-col">
-        
-        {/* Header with Logo and Navigation */}
-        <header className="flex justify-between items-start px-6 md:px-10 lg:px-12 py-4 md:py-5 lg:py-7">
-          {/* Logo Section */}
-          <motion.div 
-            className="flex flex-col"
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+    <section id={id || "hero"} ref={containerRef} className="font-sabon relative h-[100dvh] w-full overflow-hidden bg-[#0a1116] snap-start touch-pan-y select-none isolate">
+      {slides.map((slide, i) => (
+        <div key={`slide-${i}`} ref={el => { slidesRef.current[i] = el; }} className="absolute inset-0 w-full h-full flex items-center justify-center will-change-transform overflow-hidden">
+
+          {slide.leftVideo && slide.rightVideo && (
+            <div className="absolute inset-0 flex justify-between pointer-events-none z-0">
+              <div className="relative w-[25%] h-full opacity-60">
+                <video src={slide.leftVideo} autoPlay muted loop playsInline className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-l from-[#0A1116]/80 to-transparent" />
+              </div>
+              <div className="relative w-[25%] h-full opacity-60">
+                <video src={slide.rightVideo} autoPlay muted loop playsInline className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0A1116]/80 to-transparent" />
+              </div>
+            </div>
+          )}
+
+          <div className={`relative h-full flex items-center justify-center transition-all duration-1000 brightness-75 z-10 ${slide.leftVideo ? 'w-full md:w-[50%]' : 'w-full'}`}>
+            <Image src={slide.image.src} alt={slide.image.alt} fill priority={i === 0} className="object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a1116] via-transparent to-transparent opacity-80" />
+            {slide.leftVideo && <div className="absolute inset-0 shadow-[0_0_80px_rgba(0,0,0,1)] pointer-events-none" />}
+          </div>
+        </div>
+      ))}
+
+      <div className="absolute inset-0 z-30 flex flex-col pointer-events-none">
+
+        {/* Centered Entry View for Slide 0 */}
+        <div className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 ${currentIndex === 0 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+          <h1 className="font-sabon text-white text-3xl md:text-3xl lg:text-5xl font-normal text-center drop-shadow-xl px-4 max-w-5xl leading-tight">
+            Gihanga Institute<br />of Contemporary Art
+          </h1>
+          <h2 className="font-sabon text-white text-md md:text-xl lg:text-xl tracking-[0.2em] uppercase mt-6 mb-16 text-center drop-shadow-lg">
+            KIGALI
+          </h2>
+          <button
+            onClick={() => (window as any).triggerHeroEnter && (window as any).triggerHeroEnter()}
+            className="font-sabon italic text-white text-xl md:text-lg hover:text-white/70 transition-colors pointer-events-auto flex items-center space-x-2 drop-shadow-lg group relative z-50"
           >
-            <motion.div 
-              className="flex items-center space-x-3 mb-2"
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
-            >
-              <motion.img
-                src="/logos/logo4.svg"
-                alt="GICA Logo"
-                width={64}
-                height={64}
-                className="w-20 h-20 md:w-24 md:h-24 lg:w-32 lg:h-32"
-                initial={{ scale: 0.8 }}
-                animate={{ rotate: 0, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.4, type: "spring", stiffness: 100 }}
-                whileHover={{ scale: 1.1 }}
-              />
-            </motion.div>
-          </motion.div>
-          
-          {/* Navigation */}
-          <motion.div 
-            className="flex items-center space-x-8 md:space-x-12 lg:space-x-20 mt-2 md:mt-3 lg:mt-5 relative"
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-          >
-            <motion.button 
-              className="text-white text-lg md:text-xl font-sabon font-normal cursor-pointer hover:text-gray-300 transition-colors"
-              whileHover={{ scale: 1.1, color: "#f3f4f6" }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              onClick={() => {
-                const next = locale === 'en' ? 'rw' : 'en';
-                setIsEnglish(next === 'en');
-                switchLocale(next);
-              }}
-            >
-              <span className={locale === 'en' ? 'underline' : ''}>EN</span>
-              <span className="mx-1">/</span>
-              <span className={locale === 'rw' ? 'underline' : ''}>KIN</span>
-            </motion.button>
-            
-            {/* Programme Navigation Button */}
-            <motion.button 
-              className="text-white hover:text-gray-300 transition-colors"
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              onClick={openProgramme}
-            >
-              <img
-                src="/logos/navbar.svg"
-                alt="Navigation Menu"
-                className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16"
-              />
-            </motion.button>
-          </motion.div>
-        </header>
-        
-        {/* Bottom Section with Tagline */}
-        <div className="flex-1 flex items-end pb-20 md:pb-10 lg:pb-14 px-4 md:px-6 lg:px-8">
-          <motion.div 
+            <span>Enter</span>
+            <svg className="w-6 h-6 transform group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Dynamic Slide Titles for Slide 1+ */}
+        <div className={`flex-1 relative w-full pointer-events-none mt-32 md:mt-40 px-6 md:px-16 transition-opacity duration-700 ${currentIndex === 0 ? 'opacity-0' : 'opacity-100'}`}>
+          {slides.map((slide, i) => {
+            const lowerTitle = slide.title.toLowerCase();
+            const isExhibitionSlide = lowerTitle.includes('exhibition');
+            const isScreeningSlide = lowerTitle.includes('screening');
+            const isTalksSlide = lowerTitle.includes('talk');
+            const isLibrarySlide = lowerTitle.includes('library');
+            const isEventsSlide = lowerTitle.includes('events');
+
+            let linkHref = "";
+            if (isLibrarySlide) linkHref = `/${locale}/library`;
+            if (isExhibitionSlide) linkHref = `/${locale}/exhibitions`;
+            if (isScreeningSlide) linkHref = `/${locale}/screenings`;
+            if (isTalksSlide) linkHref = `/${locale}/talks`;
+            if (isEventsSlide) linkHref = `/${locale}/events`;
+
+            return (
+              <h1 key={`title-${i}`} ref={el => { titlesRef.current[i] = el; }} className="font-sabon absolute right-12 text-white text-xl md:text-2xl font-normal tracking-[0.05em] text-right invisible drop-shadow-2xl italic">
+                {linkHref ? (
+                  <Link href={linkHref as any} className="pointer-events-auto hover:text-white/70 transition-colors">{slide.title}</Link>
+                ) : (
+                  slide.title
+                )}
+              </h1>
+            );
+          })}
+        </div>
+
+        {/* Tagline (Visible only on Slide 0) */}
+        <div className={`flex justify-between items-end pb-6 md:pb-16 px-6 md:px-10 lg:px-16 w-full transition-opacity duration-700 ${currentIndex === 0 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+          <motion.div
             className="flex flex-col md:flex-row items-center md:items-end space-y-4 md:space-y-0 md:space-x-4 w-full"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -219,10 +275,11 @@ export default function Hero({
               transition={{ duration: 2, repeat: Infinity }}
               whileHover={{ scale: 1.2, y: 0 }}
               whileTap={{ scale: 0.9 }}
+              onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              <motion.svg 
-                className="w-4 h-4 md:w-5 md:h-5 text-white" 
-                fill="currentColor" 
+              <motion.svg
+                className="w-4 h-4 md:w-5 md:h-5 text-white"
+                fill="currentColor"
                 viewBox="0 0 20 20"
                 whileHover={{ rotate: 180 }}
                 transition={{ duration: 0.3 }}
@@ -230,14 +287,11 @@ export default function Hero({
                 <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
               </motion.svg>
             </motion.div>
-            
+
             {/* Interactive Tagline */}
             <motion.div
               ref={taglineRef}
               className="relative cursor-pointer order-1 md:order-2"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.8, duration: 0.8 }}
               onMouseMove={handleMouseMove}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={handleMouseLeave}
@@ -255,12 +309,12 @@ export default function Hero({
                 }}
                 transition={{ duration: 0.4 }}
               />
-              
+
               {/* Main text */}
               <motion.div
-                className="relative z-10 text-white tracking-wider text-xl md:text-xl lg:text-2xl xl:text-3xl font-sabon font-normal max-w-full md:max-w-4xl lg:max-w-6xl xl:max-w-9xl leading-relaxed text-left md:text-left"
+                className="relative z-10 text-white tracking-wider text-lg md:text-xl lg:text-2xl xl:text-2xl font-sabon font-normal max-w-full md:max-w-4xl lg:max-w-6xl xl:max-w-9xl leading-relaxed text-left md:text-left drop-shadow-md"
                 animate={{
-                  textShadow: isHovered 
+                  textShadow: isHovered
                     ? "0 0 15px rgba(255, 255, 255, 0.4)"
                     : "0 0 0px rgba(255, 255, 255, 0)",
                   filter: isHovered ? "brightness(1.1)" : "brightness(1)",
@@ -270,7 +324,7 @@ export default function Hero({
                 {/* Typewriter text with cursor */}
                 <span className="relative">
                   {displayText}
-                  {currentIndex < fullText.length && (
+                  {currentIndexTyping < tagline.length && (
                     <motion.span
                       className="inline-block w-0.5 h-6 md:h-8 bg-white ml-1"
                       animate={{ opacity: [0, 1, 0] }}
@@ -278,7 +332,7 @@ export default function Hero({
                     />
                   )}
                 </span>
-                
+
                 {/* Particle effects on hover */}
                 {isHovered && particlePositions.length > 0 && (
                   <>
@@ -286,19 +340,19 @@ export default function Hero({
                       <motion.div
                         key={i}
                         className="absolute w-1 h-1 bg-white rounded-full"
-                        initial={{ 
-                          x: pos.initialX, 
+                        initial={{
+                          x: pos.initialX,
                           y: pos.initialY,
                           opacity: 0,
                           scale: 0
                         }}
-                        animate={{ 
+                        animate={{
                           x: pos.targetX,
                           y: pos.targetY,
                           opacity: [0, 1, 0],
                           scale: [0, 1, 0]
                         }}
-                        transition={{ 
+                        transition={{
                           duration: 2,
                           delay: i * 0.1,
                           repeat: Infinity,
@@ -312,87 +366,25 @@ export default function Hero({
             </motion.div>
           </motion.div>
         </div>
-      </div>
 
-      {/* Programme Overlay - Full ProgrammeSection Layout */}
-      {programmeData && isProgrammeOpen && (
-        <div
-          className="fixed inset-0 z-50"
-          onClick={closeProgramme}
-        >
-          {/* Background Image */}
-          <div className="absolute inset-0">
-            <Image
-              src={programmeData.backgroundImage.src}
-              alt={programmeData.backgroundImage.alt}
-              fill
-              className="object-cover"
-              placeholder="blur"
-              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-              quality={75}
-            />
-          </div>
-          
-          {/* Dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/40" />
-          
-          {/* Content Container - Exact same as ProgrammeSection */}
-          <div 
-            className="relative z-5 min-h-screen grid grid-cols-1 md:grid-cols-2 gap-2 px-4 md:px-8 lg:px-16 py-24 md:py-16"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Left: Title */}
-            <div className="flex items-center justify-center md:justify-start">
-              <motion.h2 
-                className="text-white text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-sabon font-normal text-center md:text-left -mt-40 md:mt-0"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                {programmeData.title}
-              </motion.h2>
-            </div>
-            {/* Right: Vertical Menu */}
-            <div className="flex items-center justify-center md:justify-start">
-              <motion.ul 
-                className="space-y-8 md:space-y-12 lg:space-y-20 text-center md:text-left md:ml-40 -mt-72 md:mt-0"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
-                {programmeData.menuItems.map((item, idx) => (
-                  <li key={idx}>
-                    <button 
-                      className="text-white text-lg md:text-xl lg:text-xl font-sabon hover:opacity-80 transition-opacity"
-                      onClick={closeProgramme}
-                    >
-                      {item.label}
-                    </button>
-                  </li>
-                ))}
-              </motion.ul>
-            </div>
-          </div>
-          
-          
-          {/* Close Button */}
+        {/* Back to Main Page Button (Visible only on the Last Slide) */}
+        <div className={`absolute bottom-12 md:bottom-20 left-0 right-0 flex justify-center pointer-events-none transition-opacity duration-700 z-50 ${currentIndex === slides.length - 1 ? 'opacity-100 pointer-events-auto' : 'opacity-0'}`}>
           <button
-            className="absolute top-6 right-6 z-50 text-white hover:text-gray-300 transition-colors p-2"
-            onClick={closeProgramme}
+            onClick={() => (window as any).triggerHeroBack && (window as any).triggerHeroBack()}
+            className="font-sabon text-white tracking-wider text-lg md:text-xl border border-white/30 rounded-full px-4 py-2 hover:bg-white hover:text-black transition-all duration-300 drop-shadow-lg relative z-50 pointer-events-auto"
           >
-            <svg 
-              className="w-8 h-8 md:w-10 md:h-10" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            Back to Main Page
           </button>
         </div>
-      )}
+
+        {/* Left/Right Navigation Arrows (Hidden on Slide 0) */}
+        <button id="hero-prev" className={`absolute left-6 top-1/2 -translate-y-1/2 text-white/30 hover:text-white p-4 transition-all duration-500 ${currentIndex <= 1 ? 'opacity-0 pointer-events-none scale-95' : 'opacity-100 pointer-events-auto scale-100'}`}>
+          <svg className="w-10 h-10 stroke-[1]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
+        </button>
+        <button id="hero-next" className={`absolute right-6 top-1/2 -translate-y-1/2 text-white/30 hover:text-white p-4 transition-all duration-500 ${currentIndex === 0 || currentIndex === slides.length - 1 ? 'opacity-0 pointer-events-none scale-95' : 'opacity-100 pointer-events-auto scale-100'}`}>
+          <svg className="w-10 h-10 stroke-[1]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+        </button>
+      </div>
     </section>
   );
 }
-
-

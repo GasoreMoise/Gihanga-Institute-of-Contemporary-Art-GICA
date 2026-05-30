@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 export default function NewsletterModal() {
   const t = useTranslations('landing');
@@ -15,14 +16,14 @@ export default function NewsletterModal() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // Ensure we're on the client
     setMounted(true);
 
-    // For now: always show the modal after a short delay on the client.
-    // This avoids any localStorage / browser-specific issues that were
-    // preventing it from opening on some mobile setups.
     const timer = setTimeout(() => {
-      setOpen(true);
+      // Only open if not already subscribed
+      const hasSubscribed = localStorage.getItem('newsletter-subscribed');
+      if (!hasSubscribed) {
+        setOpen(true);
+      }
     }, 7500);
 
     return () => clearTimeout(timer);
@@ -51,11 +52,8 @@ export default function NewsletterModal() {
       }
       setSuccess(true);
       setEmail('');
-      try {
-        localStorage.setItem('newsletter-subscribed', 'true');
-      } catch (err) {
-        console.warn('[NewsletterModal] Failed to save subscription:', err);
-      }
+      localStorage.setItem('newsletter-subscribed', 'true');
+
       setTimeout(() => {
         setOpen(false);
       }, 2000);
@@ -72,20 +70,19 @@ export default function NewsletterModal() {
     setOpen(false);
   };
 
-  if (!mounted) {
-    return null;
-  }
+  // Guard against SSR and ensure document is available for Portal
+  if (!mounted) return null;
 
-  return (
-    <AnimatePresence>
+  return createPortal(
+    <AnimatePresence mode="wait">
       {open && (
         <motion.div
+          key="newsletter-modal-container"
           className="fixed bottom-0 left-0 right-0 z-[9999] px-4 pb-4 md:pb-6 pointer-events-none"
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          style={{ position: 'fixed' }}
         >
           <motion.div
             className="relative max-w-4xl mx-auto bg-white/95 backdrop-blur-md border border-neutral-200/70 shadow-lg shadow-black/5 rounded-lg overflow-hidden pointer-events-auto"
@@ -93,10 +90,8 @@ export default function NewsletterModal() {
             animate={{ scale: 1 }}
             transition={{ delay: 0.1 }}
           >
-            {/* Subtle top accent */}
             <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-[#0f2430]/35 to-transparent" />
-            
-            {/* Close button - top right */}
+
             <button
               aria-label="Close"
               onClick={handleDismiss}
@@ -106,10 +101,9 @@ export default function NewsletterModal() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            
+
             <div className="p-4 md:p-6 pr-12 md:pr-14">
               <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
-                {/* Content */}
                 <div className="flex-1 min-w-0">
                   <h3 className="font-sabon text-lg md:text-xl text-neutral-900 leading-tight mb-1.5">
                     {t('contact.newsletter')}
@@ -119,7 +113,6 @@ export default function NewsletterModal() {
                   </p>
                 </div>
 
-                {/* Form */}
                 {!success ? (
                   <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 md:gap-3 flex-shrink-0">
                     <div className="flex-1 min-w-0">
@@ -155,7 +148,7 @@ export default function NewsletterModal() {
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
-

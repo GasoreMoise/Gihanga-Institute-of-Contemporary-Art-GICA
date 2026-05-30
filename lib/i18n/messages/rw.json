@@ -2,27 +2,78 @@
   "landing": {
     "hero": {
       "title": "Igicumbi cy'ubuhanzi, ubushakashatsi, hamwe n'ibitekerezo rusange.",
-      "subtitle": "Ahantu ho kubyara ibitekerezo, ubushakashatsi n'imyidagaduro y'ubugeni."
+      "subtitle": "Igicumbi cy'ubuhanzi, ubushakashatsi, hamwe n'ibitekerezo rusange.",
+      "slides": {
+        "library": "Isomero ryitiriwe Koyo Kouoh",
+        "exhibitions": "Imurikabikorwa",
+        "screenings": "Iyerekana mashusho",
+        "events": "Ibikorwa",
+        "talks": "Ibiganiro"
+      }
     },
     "about": {
       "title": "Ibyerekeye",
-      "body": "Ikigo cya Gihanga cy’Ubugeni bugezweho GICA ni ikigo kidaharanira inyungu. GICA ni igicumbi cy’isomero, imurikabikorwa, urubuga rwo kwidagaduriramo no gukinirwa imikino, icyumba cyo kwerekeramo amashusho, sitidiyo n’uburyo bwo kwakira abahanzi. Inyubako ifite ubuso bwa metero kare 777 yagenewe gushyigikira abahanzi b’Abanyarwanda n’akarere binyuze mu imurikabikorwa riteguwe neza, ahantu ho gusangirira ibikorwa by’ubuhanzi, no mu bushake bwo guteza imbere ibiganiro n’uguhangana kw’imitima mu by’ubugeni."
+      "body": "Ikigo cya Gihanga cy’Ubugeni bugezweho GICA ni ikigo kidaharanira inyungu. GICA ni igicumbi cy’isomero, imurikabikorwa, urubuga rwo kwidagaduriramo no gukinirwa imikino, icyumba cyo kwerekeramo amashusho, sitidiyo n’uburyo bwo kwakira abahanzi. Inyubako ifite ubuso bwa metero kare 777 yagenewe gushyigikira abahanzi b’Abanyarwanda n’akarere binyuze mu imurikabikorwa riteguwe neza, ahantu ho gusangirira ibikorwa by’ubuhanzi, no mu bushake bwo guteza imbere ibiganiro n’uguhangana kw’imitima mu by’ubugeni.",
+      "mission": "“ GICA' mission is to provide access to contemporary art for all Rwandans and to position the region within global art conversations. Our vision is to establish Rwanda as a leading hub for contemporary art and intellectual exchange “",
+      "gihanga": "Gihanga is the mythical first king and founding father of Rwanda. He is celebrated for introducing the core cultural and technological advancements of early society, symbolizing the link between historical tradition and modern progress",
+      "symbol": "The symbol inspired by the Grey Crowned Crane, represents the Great Lakes region and embodies artistic vision, awakening, and cultural unity."
     },
-    "welcome": { 
+    "quotes": [
+      {
+        "text": "This is a huge contribution to Rwanda's growing cultural infrastructure and creative industry.",
+        "author": "Jean-Guy Africa",
+        "company": "CEO, Rwanda Development Board"
+      },
+      {
+        "text": "What a brilliant and pioneering idea. It is a timely and truly needed space.",
+        "author": "Dr.Salah Hassan",
+        "company": "Director, African Institute in Sharjah"
+      },
+      {
+        "text": "GICA's inauguration marks a very special moment for the country's cultural arts, its platform makes the arts more accessible to all.",
+        "author": "Hon. Sandrine Umutoni",
+        "company": "Minister, State for Youth and the Arts, Rwanda"
+      },
+      {
+        "text": "It is an amazing new initiative for Rwanda, it is a platform that I really believe is going to change the impact of art and culture in the region...It is all very beautiful to see them under one roof, in the same exhibition, in the same space.",
+        "author": "Touria El Glaoui",
+        "company": "Founding Director, 1-54 Contemporary African Art Fair (London, Marrakech, New York)"
+      },
+      {
+        "text": "A pillar, a magnet and a hub for life.",
+        "author": "Saana Gateja",
+        "company": "Artist"
+      },
+      {
+        "text": "What a gift for Kigali, for Rwanda, Africa and the world.",
+        "author": "Caroline Greyling",
+        "company": "Director, Noval Foundation, Cape Town, South Africa"
+      },
+      {
+        "text": "Art is a basic language and this space will give more visibility to artists from Rwanda and beyond. It creates hope for the next generation of artists, offering them a platform where they can build their careers. It's an immense addition to the cultural landscape of Rwanda.",
+        "author": "Othman Lazraq",
+        "company": "Founder, Museum of Contemporary African Art Al Maaden (MACAAL)"
+      }
+    ],
+    "welcome": {
       "title": "Murakaza",
       "subtitle": "Irafungura 15 Mutarama 2026"
     },
-    "exhibitions": { 
+    "exhibitions": {
       "title": "Imurikabikorwa",
       "selectedArtists": "Abahanzi batoranijwe",
       "learnMore": "Menya Ibirenzeho"
     },
-    "programme": { "title": "Gahunda" },
-    "visit": { "title": "Dusure" },
-    "contact": { 
+    "programme": {
+      "title": "Gahunda"
+    },
+    "visit": {
+      "title": "Dusure"
+    },
+    "contact": {
       "title": "Twandikire",
       "name": "Izina",
-      "email": "Imeli", 
+      "email": "Imeli",
       "message": "Ubutumwa",
       "send": "Ohereza",
       "newsletter": "Kwiyandikisha mu makuru yacu",
@@ -51,7 +102,7 @@
   },
   "footer": {
     "home": "Ahabanza",
-    "programme": "Gahunda", 
+    "programme": "Gahunda",
     "about": "Ibyerekeye",
     "visit": "Dusure",
     "contact": "Twandikire",
@@ -63,5 +114,3 @@
     "workshops": "Amahugurwa"
   }
 }
-
-
