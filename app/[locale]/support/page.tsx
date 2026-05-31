@@ -175,7 +175,7 @@ export default function SupportPage() {
                                                 className="text-2xl md:text-3xl font-light select-none leading-none block pb-1"
                                             >
                                                 *
-                    </motion.span>
+                                            </motion.span>
                                         </button>
                                     </div>
                                 </div>
@@ -205,14 +205,25 @@ export default function SupportPage() {
                         );
                     })}
 
-                    {/* 4. YOUTH PROGRAMME */}
+                    {/* 4. YOUTH PROGRAMME SECTION WITH HIGHLY REFINED FAMILY ICON */}
                     <div className="support-item bg-black/[0.03] -mx-6 px-6 md:mx-0 md:px-0 grid grid-cols-1 md:grid-cols-12 py-16 md:py-24 pb-10 gap-8 md:gap-4 items-center">
                         <div className="md:col-span-2 flex justify-center md:justify-start md:pl-12">
-                            <div className="w-20 h-20 opacity-60">
-                                <svg viewBox="0 0 100 100" className="w-full h-full stroke-[0.5px] fill-none stroke-[#B59A7D]">
-                                    <circle cx="35" cy="40" r="10" />
-                                    <circle cx="65" cy="40" r="10" />
-                                    <path d="M20 80 Q50 60 80 80" />
+                            <div className="w-20 h-20 opacity-90">
+                                <svg viewBox="0 0 100 100" className="w-full h-full stroke-[1px] fill-none stroke-[#B59A7D] stroke-linecap-round stroke-linejoin-round">
+                                    {/* Architectural Archway Outline */}
+                                    <path d="M28 85 V 42 A 22 22 0 0 1 72 42 V 85" />
+                                    
+                                    {/* Center Figure (Adult / Guide) */}
+                                    <circle cx="50" cy="45" r="4.5" />
+                                    <path d="M44.5 59.5 C 44.5 54, 55.5 54, 55.5 59.5 V 85 M47.5 85 V 72 M52.5 85 V 72" />
+                                    
+                                    {/* Left Figure (Youth / Child) */}
+                                    <circle cx="38" cy="53" r="3.5" />
+                                    <path d="M33.5 65.5 C 33.5 61, 42.5 61, 42.5 65.5 V 85 M36 85 V 75 M40 85 V 75" />
+                                    
+                                    {/* Right Figure (Youth / Child) */}
+                                    <circle cx="62" cy="51" r="3.5" />
+                                    <path d="M57.5 63.5 C 57.5 59, 66.5 59, 66.5 63.5 V 85 M60 85 V 74 M64 85 V 74" />
                                 </svg>
                             </div>
                         </div>
